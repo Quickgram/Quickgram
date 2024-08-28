@@ -13,4 +13,4 @@ Additional features:
 
 ## Privacy policy
 
-[Privacy policy](PRIVACY_POLICY)
+[Privacy policy](PRIVACY_POLICY.md)
