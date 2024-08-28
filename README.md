@@ -10,3 +10,7 @@ Additional features:
 ## License
 
 [GNU GPLv3](LICENSE)
+
+## Privacy policy
+
+[Privacy policy](PRIVACY_POLICY)
