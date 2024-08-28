@@ -1,15 +1,9 @@
 ## Quickgram
 
-This is a React Native based ChatApp using [Appwrite](https://appwrite.io/)
+This is a [Expo](https://expo.dev/) [React Native](https://reactnative.dev/) based ChatApp using [Appwrite](https://appwrite.io/)
 
 Additional features:
 
--
--
--
--
--
--
 -
 -
 
