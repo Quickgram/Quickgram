@@ -1,4 +1,4 @@
-import Colors from "@/constants/Colors";
+import Colors from "@/src/styles/Colors";
 import { useState } from "react";
 import {
   View,
@@ -38,11 +38,14 @@ const EmailAndPassword: React.FC<EmailAndPasswordProps> = ({ navigation }) => {
       const token = account.createEmailPasswordSession(email, password);
       setLoading(false);
       token.then(function (response) {
-        navigation.navigate("NewUserScreen");
+        navigation.navigate("NewUserScreen", {
+          userId: "66ceafe3002c3d46c2d7",
+          phoneNumber: "+911000010000",
+        });
       });
     } catch (error) {
       setLoading(false);
-      console.error("Failed Login");
+      console.error("Login Failed");
     }
   };
 
@@ -162,7 +165,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: "#fff",
     width: "100%",
-    fontSize: 16,
+    fontSize: 17,
     padding: 6,
     marginTop: 10,
   },

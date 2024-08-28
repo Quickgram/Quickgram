@@ -1,4 +1,4 @@
-import Colors from "@/constants/Colors";
+import Colors from "@/src/styles/Colors";
 import { useEffect, useState } from "react";
 import {
   View,
@@ -23,7 +23,8 @@ import appwriteConfig from "../../src/appwrite/AppwriteConfig";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type VerifyOtpScreenRouteParams = {
-  sessionId: string;
+  userId: string;
+  phoneNumber: string;
 };
 
 type VerifyOtpScreenProps = NativeStackScreenProps<any, "VerifyOtpScreen"> & {
@@ -43,13 +44,17 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
   route,
   navigation,
 }) => {
-  const { sessionId } = route.params;
+  const { userId } = route.params;
+  const { phoneNumber } = route.params;
   const [code, setCode] = useState("");
 
   const handleVerify = async () => {
     try {
-      await account.createSession(sessionId, code);
-      navigation.navigate("NewUserScreen");
+      await account.createSession(userId, code);
+      navigation.navigate("NewUserScreen", {
+        userId: userId,
+        phoneNumber: phoneNumber,
+      });
     } catch (error) {
       console.error("Failed to verify OTP:", error);
     }

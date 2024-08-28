@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import Colors from "@/constants/Colors";
+import Colors from "@/src/styles/Colors";
 import welcomeImage from "../assets/images/icon.png";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -43,7 +43,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
       // Handle error if necessary
     } finally {
       // Navigate to the next screen
-      console.log(appwriteConfig.config.project);
       navigation.navigate("VerifyPhoneScreen");
     }
   };

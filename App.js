@@ -69,5 +69,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-// <Stack.Navigator initialRouteName={initialRoute}>

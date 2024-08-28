@@ -1,4 +1,4 @@
-import Colors from "@/constants/Colors";
+import Colors from "@/src/styles/Colors";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import * as Appwrite from "react-native-appwrite";
@@ -45,19 +45,24 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
 
   const handleNext = async () => {
     setLoading(true);
-    try {
-      const token = await account.createPhoneToken(
-        Appwrite.ID.unique(),
-        `+91${phoneNumber}`
-      );
-      const userId = token.userId;
-      setLoading(false);
-      navigation.navigate("VerifyOtpScreen", {
-        sessionId: userId,
-      });
-    } catch (error) {
-      setLoading(false);
-      console.error("Failed to send OTP:");
+    if (phoneNumber.length === 10) {
+      try {
+        const token = await account.createPhoneToken(
+          Appwrite.ID.unique(),
+          `+91${phoneNumber}`
+        );
+        const userId = token.userId;
+        setLoading(false);
+        navigation.navigate("VerifyOtpScreen", {
+          userId: userId,
+          phoneNumber: `+91${phoneNumber}`,
+        });
+      } catch (error) {
+        setLoading(false);
+        console.error("Failed to send OTP:");
+      }
+    } else {
+      console.log("Empty Number");
     }
   };
 
@@ -104,7 +109,7 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
         <TouchableOpacity
           style={[
             styles.button,
-            phoneNumber !== "" ? styles.enabled : null,
+            phoneNumber.length === 10 ? styles.enabled : null,
             { marginBottom: 20, marginTop: 30 },
           ]}
           onPress={handleNext}
@@ -112,7 +117,7 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
           <Text
             style={[
               styles.buttonText,
-              phoneNumber !== "" ? styles.enabled : null,
+              phoneNumber.length === 10 ? styles.enabled : null,
             ]}
           >
             Next
@@ -182,7 +187,7 @@ const styles = StyleSheet.create({
   emailButton: {
     marginTop: 1,
     padding: 10,
-    backgroundColor: "#007BFF",
+    backgroundColor: Colors.secondary,
     alignItems: "center",
     borderRadius: 6,
   },
