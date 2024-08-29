@@ -1,16 +1,18 @@
 ## Quickgram
 
-This is a [Expo](https://expo.dev/) [React Native](https://reactnative.dev/) based ChatApp using [Appwrite](https://appwrite.io/)
+Quickgram is a chat app built using [Expo](https://expo.dev/) and [React Native](https://reactnative.dev/), powered by [Appwrite](https://appwrite.io/).
 
 Additional features:
 
--
--
+- 
+- 
+
+### This app is currently in development.
 
 ## License
 
-[GNU GPLv3](LICENSE)
+This project is licensed under the [GNU GPLv3](LICENSE).
 
-## Privacy policy
+## Privacy Policy
 
-[Privacy policy](PRIVACY_POLICY.md)
+You can review our [Privacy Policy](PRIVACY_POLICY.md) for more details.
