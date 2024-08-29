@@ -1,4 +1,4 @@
-<h1 align="center">Quickgram 🚀</h1>
+<h1 style="font-size: 3em; text-align: left;">🚀 Quickgram</h1>
 
 Quickgram is a chat app built using 💻 [Expo](https://expo.dev/) and 🌐 [React Native](https://reactnative.dev/), powered by [Appwrite](https://appwrite.io/). 
 

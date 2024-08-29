@@ -2,11 +2,17 @@
 
 # dependencies
 node_modules/
+.pnp/
+.pnp.js
 
 # Expo
 .expo/
 dist/
 web-build/
+.expo-shared/
+
+# VS Code
+.vscode/
 
 # Native
 *.orig.*
@@ -28,8 +34,13 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
+# Environment files
+.env
 .env*.local
+
+# Build directories
+dist/
+build/
 
 # typescript
 *.tsbuildinfo
