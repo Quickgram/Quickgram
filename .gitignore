@@ -12,7 +12,7 @@ web-build/
 .expo-shared/
 
 # VS Code
-.vscode
+.vscode/
 
 # Native
 *.orig.*
