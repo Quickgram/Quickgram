@@ -2,11 +2,6 @@
 
 Quickgram is a chat app built using 💻 [Expo](https://expo.dev/) and 🌐 [React Native](https://reactnative.dev/), powered by [Appwrite](https://appwrite.io/). 
 
-Additional features:
-
-- 
-- 
-
 ### 🛠️ **This app is currently in development.** Stay tuned for updates! 🔄
 
 ## 🔐 **Privacy Policy**
