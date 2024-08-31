@@ -18,9 +18,10 @@ import {
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
 import otpImage from "../../assets/images/otp.png";
-import * as Appwrite from "react-native-appwrite";
-import appwriteConfig from "../../src/appwrite/AppwriteConfig";
+import * as Appwrite from "../../src/appwrite/AppwriteConfig";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { CommonActions } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
 
 type VerifyOtpScreenRouteParams = {
   userId: string;
@@ -33,11 +34,6 @@ type VerifyOtpScreenProps = NativeStackScreenProps<any, "VerifyOtpScreen"> & {
   };
 };
 
-const client = new Appwrite.Client();
-client
-  .setEndpoint(appwriteConfig.config.endpoint)
-  .setProject(appwriteConfig.config.project);
-const account = new Appwrite.Account(client);
 const CELL_COUNT = 6;
 
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
@@ -50,11 +46,34 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
 
   const handleVerify = async () => {
     try {
-      await account.createSession(userId, code);
-      navigation.navigate("NewUserScreen", {
-        userId: userId,
-        phoneNumber: phoneNumber,
-      });
+      await Appwrite.account.createSession(userId, code);
+
+      try {
+        await Appwrite.databases.getDocument(
+          process.env.EXPO_PUBLIC_DATABASE_ID!,
+          process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+          userId
+        );
+        await SecureStore.setItemAsync("isSigned", "true");
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "HomeScreen" }],
+          })
+        );
+      } catch (error) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: "CreateProfileScreen",
+                params: { userId: userId, phoneNumber: phoneNumber },
+              },
+            ],
+          })
+        );
+      }
     } catch (error) {
       console.error("Failed to verify OTP:", error);
     }

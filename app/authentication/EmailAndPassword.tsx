@@ -13,16 +13,10 @@ import {
 } from "react-native";
 import MaskInput from "react-native-mask-input";
 import phoneImage from "../../assets/images/phone.png";
-import * as Appwrite from "react-native-appwrite";
-import appwriteConfig from "../../src/appwrite/AppwriteConfig";
+import * as Appwrite from "../../src/appwrite/AppwriteConfig";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type EmailAndPasswordProps = NativeStackScreenProps<any, "EmailAndPassword">;
-const client = new Appwrite.Client();
-client
-  .setEndpoint(appwriteConfig.config.endpoint)
-  .setProject(appwriteConfig.config.project);
-const account = new Appwrite.Account(client);
 
 const EmailAndPassword: React.FC<EmailAndPasswordProps> = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -35,13 +29,13 @@ const EmailAndPassword: React.FC<EmailAndPasswordProps> = ({ navigation }) => {
 
   const handleNext = async () => {
     try {
-      const token = account.createEmailPasswordSession(email, password);
+      const token = Appwrite.account.createEmailPasswordSession(
+        email,
+        password
+      );
       setLoading(false);
       token.then(function (response) {
-        navigation.navigate("NewUserScreen", {
-          userId: "66ceafe3002c3d46c2d7",
-          phoneNumber: "+911000010000",
-        });
+        navigation.navigate("HomeScreen");
       });
     } catch (error) {
       setLoading(false);

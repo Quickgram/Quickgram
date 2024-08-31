@@ -193,6 +193,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation("io.appwrite:sdk-for-android:5.1.1")
 }
 
 if (rnVersion < versionToNumber(0, 75, 0)) {

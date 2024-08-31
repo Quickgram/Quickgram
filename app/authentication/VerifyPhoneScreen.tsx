@@ -1,8 +1,7 @@
 import Colors from "@/src/styles/Colors";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import * as Appwrite from "react-native-appwrite";
-import appwriteConfig from "../../src/appwrite/AppwriteConfig";
+import * as Appwrite from "../../src/appwrite/AppwriteConfig";
 import {
   View,
   Text,
@@ -19,12 +18,6 @@ import phoneImage from "../../assets/images/phone.png";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type VerifyPhoneScreenProps = NativeStackScreenProps<any, "VerifyPhoneScreen">;
-const client = new Appwrite.Client();
-client
-  .setEndpoint(appwriteConfig.config.endpoint)
-  .setProject(appwriteConfig.config.project);
-const account = new Appwrite.Account(client);
-
 const IN_PHONE = [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
 
 const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
@@ -47,7 +40,7 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
     setLoading(true);
     if (phoneNumber.length === 10) {
       try {
-        const token = await account.createPhoneToken(
+        const token = await Appwrite.account.createPhoneToken(
           Appwrite.ID.unique(),
           `+91${phoneNumber}`
         );
@@ -102,7 +95,7 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
         </Text>
 
         <TouchableOpacity style={styles.emailButton} onPress={handleEmailNext}>
-          <Text style={styles.emailButtonText}>Continue with Email</Text>
+          <Text style={styles.emailButtonText}>Login with Email</Text>
         </TouchableOpacity>
 
         <View style={{ flex: 1 }} />

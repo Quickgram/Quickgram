@@ -50,3 +50,10 @@ build/
 
 expo-env.d.ts
 # @end expo-cli
+
+# Android and iOS folders
+android/
+ios/
+
+# Git Ignore
+.gitignore

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as Appwrite from "react-native-appwrite";
 import appwriteConfig from "../src/appwrite/AppwriteConfig";
 import {
@@ -22,6 +22,13 @@ client
 const account = new Appwrite.Account(client);
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
+  useEffect(() => {
+    const deleteSession = async () => {
+      await account.deleteSession("current");
+    };
+    deleteSession();
+  }, []);
+
   const openPrivacyPolicy = () => {
     Linking.openURL("https://quickgram.in");
   };
@@ -30,21 +37,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   };
 
   const handleAgreeAndContinue = async () => {
-    try {
-      // Get all sessions for the user
-      const sessions = await account.listSessions();
-
-      // Delete each session
-      for (const session of sessions.sessions) {
-        await account.deleteSession(session.$id);
-      }
-    } catch (error) {
-      console.error("Failed to clear sessions:", error);
-      // Handle error if necessary
-    } finally {
-      // Navigate to the next screen
-      navigation.navigate("VerifyPhoneScreen");
-    }
+    navigation.navigate("VerifyPhoneScreen");
   };
 
   return (
