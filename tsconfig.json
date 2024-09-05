@@ -2,16 +2,27 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "app/welcome/WelcomeScreen.tsx",
+    "app/_layout.tsx",
+    "app/App.js",
+    "src/services/apiServices.ts",
+    "src/styles/colors.ts",
+    "src/appwrite/appwrite-config.ts",
+    "src/styles/fonts.ts",
+    "components/common/Snackbar.tsx",
+    "components/common/TextInputBox.tsx",
+    "components/bottomTabBar/BottomTabBar.tsx",
+    "App.js"
   ]
 }
