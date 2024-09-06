@@ -3,7 +3,7 @@
   "main": "index.js",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@morrowdigital/watermelondb-expo-plugin": "^2.3.3",
+    "@nozbe/watermelondb": "^0.27.1",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
@@ -46,7 +48,8 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-vector-icons": "^10.1.0",
     "react-native-web": "~0.19.10",
-    "expo-sqlite": "~14.0.6"
+    "yarn": "^1.22.22",
+    "expo-dev-client": "~4.0.26"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

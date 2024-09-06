@@ -2,8 +2,9 @@ import * as Appwrite from "../appwrite/appwrite-config";
 import * as SecureStore from "expo-secure-store";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firebaseStorage } from "../firebase/firebase-config";
-import { User } from "../../types/user";
+import User from "../model/User";
 import { Models } from "../appwrite/appwrite-config";
+import { filterUserData } from "../helper/filterUserData";
 
 export const apiServices = {
   createPhoneToken: async (userId: string, phoneNumber: string) => {
@@ -18,23 +19,23 @@ export const apiServices = {
     return await Appwrite.account.createEmailPasswordSession(email, password);
   },
 
-  getUserDocumentByID: async (userId: string): Promise<User> => {
+  getUserDocumentByID: async (userId: string): Promise<Partial<User>> => {
     const document = (await Appwrite.databases.getDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId
     )) as Models.Document;
-    return document as unknown as User;
+    return filterUserData(document);
   },
 
-  getCurrentUserDocument: async (): Promise<User> => {
+  getCurrentUserDocument: async (): Promise<Partial<User>> => {
     const currentUser = await Appwrite.account.get();
     const document = (await Appwrite.databases.getDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       currentUser.$id
     )) as Models.Document;
-    return document as unknown as User;
+    return filterUserData(document);
   },
 
   updateUserOnline: async (userId: string): Promise<User> => {
@@ -106,7 +107,10 @@ export const apiServices = {
     return await getDownloadURL(storageRef);
   },
 
-  subscribeToUserChanges: (userId: string, callback: (user: User) => void) => {
+  subscribeToUserDataChanges: (
+    userId: string,
+    callback: (user: User) => void
+  ) => {
     const unsubscribe = Appwrite.client.subscribe(
       `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_USERS_COLLECTION_ID}.documents.${userId}`,
       (response) => {

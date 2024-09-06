@@ -4,6 +4,7 @@
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
     "paths": {
       "@/*": ["./*"]
     }
@@ -25,5 +26,5 @@
     "components/bottomTabBar/BottomTabBar.tsx",
     "App.js",
     "src/services/sqliteService.js"
-  ]
+, "src/db/localdb.ts"  ]
 }

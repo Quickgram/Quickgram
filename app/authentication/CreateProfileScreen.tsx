@@ -23,7 +23,7 @@ import { showSnackbar } from "../../components/common/Snackbar";
 import TextInputBox from "../../components/common/TextInputBox";
 import { apiServices } from "../../src/services/apiServices";
 import { RootStackParamList } from "../../types/navigation";
-import { User } from "../../types/user";
+import User from "../../src/model/User";
 
 type CreateProfileScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -100,18 +100,18 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
 
     try {
       const newUser: Partial<User> = {
+        uid: userId,
         name: name,
         about:
           about ||
           "Simplify your chats with Quickgram - The easiest way to connect and chat with friends.",
-        phoneNumber: phoneNumber,
-        uid: userId,
+        phone_number: phoneNumber,
         createdAt: Date.now().toString(),
-        isOnline: true,
-        isVerified: false,
-        lastActive: Date.now().toString(),
-        profilePicture: profilePictureUrl || defaultProfilePicture,
+        is_online: true,
+        is_verified: false,
+        lastSeenAt: Date.now().toString(),
         username: username,
+        profile_picture_url: profilePictureUrl || defaultProfilePicture,
       };
 
       await apiServices.createNewUser(userId, newUser);
