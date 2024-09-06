@@ -23,6 +23,7 @@
     "components/common/Snackbar.tsx",
     "components/common/TextInputBox.tsx",
     "components/bottomTabBar/BottomTabBar.tsx",
-    "App.js"
+    "App.js",
+    "src/services/sqliteService.js"
   ]
 }

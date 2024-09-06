@@ -16,6 +16,7 @@ import * as Appwrite from "./src/appwrite/appwrite-config";
 import BottomTabBar from "./components/bottomTabBar/BottomTabBar";
 import { SnackbarProvider } from "./components/common/Snackbar";
 import { apiServices } from "./src/services/apiServices";
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 

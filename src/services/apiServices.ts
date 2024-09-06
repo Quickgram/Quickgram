@@ -2,6 +2,8 @@ import * as Appwrite from "../appwrite/appwrite-config";
 import * as SecureStore from "expo-secure-store";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firebaseStorage } from "../firebase/firebase-config";
+import { User } from "../../types/user";
+import { Models } from "../appwrite/appwrite-config";
 
 export const apiServices = {
   createPhoneToken: async (userId: string, phoneNumber: string) => {
@@ -16,25 +18,27 @@ export const apiServices = {
     return await Appwrite.account.createEmailPasswordSession(email, password);
   },
 
-  getUserDocumentByID: async (userId: string) => {
-    return await Appwrite.databases.getDocument(
+  getUserDocumentByID: async (userId: string): Promise<User> => {
+    const document = (await Appwrite.databases.getDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId
-    );
+    )) as Models.Document;
+    return document as unknown as User;
   },
 
-  getCurrentUserDocument: async () => {
+  getCurrentUserDocument: async (): Promise<User> => {
     const currentUser = await Appwrite.account.get();
-    return await Appwrite.databases.getDocument(
+    const document = (await Appwrite.databases.getDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       currentUser.$id
-    );
+    )) as Models.Document;
+    return document as unknown as User;
   },
 
-  updateUserOnline: async (userId: string) => {
-    return await Appwrite.databases.updateDocument(
+  updateUserOnline: async (userId: string): Promise<User> => {
+    const document = (await Appwrite.databases.updateDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
@@ -42,7 +46,8 @@ export const apiServices = {
         isOnline: true,
         lastActive: Date.now().toString(),
       }
-    );
+    )) as Models.Document;
+    return document as unknown as User;
   },
 
   setSignedStatus: async (value: string) => {
@@ -74,13 +79,17 @@ export const apiServices = {
     }
   },
 
-  createNewUser: async (userId: string, userData: any) => {
-    return await Appwrite.databases.createDocument(
+  createNewUser: async (
+    userId: string,
+    userData: Partial<User>
+  ): Promise<User> => {
+    const document = (await Appwrite.databases.createDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
       userData
-    );
+    )) as Models.Document;
+    return document as unknown as User;
   },
 
   updateAccountName: async (name: string) => {
@@ -95,5 +104,22 @@ export const apiServices = {
 
     await uploadBytes(storageRef, blob);
     return await getDownloadURL(storageRef);
+  },
+
+  subscribeToUserChanges: (userId: string, callback: (user: User) => void) => {
+    const unsubscribe = Appwrite.client.subscribe(
+      `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_USERS_COLLECTION_ID}.documents.${userId}`,
+      (response) => {
+        if (
+          response.events.includes(
+            "databases.*.collections.*.documents.*.update"
+          )
+        ) {
+          callback(response.payload as unknown as User);
+        }
+      }
+    );
+
+    return unsubscribe;
   },
 };

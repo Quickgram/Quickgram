@@ -23,6 +23,7 @@ import { showSnackbar } from "../../components/common/Snackbar";
 import TextInputBox from "../../components/common/TextInputBox";
 import { apiServices } from "../../src/services/apiServices";
 import { RootStackParamList } from "../../types/navigation";
+import { User } from "../../types/user";
 
 type CreateProfileScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -98,7 +99,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
     }
 
     try {
-      await apiServices.createNewUser(userId, {
+      const newUser: Partial<User> = {
         name: name,
         about:
           about ||
@@ -111,7 +112,9 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
         lastActive: Date.now().toString(),
         profilePicture: profilePictureUrl || defaultProfilePicture,
         username: username,
-      });
+      };
+
+      await apiServices.createNewUser(userId, newUser);
       await apiServices.updateAccountName(name);
       await apiServices.setSignedStatus("true");
       await apiServices.setDataToSecureStore("currentUserId", userId);
