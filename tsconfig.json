@@ -4,6 +4,7 @@
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
     "paths": {
       "@/*": ["./*"]
     }
@@ -11,6 +12,10 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "app/welcome/WelcomeScreen.tsx",
@@ -18,11 +23,13 @@
     "app/App.js",
     "src/services/apiServices.ts",
     "src/styles/colors.ts",
-    "src/appwrite/appwrite-config.ts",
+    "src/config/appwrite.ts",
     "src/styles/fonts.ts",
-    "components/common/Snackbar.tsx",
-    "components/common/TextInputBox.tsx",
-    "components/bottomTabBar/BottomTabBar.tsx",
-    "App.js"
+    "src/components/common/Snackbar.tsx",
+    "src/components/common/TextInputBox.tsx",
+    "src/navigation/components/BottomTabBar.tsx",
+    "App.tsx",
+    "src/services/sqliteService.js",
+    "src/db/localdb.ts"
   ]
 }
