@@ -23,6 +23,7 @@ import { apiServices } from "../../services/api/apiServices";
 import { AppStackParamList } from "../../types/navigation";
 import User from "../../models/user";
 import { useAuth } from "../../contexts/AuthContext";
+import { pickImageForProfile } from "../../utils/filePicker";
 
 type CreateProfileScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -30,7 +31,6 @@ type CreateProfileScreenProps = NativeStackScreenProps<
 >;
 
 const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
-  route,
   navigation,
 }) => {
   const defaultProfileImage = require("../../../assets/images/defualt_user_image.png");
@@ -43,35 +43,22 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
   const defaultProfilePicture =
     "https://firebasestorage.googleapis.com/v0/b/quickgram-gbt-in.appspot.com/o/profile_pictures%2Fdefualt_user_image.png?alt=media&token=d6692ce7-ec63-4ff5-ae0e-ac403105a05d";
 
-  const pickImage = useCallback(async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.8,
-      });
-
-      if (result.canceled) return;
-
-      const localUri = result.assets[0].uri;
-      if (!localUri) {
-        showSnackbar("Failed to pick image. Please try again.");
-        return;
-      }
-
+  const handlePickImage = async () => {
+    const localUri = await pickImageForProfile();
+    if (localUri) {
       setLocalProfilePictureUri(localUri);
 
-      const downloadURL = await apiServices.uploadProfilePicture(
-        userId!,
-        localUri
-      );
-
-      setProfilePictureUrl(downloadURL);
-    } catch (error) {
-      showSnackbar("Failed to set profilePic. Please try again");
+      try {
+        const photoUrl = await apiServices.uploadProfilePicture(
+          userId!,
+          localUri
+        );
+        setProfilePictureUrl(photoUrl);
+      } catch (error) {
+        showSnackbar("Failed to upload profile picture. Please try again");
+      }
     }
-  }, [userId]);
+  };
 
   const handleCreateNewUser = async () => {
     if (name.trim() === "") {
@@ -147,7 +134,10 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             style={styles.profilePic}
             resizeMode="contain"
           />
-          <TouchableOpacity style={styles.addImageButton} onPress={pickImage}>
+          <TouchableOpacity
+            style={styles.addImageButton}
+            onPress={handlePickImage}
+          >
             <Ionicons
               name="add-circle"
               size={wp("7.5%")}

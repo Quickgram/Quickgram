@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -10,6 +10,8 @@ import {
 } from "react-native-responsive-screen";
 import Colors from "@/src/styles/colors";
 import { useAuth } from "../../contexts/AuthContext";
+import { apiServices } from "@/src/services/api/apiServices";
+import { localdbServices } from "@/src/services/db/localdbServices";
 
 type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Home">,
@@ -17,7 +19,28 @@ type HomeScreenProps = CompositeScreenProps<
 >;
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
+
+  useEffect(() => {
+    let unsubscribe: (() => void) | null = null;
+
+    if (currentUser?.uid) {
+      unsubscribe = apiServices.subscribeToUserDataChanges(
+        currentUser.uid,
+        async (updatedUser) => {
+          setCurrentUser(updatedUser);
+          await localdbServices.updateUserDataInLocaldb(updatedUser);
+        }
+      );
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [currentUser?.uid, setCurrentUser]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome, {currentUser?.name || "User"}!</Text>

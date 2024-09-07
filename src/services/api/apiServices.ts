@@ -29,11 +29,13 @@ export const apiServices = {
   },
 
   getUserDocumentByEmail: async (email: string): Promise<Partial<User>> => {
-    const document = (await Appwrite.databases.getDocument(
+    const response = await Appwrite.databases.listDocuments(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
-      email
-    )) as Models.Document;
+      [Appwrite.Query.equal("email", email)]
+    );
+
+    const document = response.documents[0] as Models.Document;
     return filterUserData(document);
   },
 
@@ -114,6 +116,21 @@ export const apiServices = {
 
     await uploadBytes(storageRef, blob);
     return await getDownloadURL(storageRef);
+  },
+
+  updateProfilePicture: async (
+    userId: string,
+    photoUrl: string
+  ): Promise<User> => {
+    const document = (await Appwrite.databases.updateDocument(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+      userId,
+      {
+        profile_picture_url: photoUrl,
+      }
+    )) as Models.Document;
+    return document as unknown as User;
   },
 
   subscribeToUserDataChanges: (

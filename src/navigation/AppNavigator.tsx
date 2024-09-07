@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useAuth } from "../contexts/AuthContext";
 import WelcomeScreen from "../screens/welcome/WelcomeScreen";
@@ -14,8 +14,17 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppNavigator = () => {
   const { isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (!isAuthenticated) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2800);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
     return <SplashScreen />;
   }
 

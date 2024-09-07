@@ -11,6 +11,9 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { useAuth } from "../../contexts/AuthContext";
+import { pickImageForProfile } from "@/src/utils/filePicker";
+import { apiServices } from "../../services/api/apiServices";
+import { showSnackbar } from "../../components/common/Snackbar";
 
 type SettingsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Settings">,
@@ -20,8 +23,19 @@ type SettingsScreenProps = CompositeScreenProps<
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const { currentUser } = useAuth();
 
-  const handleChangePhoto = () => {
-    // Implement photo change logic
+  const handleChangePhoto = async () => {
+    const localUri = await pickImageForProfile();
+    if (localUri) {
+      try {
+        const photoUrl = await apiServices.uploadProfilePicture(
+          currentUser!.uid,
+          localUri
+        );
+        await apiServices.updateProfilePicture(currentUser!.uid, photoUrl);
+      } catch (error) {
+        showSnackbar("Failed to upload profile picture. Please try again");
+      }
+    }
   };
 
   const handleGridPress = () => {
@@ -39,6 +53,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           name={currentUser!.name}
           phone={currentUser!.phone_number}
           username={currentUser!.username}
+          profile_picture_url={currentUser!.profile_picture_url}
           onChangePhoto={handleChangePhoto}
           onGridPress={handleGridPress}
           onEditPress={handleEditPress}

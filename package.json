@@ -1,6 +1,6 @@
 {
   "name": "quickgram",
-  "main": "index.js",
+  "main": "index.ts",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",

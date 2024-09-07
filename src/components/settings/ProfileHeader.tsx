@@ -11,6 +11,7 @@ interface ProfileHeaderProps {
   name: string;
   phone: string;
   username: string;
+  profile_picture_url: string;
   onChangePhoto: () => void;
   onGridPress: () => void;
   onEditPress: () => void;
@@ -20,6 +21,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   name,
   phone,
   username,
+  profile_picture_url,
   onChangePhoto,
   onGridPress,
   onEditPress,
@@ -36,7 +38,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       </View>
       <Image
         source={{
-          uri: "https://firebasestorage.googleapis.com/v0/b/quickgram-gbt-in.appspot.com/o/profile_pictures%2Fdefualt_user_image.png?alt=media&token=d6692ce7-ec63-4ff5-ae0e-ac403105a05d",
+          uri: profile_picture_url,
         }}
         style={styles.profilePicture}
       />

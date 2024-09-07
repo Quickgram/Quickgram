@@ -21,6 +21,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   emailLogin: (email: string, password: string) => Promise<void>;
   createAccount: (userData: Partial<User>) => Promise<void>;
+  setCurrentUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -90,17 +91,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const emailLogin = async (email: string, password: string) => {
     try {
-      await apiServices.createEmailPasswordSession(email, password);
       const userData = await apiServices.getUserDocumentByEmail(email);
-      if (userData) {
-        setCurrentUser(userData as User);
-        await localdbServices.createUserDataInLocaldb(userData);
-        await apiServices.updateUserOnline(userData.uid!);
-        await apiServices.setSignedStatus("true");
-        setIsAuthenticated(true);
+      if (userData && Object.keys(userData).length > 0) {
+        try {
+          await apiServices.createEmailPasswordSession(email, password);
+          setCurrentUser(userData as User);
+          await localdbServices.createUserDataInLocaldb(userData);
+          await apiServices.updateUserOnline(userData.uid!);
+          await apiServices.setSignedStatus("true");
+          setIsAuthenticated(true);
+        } catch (error) {
+          showSnackbar("Invalid email or password. Please try again.");
+        }
+      } else {
+        showSnackbar(
+          "No user found with this email. Please check your email or sign up."
+        );
       }
     } catch (error) {
-      showSnackbar("Invalid email or password");
+      showSnackbar("An error occurred during login. Please try again.");
     }
   };
 
@@ -137,6 +146,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         logout,
         emailLogin,
         createAccount,
+        setCurrentUser,
       }}
     >
       {children}
