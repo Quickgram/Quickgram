@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
   ActivityIndicator,
 } from "react-native";
 import MaskInput from "react-native-mask-input";
@@ -22,20 +21,21 @@ import {
 } from "react-native-responsive-screen";
 import { showSnackbar } from "../../components/common/Snackbar";
 import { AppStackParamList } from "../../types/navigation";
+import { useAuth } from "../../contexts/AuthContext";
 
 type VerifyPhoneScreenProps = NativeStackScreenProps<
   AppStackParamList,
-  "VerifyPhoneScreen"
+  "VerifyPhone"
 >;
 
 const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
   navigation,
 }) => {
+  const phoneImage = require("../../../assets/images/phone.png");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { setUserId, setPhoneNumber: setAuthPhoneNumber } = useAuth();
   const IN_PHONE = [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
-  const phoneImage = require("../../assets/images/phone.png");
-
+  const [loading, setLoading] = useState(false);
   const openLink = useCallback(() => {
     Linking.openURL("https://quickgram.in");
   }, []);
@@ -50,29 +50,28 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
     []
   );
 
-  const handleNext = useCallback(async () => {
+  const handleNext = async () => {
     if (phoneNumber.length !== 10 || loading) return;
 
     setLoading(true);
     try {
-      const token = await apiServices.createPhoneToken(
+      const { userId } = await apiServices.createPhoneToken(
         Appwrite.ID.unique(),
         `+91${phoneNumber}`
       );
-      navigation.navigate("VerifyOtpScreen", {
-        userId: token.userId,
-        phoneNumber: `+91${phoneNumber}`,
-      });
+      setUserId(userId);
+      setAuthPhoneNumber(`+91${phoneNumber}`);
+      setLoading(false);
+      navigation.navigate("VerifyOtp");
     } catch (error) {
       showSnackbar("Failed to send OTP. Please try again.");
-    } finally {
       setLoading(false);
     }
-  }, [phoneNumber, loading, navigation]);
+  };
 
-  const handleEmailNext = useCallback(() => {
+  const handleEmailNext = () => {
     navigation.navigate("EmailAndPassword");
-  }, [navigation]);
+  };
 
   const isButtonEnabled = useMemo(
     () => phoneNumber.length === 10,

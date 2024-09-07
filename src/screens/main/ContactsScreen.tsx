@@ -9,17 +9,16 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Colors from "@/src/styles/colors";
-import { Platform } from "react-native";
 
-type MyContactsScreenProps = CompositeScreenProps<
+type ContactsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Contacts">,
   NativeStackScreenProps<AppStackParamList>
 >;
 
-const MyContactsScreen: React.FC<MyContactsScreenProps> = ({ navigation }) => {
+const ContactsScreen: React.FC<ContactsScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text>MyContactsScreen</Text>
+      <Text>ContactsScreen</Text>
     </View>
   );
 };
@@ -35,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyContactsScreen;
+export default ContactsScreen;

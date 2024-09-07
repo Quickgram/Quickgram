@@ -3,7 +3,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Platform,
   Linking,
   Image,
   TouchableWithoutFeedback,
@@ -20,8 +19,8 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Ionicons } from "@expo/vector-icons";
-import { apiServices } from "../../services/api/apiServices";
 import { AppStackParamList } from "../../types/navigation";
+import { useAuth } from "../../contexts/AuthContext";
 
 type EmailAndPasswordProps = NativeStackScreenProps<
   AppStackParamList,
@@ -29,34 +28,29 @@ type EmailAndPasswordProps = NativeStackScreenProps<
 >;
 
 const EmailAndPassword: React.FC<EmailAndPasswordProps> = ({ navigation }) => {
+  const phoneImage = require("../../../assets/images/phone.png");
   const [email, setEmail] = useState("admin@quickgram.in");
   const [password, setPassword] = useState("admin@123");
+  const { emailLogin } = useAuth();
   const [loading, setLoading] = useState(false);
-  const phoneImage = require("../../assets/images/phone.png");
 
   const openLink = useCallback(() => {
     Linking.openURL("https://quickgram.in");
   }, []);
 
-  const handleNext = useCallback(async () => {
+  const handleNext = async () => {
     if (loading || !email || !password) return;
 
     setLoading(true);
-    try {
-      await apiServices.createEmailPasswordSession(email, password);
-      await apiServices.setSignedStatus("true");
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "MainTabs", params: { screen: "Home" } }],
-        })
-      );
-    } catch (error) {
-      // Handle error (e.g., show error message to user)
-    } finally {
-      setLoading(false);
-    }
-  }, [email, password, loading, navigation]);
+    await emailLogin(email, password);
+    setLoading(false);
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "MainTabs", params: { screen: "Home" } }],
+      })
+    );
+  };
 
   const isButtonEnabled = email !== "" && password !== "";
 

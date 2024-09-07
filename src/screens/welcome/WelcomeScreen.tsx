@@ -17,13 +17,10 @@ import * as SecureStore from "expo-secure-store";
 import * as Appwrite from "../../config/appwrite";
 import { AppStackParamList } from "../../types/navigation";
 
-type WelcomeScreenProps = NativeStackScreenProps<
-  AppStackParamList,
-  "WelcomeScreen"
->;
+type WelcomeScreenProps = NativeStackScreenProps<AppStackParamList, "Welcome">;
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
-  const welcome_image = require("../../assets/images/icon.png");
+  const welcome_image = require("../../../assets/images/icon.png");
 
   const openPrivacyPolicy = useCallback(() => {
     Linking.openURL("https://quickgram.in");
@@ -40,7 +37,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
       // [Session might not exist, which is fine]
     } finally {
       await SecureStore.setItemAsync("isSigned", "false");
-      navigation.navigate("VerifyPhoneScreen");
+      navigation.navigate("VerifyPhone");
     }
   }, [navigation]);
 

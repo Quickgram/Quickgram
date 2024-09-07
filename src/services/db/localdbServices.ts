@@ -1,6 +1,6 @@
 import { Q } from "@nozbe/watermelondb";
 import database from "../../config/watermelondb";
-import User from "../../model/user";
+import User from "../../models/user";
 import { filterUserData } from "../../utils/filterUserData";
 import { apiServices } from "../api/apiServices";
 const usersCollection = database.get<User>("users");

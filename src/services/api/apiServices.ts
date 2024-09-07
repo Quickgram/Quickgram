@@ -2,7 +2,7 @@ import * as Appwrite from "../../config/appwrite";
 import * as SecureStore from "expo-secure-store";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firebaseStorage } from "../../config/firebase";
-import User from "../../model/user";
+import User from "../../models/user";
 import { Models } from "../../config/appwrite";
 import { filterUserData } from "../../utils/filterUserData";
 
@@ -24,6 +24,15 @@ export const apiServices = {
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId
+    )) as Models.Document;
+    return filterUserData(document);
+  },
+
+  getUserDocumentByEmail: async (email: string): Promise<Partial<User>> => {
+    const document = (await Appwrite.databases.getDocument(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+      email
     )) as Models.Document;
     return filterUserData(document);
   },

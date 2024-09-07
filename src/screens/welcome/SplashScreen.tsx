@@ -7,7 +7,7 @@ import {
 } from "react-native-responsive-screen";
 
 const SplashScreen = () => {
-  const iconImage = require("../../assets/images/icon.png");
+  const iconImage = require("../../../assets/images/icon.png");
   return (
     <View style={styles.container}>
       <Image source={iconImage} style={styles.icon} resizeMode="contain" />

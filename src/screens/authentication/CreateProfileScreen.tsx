@@ -8,12 +8,10 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
 } from "react-native";
 import { CommonActions } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as ImagePicker from "expo-image-picker";
-import defaultProfileImage from "../../assets/images/defualt_user_image.png";
 import { Ionicons } from "@expo/vector-icons";
 import {
   widthPercentageToDP as wp,
@@ -23,26 +21,25 @@ import { showSnackbar } from "../../components/common/Snackbar";
 import TextInputBox from "../../components/common/TextInputBox";
 import { apiServices } from "../../services/api/apiServices";
 import { AppStackParamList } from "../../types/navigation";
-import User from "../../model/user";
-import { localdbServices } from "../../services/db/localdbServices";
-import database from "../../config/watermelondb";
+import User from "../../models/user";
+import { useAuth } from "../../contexts/AuthContext";
 
 type CreateProfileScreenProps = NativeStackScreenProps<
   AppStackParamList,
-  "CreateProfileScreen"
+  "CreateProfile"
 >;
 
 const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
   route,
   navigation,
 }) => {
-  const { phoneNumber, userId } = route.params;
+  const defaultProfileImage = require("../../../assets/images/defualt_user_image.png");
+  const { createAccount, userId, phoneNumber } = useAuth();
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
   const [username, setUsername] = useState("");
   const [profilePictureUrl, setProfilePictureUrl] = useState("");
   const [localProfilePictureUri, setLocalProfilePictureUri] = useState("");
-  const userCollection = database.get<User>("users");
   const defaultProfilePicture =
     "https://firebasestorage.googleapis.com/v0/b/quickgram-gbt-in.appspot.com/o/profile_pictures%2Fdefualt_user_image.png?alt=media&token=d6692ce7-ec63-4ff5-ae0e-ac403105a05d";
 
@@ -66,7 +63,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
       setLocalProfilePictureUri(localUri);
 
       const downloadURL = await apiServices.uploadProfilePicture(
-        userId,
+        userId!,
         localUri
       );
 
@@ -76,7 +73,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
     }
   }, [userId]);
 
-  const createNewUser = useCallback(async () => {
+  const handleCreateNewUser = async () => {
     if (name.trim() === "") {
       showSnackbar("Please enter a name to create your profile");
       return;
@@ -103,12 +100,12 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
 
     try {
       const newUser: Partial<User> = {
-        uid: userId,
+        uid: userId!,
         name: name,
         about:
           about ||
           "Simplify your chats with Quickgram - The easiest way to connect and chat with friends.",
-        phone_number: phoneNumber,
+        phone_number: phoneNumber!,
         createdAt: Date.now().toString(),
         is_online: true,
         is_verified: false,
@@ -117,11 +114,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
         profile_picture_url: profilePictureUrl || defaultProfilePicture,
       };
 
-      await apiServices.createNewUser(userId, newUser);
-      await localdbServices.createUserDataInLocaldb(newUser);
-      await apiServices.updateAccountName(name);
-      await apiServices.setSignedStatus("true");
-      await apiServices.setDataToSecureStore("currentUserId", userId);
+      await createAccount(newUser);
 
       navigation.dispatch(
         CommonActions.reset({
@@ -134,15 +127,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
         "Oops! Something went wrong while creating your account. Please contact the app developer for support!"
       );
     }
-  }, [
-    name,
-    about,
-    phoneNumber,
-    userId,
-    profilePictureUrl,
-    username,
-    navigation,
-  ]);
+  };
 
   const handleUsernameChange = (text: string) => {
     const sanitizedUsername = text.toLowerCase().replace(/[^a-z0-9.]/g, "");
@@ -226,7 +211,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             name !== "" && styles.enabled,
             { marginBottom: hp("5%"), marginTop: hp("7.5%") },
           ]}
-          onPress={createNewUser}
+          onPress={handleCreateNewUser}
         >
           <Text style={[styles.buttonText, name !== "" && styles.enabled]}>
             Next

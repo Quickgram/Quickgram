@@ -16,7 +16,6 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
-import otpImage from "../../assets/images/otp.png";
 import { apiServices } from "../../services/api/apiServices";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { CommonActions } from "@react-navigation/native";
@@ -27,59 +26,47 @@ import {
 } from "react-native-responsive-screen";
 import { showSnackbar } from "../../components/common/Snackbar";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useAuth } from "../../contexts/AuthContext";
 
 type VerifyOtpScreenProps = NativeStackScreenProps<
   AppStackParamList,
-  "VerifyOtpScreen"
+  "VerifyOtp"
 >;
 
 const CELL_COUNT = 6;
 const RESEND_COOLDOWN = 30;
 
-const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
-  route,
-  navigation,
-}) => {
-  const { userId, phoneNumber } = route.params;
+const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
+  const otpImage = require("../../../assets/images/otp.png");
   const [code, setCode] = useState("");
+  const { login, userId, phoneNumber } = useAuth();
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
 
-  const handleVerify = useCallback(async () => {
+  const handleVerify = async () => {
+    await login(code);
     try {
-      await apiServices.createSession(userId, code);
+      await apiServices.getUserDocumentByID(userId!);
 
-      try {
-        await apiServices.getUserDocumentByID(userId);
-
-        await Promise.all([
-          apiServices.updateUserOnline(userId),
-          apiServices.setSignedStatus("true"),
-        ]);
-
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: "MainTabs", params: { screen: "Home" } }],
-          })
-        );
-      } catch (error) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [
-              {
-                name: "CreateProfileScreen",
-                params: { userId: userId, phoneNumber: phoneNumber },
-              },
-            ],
-          })
-        );
-      }
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "MainTabs", params: { screen: "Home" } }],
+        })
+      );
     } catch (error) {
-      showSnackbar("Incorrect OTP. Please try again.");
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            {
+              name: "CreateProfile",
+            },
+          ],
+        })
+      );
     }
-  }, [userId, phoneNumber, code, navigation]);
+  };
 
   useEffect(() => {
     if (code.length === CELL_COUNT) {
@@ -110,12 +97,11 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
   const handleResendCode = useCallback(async () => {
     if (canResend) {
       try {
-        await apiServices.createPhoneToken(userId, phoneNumber);
+        await apiServices.createPhoneToken(userId!, phoneNumber!);
         setResendTimer(RESEND_COOLDOWN);
         setCanResend(false);
         showSnackbar("OTP resent successfully");
       } catch (error) {
-        console.error("Error resending OTP:", error);
         showSnackbar("Failed to resend OTP. Please try again");
       }
     }

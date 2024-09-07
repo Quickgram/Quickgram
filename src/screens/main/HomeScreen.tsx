@@ -9,7 +9,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Colors from "@/src/styles/colors";
-import { CurrentUserContext } from "@/src/contexts/CurrentUserContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Home">,
@@ -17,21 +17,11 @@ type HomeScreenProps = CompositeScreenProps<
 >;
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const currentUser = useContext(CurrentUserContext);
+  const { currentUser } = useAuth();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Home Screen</Text>
-      {currentUser ? (
-        <>
-          <Text style={styles.userInfo}>Name: {currentUser.name}</Text>
-          <Text style={styles.userInfo}>Username: {currentUser.username}</Text>
-          <Text style={styles.userInfo}>About: {currentUser.about}</Text>
-          <Text style={styles.userInfo}>Phone: {currentUser.phone_number}</Text>
-          <Text style={styles.userInfo}>Email: {currentUser.email}</Text>
-        </>
-      ) : (
-        <Text style={styles.noUser}>No user information available</Text>
-      )}
+      <Text style={styles.title}>Welcome, {currentUser?.name || "User"}!</Text>
+      <Text>This is the Home Screen</Text>
     </View>
   );
 };

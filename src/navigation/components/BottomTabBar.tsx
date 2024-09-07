@@ -82,8 +82,6 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
   return <View style={styles.tabbar}>{tabBarItems}</View>;
 };
 
-export default BottomTabBar;
-
 const styles = StyleSheet.create({
   tabbar: {
     position: "absolute",
@@ -107,3 +105,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default BottomTabBar;

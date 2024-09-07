@@ -8,16 +8,10 @@ export type MainTabParamList = {
 };
 
 export type AppStackParamList = {
-  WelcomeScreen: undefined;
-  VerifyPhoneScreen: undefined;
-  VerifyOtpScreen: {
-    userId: string;
-    phoneNumber: string;
-  };
-  CreateProfileScreen: {
-    userId: string;
-    phoneNumber: string;
-  };
+  Welcome: undefined;
+  VerifyPhone: undefined;
+  VerifyOtp: undefined;
+  CreateProfile: undefined;
   EmailAndPassword: undefined;
   MainTabs: NavigatorScreenParams<MainTabParamList>;
 };

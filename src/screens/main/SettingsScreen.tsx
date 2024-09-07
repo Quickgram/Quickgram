@@ -10,17 +10,15 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { apiServices } from "../../services/api/apiServices";
+import { useAuth } from "../../contexts/AuthContext";
 
-type SettingScreenProps = CompositeScreenProps<
+type SettingsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Settings">,
   NativeStackScreenProps<AppStackParamList>
 >;
 
-const SettingScreen: React.FC<SettingScreenProps> = ({ navigation }) => {
-  const name = "Sandipan SIngh";
-  const phone = "+911234567890";
-  const username = "sandipansm";
+const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
+  const { currentUser } = useAuth();
 
   const handleChangePhoto = () => {
     // Implement photo change logic
@@ -38,9 +36,9 @@ const SettingScreen: React.FC<SettingScreenProps> = ({ navigation }) => {
     <View style={styles.container}>
       <ScrollView>
         <ProfileHeader
-          name={name}
-          phone={phone}
-          username={username}
+          name={currentUser!.name}
+          phone={currentUser!.phone_number}
+          username={currentUser!.username}
           onChangePhoto={handleChangePhoto}
           onGridPress={handleGridPress}
           onEditPress={handleEditPress}
@@ -62,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SettingScreen;
+export default SettingsScreen;
