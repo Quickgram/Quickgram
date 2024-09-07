@@ -1,3 +1,6 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
+import User from "@/src/model/User";
+
 import WelcomeScreen from "./app/welcome/WelcomeScreen";
 import VerifyPhoneScreen from "./app/authentication/VerifyPhoneScreen";
 import VerifyOtpScreen from "./app/authentication/VerifyOtpScreen";

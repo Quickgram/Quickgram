@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -13,35 +13,71 @@ import SettingScreen from "./app/screens/SettingScreen";
 import StatusScreen from "./app/screens/StatusScreen";
 import MyContactsScreen from "./app/screens/MyContactsScreen";
 import * as Appwrite from "./src/appwrite/appwrite-config";
-import BottomTabBar from "./components/bottomTabBar/BottomTabBar";
+import BottomTabBar from "./components/navigation/BottomTabBar";
 import { SnackbarProvider } from "./components/common/Snackbar";
+import { localdbServices } from "./src/services/localdbServices";
 import { apiServices } from "./src/services/apiServices";
+import { CurrentUserContext } from "./src/contexts/CurrentUserContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
   const screenOptions = useMemo(() => ({ headerShown: false }), []);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleUserDataChange = useCallback(async (user) => {
+    setCurrentUser(user);
+    await localdbServices.updateUserDataInLocaldb(user);
+  }, []);
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const user = await localdbServices.getCurrentUserDataFromLocaldb();
+      setCurrentUser(user);
+      setIsLoading(false);
+    };
+
+    fetchCurrentUser();
+
+    const unsubscribe = apiServices.subscribeToUserDataChanges(
+      currentUser?.uid,
+      handleUserDataChange
+    );
+
+    return () => unsubscribe();
+  }, [handleUserDataChange, currentUser?.uid]);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   return (
-    <Tab.Navigator tabBar={(props) => <BottomTabBar {...props} />}>
-      <Tab.Screen name="Home" component={HomeScreen} options={screenOptions} />
-      <Tab.Screen
-        name="Status"
-        component={StatusScreen}
-        options={screenOptions}
-      />
-      <Tab.Screen
-        name="Contacts"
-        component={MyContactsScreen}
-        options={screenOptions}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingScreen}
-        options={screenOptions}
-      />
-    </Tab.Navigator>
+    <CurrentUserContext.Provider value={currentUser}>
+      <Tab.Navigator tabBar={(props) => <BottomTabBar {...props} />}>
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={screenOptions}
+        />
+        <Tab.Screen
+          name="Status"
+          component={StatusScreen}
+          options={screenOptions}
+        />
+        <Tab.Screen
+          name="Contacts"
+          component={MyContactsScreen}
+          options={screenOptions}
+        />
+        <Tab.Screen
+          name="Settings"
+          component={SettingScreen}
+          options={screenOptions}
+        />
+      </Tab.Navigator>
+    </CurrentUserContext.Provider>
   );
 };
 

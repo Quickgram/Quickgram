@@ -6,12 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
-interface BottomTabBarProps {
-  state: any;
-  descriptors: any;
-  navigation: any;
-}
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
 const icons: { [key: string]: keyof typeof Ionicons.glyphMap } = {
   Home: "chatbubbles-outline",

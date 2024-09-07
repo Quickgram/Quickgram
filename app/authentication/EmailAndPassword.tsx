@@ -21,7 +21,7 @@ import {
 } from "react-native-responsive-screen";
 import { Ionicons } from "@expo/vector-icons";
 import { apiServices } from "../../src/services/apiServices";
-import { RootStackParamList } from "../../types/navigation";
+import { RootStackParamList } from "../../src/types/navigation";
 
 type EmailAndPasswordProps = NativeStackScreenProps<
   RootStackParamList,

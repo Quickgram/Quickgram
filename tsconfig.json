@@ -12,6 +12,10 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "app/welcome/WelcomeScreen.tsx",
@@ -23,8 +27,9 @@
     "src/styles/fonts.ts",
     "components/common/Snackbar.tsx",
     "components/common/TextInputBox.tsx",
-    "components/bottomTabBar/BottomTabBar.tsx",
+    "components/navigation/BottomTabBar.tsx",
     "App.js",
-    "src/services/sqliteService.js"
-, "src/db/localdb.ts"  ]
+    "src/services/sqliteService.js",
+    "src/db/localdb.ts"
+  ]
 }

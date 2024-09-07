@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { StyleSheet, View, ScrollView, Platform } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { RootStackParamList, MainTabParamList } from "../../types/navigation";
+import {
+  RootStackParamList,
+  MainTabParamList,
+} from "../../src/types/navigation";
 import Colors from "@/src/styles/colors";
 import ProfileHeader from "../../components/settings/ProfileHeader";
 import {

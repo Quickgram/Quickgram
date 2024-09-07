@@ -20,7 +20,7 @@ import otpImage from "../../assets/images/otp.png";
 import { apiServices } from "../../src/services/apiServices";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { CommonActions } from "@react-navigation/native";
-import { RootStackParamList } from "../../types/navigation";
+import { RootStackParamList } from "../../src/types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,

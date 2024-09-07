@@ -3,7 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { RootStackParamList, MainTabParamList } from "../../types/navigation";
+import {
+  RootStackParamList,
+  MainTabParamList,
+} from "../../src/types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,

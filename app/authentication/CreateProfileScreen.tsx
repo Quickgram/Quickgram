@@ -22,8 +22,10 @@ import {
 import { showSnackbar } from "../../components/common/Snackbar";
 import TextInputBox from "../../components/common/TextInputBox";
 import { apiServices } from "../../src/services/apiServices";
-import { RootStackParamList } from "../../types/navigation";
+import { RootStackParamList } from "../../src/types/navigation";
 import User from "../../src/model/User";
+import { localdbServices } from "../../src/services/localdbServices";
+import database from "../../src/db/localdb";
 
 type CreateProfileScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -40,6 +42,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
   const [username, setUsername] = useState("");
   const [profilePictureUrl, setProfilePictureUrl] = useState("");
   const [localProfilePictureUri, setLocalProfilePictureUri] = useState("");
+  const userCollection = database.get<User>("users");
   const defaultProfilePicture =
     "https://firebasestorage.googleapis.com/v0/b/quickgram-gbt-in.appspot.com/o/profile_pictures%2Fdefualt_user_image.png?alt=media&token=d6692ce7-ec63-4ff5-ae0e-ac403105a05d";
 
@@ -115,6 +118,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
       };
 
       await apiServices.createNewUser(userId, newUser);
+      await localdbServices.createUserDataInLocaldb(newUser);
       await apiServices.updateAccountName(name);
       await apiServices.setSignedStatus("true");
       await apiServices.setDataToSecureStore("currentUserId", userId);

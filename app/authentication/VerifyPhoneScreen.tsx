@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import MaskInput from "react-native-mask-input";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../types/navigation";
+import { RootStackParamList } from "../../src/types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,

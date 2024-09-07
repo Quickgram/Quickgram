@@ -16,7 +16,7 @@ import {
 } from "react-native-responsive-screen";
 import * as SecureStore from "expo-secure-store";
 import * as Appwrite from "../../src/appwrite/appwrite-config";
-import { RootStackParamList } from "../../types/navigation";
+import { RootStackParamList } from "../../src/types/navigation";
 
 type WelcomeScreenProps = NativeStackScreenProps<
   RootStackParamList,
