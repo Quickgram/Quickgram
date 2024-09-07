@@ -17,10 +17,10 @@ import {
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
 import otpImage from "../../assets/images/otp.png";
-import { apiServices } from "../../src/services/apiServices";
+import { apiServices } from "../../services/api/apiServices";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { CommonActions } from "@react-navigation/native";
-import { RootStackParamList } from "../../src/types/navigation";
+import { AppStackParamList } from "../../types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -29,7 +29,7 @@ import { showSnackbar } from "../../components/common/Snackbar";
 import Entypo from "@expo/vector-icons/Entypo";
 
 type VerifyOtpScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  AppStackParamList,
   "VerifyOtpScreen"
 >;
 

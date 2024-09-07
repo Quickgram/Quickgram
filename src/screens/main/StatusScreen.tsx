@@ -3,26 +3,22 @@ import { StyleSheet, Text, View } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import {
-  RootStackParamList,
-  MainTabParamList,
-} from "../../src/types/navigation";
+import { AppStackParamList, MainTabParamList } from "../../types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Colors from "@/src/styles/colors";
-import { Platform } from "react-native";
 
-type MyContactsScreenProps = CompositeScreenProps<
-  BottomTabScreenProps<MainTabParamList, "Contacts">,
-  NativeStackScreenProps<RootStackParamList>
+type StatusScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, "Status">,
+  NativeStackScreenProps<AppStackParamList>
 >;
 
-const MyContactsScreen: React.FC<MyContactsScreenProps> = ({ navigation }) => {
+const StatusScreen: React.FC<StatusScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text>MyContactsScreen</Text>
+      <Text>StatusScreen</Text>
     </View>
   );
 };
@@ -38,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyContactsScreen;
+export default StatusScreen;

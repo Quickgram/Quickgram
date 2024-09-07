@@ -1,16 +1,4 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
-import User from "@/src/model/User";
-
-import WelcomeScreen from "./app/welcome/WelcomeScreen";
-import VerifyPhoneScreen from "./app/authentication/VerifyPhoneScreen";
-import VerifyOtpScreen from "./app/authentication/VerifyOtpScreen";
-import CreateProfileScreen from "./app/authentication/CreateProfileScreen";
-import EmailAndPassword from "./app/authentication/EmailAndPassword";
-import HomeScreen from "./app/screens/HomeScreen";
-import SplashScreen from "./app/welcome/SplashScreen";
-import SettingScreen from "./app/screens/SettingScreen";
-import StatusScreen from "./app/screens/StatusScreen";
-import MyContactsScreen from "./app/screens/MyContactsScreen";
 
 export type MainTabParamList = {
   Home: undefined;
@@ -19,7 +7,7 @@ export type MainTabParamList = {
   Settings: undefined;
 };
 
-export type RootStackParamList = {
+export type AppStackParamList = {
   WelcomeScreen: undefined;
   VerifyPhoneScreen: undefined;
   VerifyOtpScreen: {

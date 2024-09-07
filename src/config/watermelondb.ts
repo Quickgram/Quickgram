@@ -4,7 +4,7 @@ import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite";
 
 import schema from "../model/schema";
 import migrations from "../model/migrations";
-import User from "../model/User";
+import User from "../model/user";
 
 const adapter = new SQLiteAdapter({
   schema,

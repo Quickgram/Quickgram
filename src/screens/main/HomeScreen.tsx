@@ -3,10 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import {
-  RootStackParamList,
-  MainTabParamList,
-} from "../../src/types/navigation";
+import { AppStackParamList, MainTabParamList } from "../../types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -16,7 +13,7 @@ import { CurrentUserContext } from "@/src/contexts/CurrentUserContext";
 
 type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Home">,
-  NativeStackScreenProps<RootStackParamList>
+  NativeStackScreenProps<AppStackParamList>
 >;
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {

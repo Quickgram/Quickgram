@@ -20,11 +20,11 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Ionicons } from "@expo/vector-icons";
-import { apiServices } from "../../src/services/apiServices";
-import { RootStackParamList } from "../../src/types/navigation";
+import { apiServices } from "../../services/api/apiServices";
+import { AppStackParamList } from "../../types/navigation";
 
 type EmailAndPasswordProps = NativeStackScreenProps<
-  RootStackParamList,
+  AppStackParamList,
   "EmailAndPassword"
 >;
 

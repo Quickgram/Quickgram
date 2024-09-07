@@ -1,10 +1,10 @@
-import * as Appwrite from "../appwrite/appwrite-config";
+import * as Appwrite from "../../config/appwrite";
 import * as SecureStore from "expo-secure-store";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { firebaseStorage } from "../firebase/firebase-config";
-import User from "../model/User";
-import { Models } from "../appwrite/appwrite-config";
-import { filterUserData } from "../helper/filterUserData";
+import { firebaseStorage } from "../../config/firebase";
+import User from "../../model/user";
+import { Models } from "../../config/appwrite";
+import { filterUserData } from "../../utils/filterUserData";
 
 export const apiServices = {
   createPhoneToken: async (userId: string, phoneNumber: string) => {

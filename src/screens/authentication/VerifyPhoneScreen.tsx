@@ -1,7 +1,7 @@
 import Colors from "@/src/styles/colors";
 import { useState, useCallback, useMemo } from "react";
-import * as Appwrite from "../../src/appwrite/appwrite-config";
-import { apiServices } from "../../src/services/apiServices";
+import * as Appwrite from "../../config/appwrite";
+import { apiServices } from "../../services/api/apiServices";
 import {
   View,
   Text,
@@ -16,15 +16,15 @@ import {
 } from "react-native";
 import MaskInput from "react-native-mask-input";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../src/types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { showSnackbar } from "../../components/common/Snackbar";
+import { AppStackParamList } from "../../types/navigation";
 
 type VerifyPhoneScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  AppStackParamList,
   "VerifyPhoneScreen"
 >;
 

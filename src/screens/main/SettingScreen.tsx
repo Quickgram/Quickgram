@@ -3,21 +3,18 @@ import { StyleSheet, View, ScrollView } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import {
-  RootStackParamList,
-  MainTabParamList,
-} from "../../src/types/navigation";
+import { AppStackParamList, MainTabParamList } from "../../types/navigation";
 import Colors from "@/src/styles/colors";
 import ProfileHeader from "../../components/settings/ProfileHeader";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { apiServices } from "@/src/services/apiServices";
+import { apiServices } from "../../services/api/apiServices";
 
 type SettingScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Settings">,
-  NativeStackScreenProps<RootStackParamList>
+  NativeStackScreenProps<AppStackParamList>
 >;
 
 const SettingScreen: React.FC<SettingScreenProps> = ({ navigation }) => {

@@ -1,4 +1,4 @@
-import User from "../model/User";
+import User from "../model/user";
 
 export function filterUserData(userData: any): Partial<User> {
   return {

@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import appwriteConfig from "../../src/appwrite/appwrite-config";
 import {
   View,
   Text,
@@ -15,11 +14,11 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import * as SecureStore from "expo-secure-store";
-import * as Appwrite from "../../src/appwrite/appwrite-config";
-import { RootStackParamList } from "../../src/types/navigation";
+import * as Appwrite from "../../config/appwrite";
+import { AppStackParamList } from "../../types/navigation";
 
 type WelcomeScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  AppStackParamList,
   "WelcomeScreen"
 >;
 

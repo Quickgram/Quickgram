@@ -1,8 +1,8 @@
 import { Q } from "@nozbe/watermelondb";
-import database from "../db/localdb";
-import User from "../model/User";
-import { filterUserData } from "../helper/filterUserData";
-import { apiServices } from "./apiServices";
+import database from "../../config/watermelondb";
+import User from "../../model/user";
+import { filterUserData } from "../../utils/filterUserData";
+import { apiServices } from "../api/apiServices";
 const usersCollection = database.get<User>("users");
 
 export const localdbServices = {

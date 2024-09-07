@@ -21,14 +21,14 @@ import {
 } from "react-native-responsive-screen";
 import { showSnackbar } from "../../components/common/Snackbar";
 import TextInputBox from "../../components/common/TextInputBox";
-import { apiServices } from "../../src/services/apiServices";
-import { RootStackParamList } from "../../src/types/navigation";
-import User from "../../src/model/User";
-import { localdbServices } from "../../src/services/localdbServices";
-import database from "../../src/db/localdb";
+import { apiServices } from "../../services/api/apiServices";
+import { AppStackParamList } from "../../types/navigation";
+import User from "../../model/user";
+import { localdbServices } from "../../services/db/localdbServices";
+import database from "../../config/watermelondb";
 
 type CreateProfileScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  AppStackParamList,
   "CreateProfileScreen"
 >;
 
