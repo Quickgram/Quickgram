@@ -40,6 +40,7 @@
     "react-native-appwrite": "^0.5.0",
     "react-native-confirmation-code-field": "^7.4.0",
     "react-native-dotenv": "^3.4.11",
+    "react-native-fast-image": "^8.6.3",
     "react-native-mask-input": "^1.2.3",
     "react-native-reanimated": "~3.10.1",
     "react-native-responsive-screen": "^1.4.2",
@@ -50,7 +51,9 @@
     "react-native-vector-icons": "^10.1.0",
     "react-native-web": "~0.19.10",
     "uuid": "^10.0.0",
-    "yarn": "^1.22.22"
+    "yarn": "^1.22.22",
+    "expo-blur": "~13.0.2",
+    "@shopify/flash-list": "1.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,5 +1,5 @@
 import Colors from "@/src/styles/colors";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import { CommonActions } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -40,6 +41,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
   const [username, setUsername] = useState("");
   const [profilePictureUrl, setProfilePictureUrl] = useState("");
   const [localProfilePictureUri, setLocalProfilePictureUri] = useState("");
+  const [loading, setLoading] = useState(false);
   const defaultProfilePicture =
     "https://firebasestorage.googleapis.com/v0/b/quickgram-gbt-in.appspot.com/o/profile_pictures%2Fdefualt_user_image.png?alt=media&token=d6692ce7-ec63-4ff5-ae0e-ac403105a05d";
 
@@ -86,6 +88,8 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
     }
 
     try {
+      setLoading(true);
+
       const newUser: Partial<User> = {
         uid: userId!,
         name: name,
@@ -102,14 +106,9 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
       };
 
       await createAccount(newUser);
-
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "MainTabs", params: { screen: "Home" } }],
-        })
-      );
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       showSnackbar(
         "Oops! Something went wrong while creating your account. Please contact the app developer for support!"
       );
@@ -202,10 +201,15 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             { marginBottom: hp("5%"), marginTop: hp("7.5%") },
           ]}
           onPress={handleCreateNewUser}
+          disabled={loading}
         >
-          <Text style={[styles.buttonText, name !== "" && styles.enabled]}>
-            Next
-          </Text>
+          {loading ? (
+            <ActivityIndicator color={Colors.background} />
+          ) : (
+            <Text style={[styles.buttonText, name !== "" && styles.enabled]}>
+              Next
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>

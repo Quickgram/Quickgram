@@ -1,5 +1,5 @@
 import Colors from "@/src/styles/colors";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
+  ActivityIndicator,
 } from "react-native";
 import {
   CodeField,
@@ -18,7 +18,6 @@ import {
 } from "react-native-confirmation-code-field";
 import { apiServices } from "../../services/api/apiServices";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { CommonActions } from "@react-navigation/native";
 import { AppStackParamList } from "../../types/navigation";
 import {
   widthPercentageToDP as wp,
@@ -39,42 +38,23 @@ const RESEND_COOLDOWN = 30;
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const otpImage = require("../../../assets/images/otp.png");
   const [code, setCode] = useState("");
-  const { login, userId, phoneNumber } = useAuth();
+  const { login, userId, phoneNumber, isNewUser } = useAuth();
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleVerify = async () => {
-    await login(code);
     try {
-      await apiServices.getUserDocumentByID(userId!);
-
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "MainTabs", params: { screen: "Home" } }],
-        })
-      );
+      setLoading(true);
+      await login(code);
+      setLoading(false);
+      if (isNewUser) {
+        navigation.navigate("CreateProfile");
+      }
     } catch (error) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            {
-              name: "CreateProfile",
-            },
-          ],
-        })
-      );
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (code.length === CELL_COUNT) {
-      handleVerify().catch((error) =>
-        console.error("Error verifying OTP:", error)
-      );
-    }
-  }, [code, handleVerify]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -89,10 +69,13 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   }, [resendTimer]);
 
   const ref = useBlurOnFulfill({ value: code, cellCount: CELL_COUNT });
+
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value: code,
     setValue: setCode,
   });
+
+  const isButtonEnabled = useMemo(() => code.length === CELL_COUNT, [code]);
 
   const handleResendCode = useCallback(async () => {
     if (canResend) {
@@ -137,8 +120,11 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           )}
         />
         {canResend ? (
-          <TouchableOpacity style={styles.button} onPress={handleResendCode}>
-            <Text style={styles.buttonText}>
+          <TouchableOpacity
+            style={styles.resendButton}
+            onPress={handleResendCode}
+          >
+            <Text style={styles.resendButtonText}>
               Didn't receive a verification code?
             </Text>
           </TouchableOpacity>
@@ -148,6 +134,26 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
             <Text style={styles.timerText}>Resend code in {resendTimer}s</Text>
           </View>
         )}
+        <View style={{ flex: 1 }} />
+        <TouchableOpacity
+          style={[
+            styles.button,
+            isButtonEnabled && styles.enabled,
+            { marginBottom: 20, marginTop: 30 },
+          ]}
+          onPress={handleVerify}
+          disabled={!isButtonEnabled || loading}
+        >
+          {loading ? (
+            <ActivityIndicator color={Colors.background} />
+          ) : (
+            <Text
+              style={[styles.buttonText, isButtonEnabled && styles.enabled]}
+            >
+              Verify
+            </Text>
+          )}
+        </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -167,11 +173,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#000",
   },
-  button: {
+  resendButton: {
     width: "100%",
     alignItems: "center",
   },
-  buttonText: {
+  resendButtonText: {
     color: Colors.primary,
     fontSize: wp("4.5%"),
   },
@@ -215,6 +221,22 @@ const styles = StyleSheet.create({
     paddingBottom: hp("0.5%"),
     borderBottomColor: "#000",
     borderBottomWidth: 2,
+  },
+  button: {
+    width: "100%",
+    alignItems: "center",
+    backgroundColor: Colors.lightGray,
+    padding: wp("2.5%"),
+    borderRadius: wp("2.5%"),
+  },
+  enabled: {
+    backgroundColor: Colors.primary,
+    color: "#fff",
+  },
+  buttonText: {
+    color: Colors.gray,
+    fontSize: wp("5.5%"),
+    fontWeight: "500",
   },
 });
 

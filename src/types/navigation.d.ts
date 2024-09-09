@@ -13,5 +13,7 @@ export type AppStackParamList = {
   VerifyOtp: undefined;
   CreateProfile: undefined;
   EmailAndPassword: undefined;
+  Devices: undefined;
+  MyProfile: undefined;
   MainTabs: NavigatorScreenParams<MainTabParamList>;
 };

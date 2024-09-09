@@ -6,7 +6,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
+import FastImage from "react-native-fast-image";
+import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 interface ProfileHeaderProps {
   name: string;
   phone: string;
@@ -15,6 +16,7 @@ interface ProfileHeaderProps {
   onChangePhoto: () => void;
   onGridPress: () => void;
   onEditPress: () => void;
+  onCancelPress: () => void;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -25,25 +27,34 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onChangePhoto,
   onGridPress,
   onEditPress,
+  onCancelPress,
 }) => {
+  const { isProfileEditing } = useGlobalState();
   return (
     <View style={styles.container}>
       <View style={styles.headerButton}>
         <TouchableOpacity onPress={onGridPress}>
           <Ionicons name="grid-outline" size={24} color={Colors.primary} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onEditPress}>
-          <Ionicons name="create-outline" size={24} color={Colors.primary} />
-        </TouchableOpacity>
+        {isProfileEditing ? (
+          <TouchableOpacity onPress={onCancelPress}>
+            <Text style={{ color: Colors.primary }}>Cancel</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={onEditPress}>
+            <Ionicons name="create-outline" size={24} color={Colors.primary} />
+          </TouchableOpacity>
+        )}
       </View>
-      <Image
+      <FastImage
+        style={styles.profilePicture}
         source={{
           uri: profile_picture_url,
+          cache: FastImage.cacheControl.immutable,
         }}
-        style={styles.profilePicture}
       />
       <Text style={styles.profileName}>{name}</Text>
-      <Text style={styles.profileInfo}>{`${phone} • ${username}`}</Text>
+      <Text style={styles.profileInfo}>{`${phone} • @${username}`}</Text>
       <TouchableOpacity
         style={styles.changePhotoButton}
         onPress={onChangePhoto}
@@ -70,7 +81,9 @@ const styles = StyleSheet.create({
   profilePicture: {
     width: wp("25%"),
     height: wp("25%"),
-    borderRadius: wp("12.5%"),
+    borderRadius: wp("15%"),
+    borderWidth: 2,
+    borderColor: Colors.primary,
   },
   profileName: {
     fontSize: wp("5%"),

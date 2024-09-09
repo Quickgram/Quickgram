@@ -4,7 +4,7 @@ import HomeScreen from "../screens/main/HomeScreen";
 import StatusScreen from "../screens/main/StatusScreen";
 import ContactsScreen from "../screens/main/ContactsScreen";
 import SettingsScreen from "../screens/main/SettingsScreen";
-import BottomTabBar from "./components/BottomTabBar";
+import BottomTabBar from "../components/navigation/BottomTabBar";
 import { MainTabParamList } from "../types/navigation";
 
 const Tab = createBottomTabNavigator<MainTabParamList>();

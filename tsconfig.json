@@ -27,7 +27,7 @@
     "src/styles/fonts.ts",
     "src/components/common/Snackbar.tsx",
     "src/components/common/TextInputBox.tsx",
-    "src/navigation/components/BottomTabBar.tsx",
+    "src/components/navigation/BottomTabBar.tsx",
     "App.tsx",
     "src/services/sqliteService.js",
     "src/db/localdb.ts"

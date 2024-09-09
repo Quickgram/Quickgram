@@ -15,38 +15,97 @@ export const apiServices = {
     return await Appwrite.account.createSession(userId, code);
   },
 
+  getAllActiveSessions: async () => {
+    const sessions = await Appwrite.account.listSessions();
+    return sessions.sessions;
+  },
+
+  terminateAllActiveSessions: async () => {
+    return await Appwrite.account.deleteSessions();
+  },
+
+  terminateSession: async (sessionId: string) => {
+    return await Appwrite.account.deleteSession(sessionId);
+  },
+
+  terminateCurrentSession: async () => {
+    return await Appwrite.account.deleteSession("current");
+  },
+
+  // terminateAllSessionsExceptCurrent: async () => {
+  //   const currentSessionId = await apiServices.getDataFromSecureStore(
+  //     "currentSessionId"
+  //   );
+  //   return await Appwrite.account.deleteSessions([currentSessionId]);
+  // },
+
   createEmailPasswordSession: async (email: string, password: string) => {
     return await Appwrite.account.createEmailPasswordSession(email, password);
   },
 
-  getUserDocumentByID: async (userId: string): Promise<Partial<User>> => {
-    const document = (await Appwrite.databases.getDocument(
-      process.env.EXPO_PUBLIC_DATABASE_ID!,
-      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
-      userId
-    )) as Models.Document;
-    return filterUserData(document);
+  getUserDocumentByID: async (
+    userId: string
+  ): Promise<Partial<User> | null> => {
+    try {
+      const document = (await Appwrite.databases.getDocument(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+        userId
+      )) as Models.Document;
+      const filteredUserData = filterUserData(document);
+
+      return filteredUserData;
+    } catch (error) {
+      return null;
+    }
   },
 
-  getUserDocumentByEmail: async (email: string): Promise<Partial<User>> => {
-    const response = await Appwrite.databases.listDocuments(
-      process.env.EXPO_PUBLIC_DATABASE_ID!,
-      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
-      [Appwrite.Query.equal("email", email)]
+  getUserDocumentByEmail: async (
+    email: string
+  ): Promise<Partial<User> | null> => {
+    try {
+      const response = await Appwrite.databases.listDocuments(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+        [Appwrite.Query.equal("email", email)]
+      );
+      const document = response.documents[0] as Models.Document;
+      return filterUserData(document);
+    } catch (error) {
+      return null;
+    }
+  },
+
+  checkIfUserExists: async (userId: string): Promise<boolean> => {
+    try {
+      const document = await Appwrite.databases.getDocument(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+        userId
+      );
+      return document !== null;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  getCurrentUserDocument: async (): Promise<Partial<User> | null> => {
+    const currentUserId = await apiServices.getDataFromSecureStore(
+      "currentUserId"
     );
 
-    const document = response.documents[0] as Models.Document;
-    return filterUserData(document);
-  },
+    try {
+      const document = (await Appwrite.databases.getDocument(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+        currentUserId!
+      )) as Models.Document;
 
-  getCurrentUserDocument: async (): Promise<Partial<User>> => {
-    const currentUser = await Appwrite.account.get();
-    const document = (await Appwrite.databases.getDocument(
-      process.env.EXPO_PUBLIC_DATABASE_ID!,
-      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
-      currentUser.$id
-    )) as Models.Document;
-    return filterUserData(document);
+      const filteredUserData = filterUserData(document);
+      return filteredUserData;
+    } catch (error) {
+      return null;
+    }
   },
 
   updateUserOnline: async (userId: string): Promise<User> => {
@@ -55,8 +114,21 @@ export const apiServices = {
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
       {
-        isOnline: true,
-        lastActive: Date.now().toString(),
+        is_online: true,
+        lastSeenAt: Date.now().toString(),
+      }
+    )) as Models.Document;
+    return document as unknown as User;
+  },
+
+  updateUserOffline: async (userId: string): Promise<User> => {
+    const document = (await Appwrite.databases.updateDocument(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+      userId,
+      {
+        is_online: false,
+        lastSeenAt: Date.now().toString(),
       }
     )) as Models.Document;
     return document as unknown as User;

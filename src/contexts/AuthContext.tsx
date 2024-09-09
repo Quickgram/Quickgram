@@ -9,12 +9,17 @@ import { apiServices } from "../services/api/apiServices";
 import User from "../models/user";
 import { localdbServices } from "../services/db/localdbServices";
 import { showSnackbar } from "../components/common/Snackbar";
+import { SessionResponse } from "../types/sessionList";
+import { filterSessionInfo } from "../utils/filterSessionInfo";
+import * as Appwrite from "../config/appwrite";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   currentUser: User | null;
   userId: string | null;
   phoneNumber: string | null;
+  isNewUser: boolean;
+  activeSessionsData: SessionResponse | null;
   setUserId: (id: string) => void;
   setPhoneNumber: (phone: string) => void;
   login: (code: string) => Promise<void>;
@@ -22,6 +27,7 @@ interface AuthContextType {
   emailLogin: (email: string, password: string) => Promise<void>;
   createAccount: (userData: Partial<User>) => Promise<void>;
   setCurrentUser: (user: User | null) => void;
+  setActiveSessionsData: (data: SessionResponse) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,25 +39,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
+  const [isNewUser, setIsNewUser] = useState<boolean>(false);
+  const [activeSessionsData, setActiveSessionsData] = useState<SessionResponse>(
+    {
+      sessions: [],
+      totalSessions: 0,
+    }
+  );
 
   useEffect(() => {
     const checkAuthStatus = async () => {
       const isSigned = await apiServices.getSignedStatus();
       if (isSigned === "true") {
-        const localdbUserData =
-          await localdbServices.getCurrentUserDataFromLocaldb();
-        if (localdbUserData) {
-          setCurrentUser(localdbUserData as User);
-          setIsAuthenticated(true);
-        } else {
-          const apiUserData = await apiServices.getCurrentUserDocument();
-          if (apiUserData) {
-            setCurrentUser(apiUserData as User);
+        try {
+          const sessionsResponse = await apiServices.getAllActiveSessions();
+          const filteredSessionsData = filterSessionInfo(sessionsResponse);
+          setActiveSessionsData(filteredSessionsData);
+
+          const localdbUserData =
+            await localdbServices.getCurrentUserDataFromLocaldb();
+          if (localdbUserData) {
+            setCurrentUser(localdbUserData as User);
             setIsAuthenticated(true);
           } else {
-            setCurrentUser(null);
-            setIsAuthenticated(false);
+            const apiUserData = await apiServices.getCurrentUserDocument();
+            if (apiUserData) {
+              setCurrentUser(apiUserData as User);
+              setIsAuthenticated(true);
+            }
           }
+        } catch (error) {
+          console.log("getting error in checkAuthStatus", error);
+          setIsAuthenticated(false);
+          await localdbServices.deleteAllUsersDataFromLocaldb();
+          await apiServices.setSignedStatus("false");
+          await apiServices.setDataToSecureStore("currentUserId", "");
         }
       }
     };
@@ -59,31 +81,53 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const login = async (code: string) => {
+    if (!userId) {
+      showSnackbar("An unexpected error occurred. Please try again.");
+      return;
+    }
+
     try {
-      if (!userId) {
-        showSnackbar("An unexpected error occurred. Please try again.");
-        return;
-      }
       await apiServices.createSession(userId, code);
+
       const userData = await apiServices.getUserDocumentByID(userId);
       if (userData) {
         setCurrentUser(userData as User);
-        await apiServices.updateUserOnline(userId);
         await apiServices.setSignedStatus("true");
+        await apiServices.setDataToSecureStore("currentUserId", userId);
+        await apiServices.updateUserOnline(userId);
+        const sessionsResponse = await apiServices.getAllActiveSessions();
+        const filteredSessionsData = filterSessionInfo(sessionsResponse);
+        setActiveSessionsData(filteredSessionsData);
         setIsAuthenticated(true);
+        await localdbServices.updateUserDataInLocaldb(userData);
+      } else {
+        setIsNewUser(true);
       }
-    } catch (error) {
-      showSnackbar("Incorrect OTP. Please try again.");
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        error.message.includes(
+          "Rate limit for the current endpoint has been exceeded"
+        )
+      ) {
+        showSnackbar("Too many requests. Please try again after some time.");
+      } else {
+        showSnackbar("Incorrect OTP. Please try again.");
+      }
     }
   };
 
   const logout = async () => {
     try {
+      await apiServices.updateUserOffline(currentUser!.uid!);
       await apiServices.setSignedStatus("false");
+      await apiServices.setDataToSecureStore("currentUserId", "");
+      await localdbServices.deleteAllUsersDataFromLocaldb();
+      await apiServices.terminateCurrentSession();
+      setIsAuthenticated(false);
       setCurrentUser(null);
       setUserId(null);
       setPhoneNumber(null);
-      setIsAuthenticated(false);
     } catch (error) {
       showSnackbar("Logout failed. Please try again.");
     }
@@ -91,25 +135,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const emailLogin = async (email: string, password: string) => {
     try {
-      const userData = await apiServices.getUserDocumentByEmail(email);
-      if (userData && Object.keys(userData).length > 0) {
-        try {
-          await apiServices.createEmailPasswordSession(email, password);
-          setCurrentUser(userData as User);
-          await localdbServices.createUserDataInLocaldb(userData);
-          await apiServices.updateUserOnline(userData.uid!);
-          await apiServices.setSignedStatus("true");
-          setIsAuthenticated(true);
-        } catch (error) {
-          showSnackbar("Invalid email or password. Please try again.");
-        }
+      const response = await apiServices.createEmailPasswordSession(
+        email,
+        password
+      );
+      const userData = await apiServices.getUserDocumentByID(response.userId);
+      if (userData) {
+        setCurrentUser(userData as User);
+        await apiServices.setSignedStatus("true");
+        await apiServices.setDataToSecureStore("currentUserId", userData.uid!);
+        await apiServices.updateUserOnline(userData.uid!);
+        const sessionsResponse = await apiServices.getAllActiveSessions();
+        const filteredSessionsData = filterSessionInfo(sessionsResponse);
+        setActiveSessionsData(filteredSessionsData);
+        setIsAuthenticated(true);
+        await localdbServices.updateUserDataInLocaldb(userData);
+      }
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        error.message.includes(
+          "Rate limit for the current endpoint has been exceeded"
+        )
+      ) {
+        showSnackbar("Too many requests. Please try again after some time.");
       } else {
         showSnackbar(
-          "No user found with this email. Please check your email or sign up."
+          "No user found with this email or invalid email/password. Please check your email or sign up and try again."
         );
       }
-    } catch (error) {
-      showSnackbar("An error occurred during login. Please try again.");
     }
   };
 
@@ -121,11 +175,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       }
       const newUser = await apiServices.createNewUser(userId, userData);
       setCurrentUser(newUser as User);
-      await localdbServices.createUserDataInLocaldb(newUser);
       await apiServices.updateAccountName(newUser.name);
       await apiServices.setDataToSecureStore("currentUserId", userId);
       await apiServices.setSignedStatus("true");
+      const sessionsResponse = await apiServices.getAllActiveSessions();
+      const filteredSessionsData = filterSessionInfo(sessionsResponse);
+      setActiveSessionsData(filteredSessionsData);
       setIsAuthenticated(true);
+      await localdbServices.createUserDataInLocaldb(newUser);
     } catch (error) {
       showSnackbar(
         "Oops! Something went wrong while creating your account. Please try again."
@@ -140,6 +197,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         currentUser,
         userId,
         phoneNumber,
+        isNewUser,
+        activeSessionsData,
         setUserId,
         setPhoneNumber,
         login,
@@ -147,6 +206,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         emailLogin,
         createAccount,
         setCurrentUser,
+        setActiveSessionsData,
       }}
     >
       {children}

@@ -44,12 +44,6 @@ const EmailAndPassword: React.FC<EmailAndPasswordProps> = ({ navigation }) => {
     setLoading(true);
     await emailLogin(email, password);
     setLoading(false);
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "MainTabs", params: { screen: "Home" } }],
-      })
-    );
   };
 
   const isButtonEnabled = email !== "" && password !== "";

@@ -13,9 +13,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import * as SecureStore from "expo-secure-store";
 import * as Appwrite from "../../config/appwrite";
 import { AppStackParamList } from "../../types/navigation";
+import { apiServices } from "@/src/services/api/apiServices";
+import { showSnackbar } from "@/src/components/common/Snackbar";
 
 type WelcomeScreenProps = NativeStackScreenProps<AppStackParamList, "Welcome">;
 
@@ -31,14 +32,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   }, []);
 
   const handleAgreeAndContinue = useCallback(async () => {
-    try {
-      await Appwrite.account.deleteSession("current");
-    } catch (error) {
-      // [Session might not exist, which is fine]
-    } finally {
-      await SecureStore.setItemAsync("isSigned", "false");
-      navigation.navigate("VerifyPhone");
-    }
+    navigation.navigate("VerifyPhone");
   }, [navigation]);
 
   return (
