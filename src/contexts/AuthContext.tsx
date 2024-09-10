@@ -8,10 +8,9 @@ import React, {
 import { apiServices } from "../services/api/apiServices";
 import User from "../models/user";
 import { localdbServices } from "../services/db/localdbServices";
-import { showSnackbar } from "../components/common/Snackbar";
+import { ShowToast } from "../components/common/ShowToast";
 import { SessionResponse } from "../types/sessionList";
 import { filterSessionInfo } from "../utils/filterSessionInfo";
-import * as Appwrite from "../config/appwrite";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -39,7 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
-  const [isNewUser, setIsNewUser] = useState<boolean>(false);
+  const [isNewUser, setIsNewUser] = useState<boolean>(true);
   const [activeSessionsData, setActiveSessionsData] = useState<SessionResponse>(
     {
       sessions: [],
@@ -69,7 +68,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
             }
           }
         } catch (error) {
-          console.log("getting error in checkAuthStatus", error);
           setIsAuthenticated(false);
           await localdbServices.deleteAllUsersDataFromLocaldb();
           await apiServices.setSignedStatus("false");
@@ -82,7 +80,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const login = async (code: string) => {
     if (!userId) {
-      showSnackbar("An unexpected error occurred. Please try again.");
+      ShowToast(
+        "error",
+        "Login Failed",
+        "An unexpected error occurred. Please try again."
+      );
       return;
     }
 
@@ -91,6 +93,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       const userData = await apiServices.getUserDocumentByID(userId);
       if (userData) {
+        setIsNewUser(false);
         setCurrentUser(userData as User);
         await apiServices.setSignedStatus("true");
         await apiServices.setDataToSecureStore("currentUserId", userId);
@@ -100,8 +103,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setActiveSessionsData(filteredSessionsData);
         setIsAuthenticated(true);
         await localdbServices.updateUserDataInLocaldb(userData);
-      } else {
-        setIsNewUser(true);
       }
     } catch (error: unknown) {
       if (
@@ -110,9 +111,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           "Rate limit for the current endpoint has been exceeded"
         )
       ) {
-        showSnackbar("Too many requests. Please try again after some time.");
+        ShowToast(
+          "error",
+          "Login Failed",
+          "Too many requests. Please try again after some time."
+        );
       } else {
-        showSnackbar("Incorrect OTP. Please try again.");
+        ShowToast("error", "Login Failed", "Incorrect OTP. Please try again.");
       }
     }
   };
@@ -129,7 +134,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setUserId(null);
       setPhoneNumber(null);
     } catch (error) {
-      showSnackbar("Logout failed. Please try again.");
+      ShowToast("error", "Logout Failed", "Please try again.");
     }
   };
 
@@ -158,9 +163,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           "Rate limit for the current endpoint has been exceeded"
         )
       ) {
-        showSnackbar("Too many requests. Please try again after some time.");
+        ShowToast(
+          "error",
+          "Login Failed",
+          "Too many requests. Please try again after some time."
+        );
       } else {
-        showSnackbar(
+        ShowToast(
+          "error",
+          "Login Failed",
           "No user found with this email or invalid email/password. Please check your email or sign up and try again."
         );
       }
@@ -170,7 +181,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const createAccount = async (userData: Partial<User>) => {
     try {
       if (!userId) {
-        showSnackbar("An unexpected error occurred. Please try again.");
+        ShowToast(
+          "error",
+          "Account Creation Failed",
+          "An unexpected error occurred. Please try again."
+        );
         return;
       }
       const newUser = await apiServices.createNewUser(userId, userData);
@@ -184,7 +199,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setIsAuthenticated(true);
       await localdbServices.createUserDataInLocaldb(newUser);
     } catch (error) {
-      showSnackbar(
+      ShowToast(
+        "error",
+        "Account Creation Failed",
         "Oops! Something went wrong while creating your account. Please try again."
       );
     }

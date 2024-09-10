@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import RenderDeviceBox from "../../components/settings/RenderDeviceBox";
 import { useAuth } from "../../contexts/AuthContext";
 import { apiServices } from "../../services/api/apiServices";
-import { showSnackbar } from "../../components/common/Snackbar";
+import { ShowToast } from "@/src/components/common/ShowToast";
 import { filterSessionInfo } from "@/src/utils/filterSessionInfo";
 
 type DevicesScreenProps = NativeStackScreenProps<AppStackParamList, "Devices">;
@@ -47,9 +47,15 @@ const DevicesScreen: React.FC<DevicesScreenProps> = () => {
       const newSessionsResponse = await apiServices.getAllActiveSessions();
       const filteredSessionsData = filterSessionInfo(newSessionsResponse);
       setActiveSessionsData(filteredSessionsData);
-      showSnackbar("All other sessions have been terminated successfully.");
+      ShowToast(
+        "success",
+        "Success",
+        "All other sessions have been terminated successfully."
+      );
     } catch (error) {
-      showSnackbar(
+      ShowToast(
+        "error",
+        "Failed",
         "An error occurred while terminating sessions. Please try again."
       );
     }
@@ -57,11 +63,16 @@ const DevicesScreen: React.FC<DevicesScreenProps> = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollContent}>
+      <ScrollView
+        style={styles.scrollContent}
+        contentInsetAdjustmentBehavior="automatic"
+        overScrollMode="always"
+        bounces={true}
+      >
         <Text style={styles.sectionTitle}>THIS DEVICE</Text>
         {currentDevice && <RenderDeviceBox session={currentDevice} />}
         {otherDevices.length > 0 && (
-          <View>
+          <View style={styles.otherDevicesContainer}>
             <TouchableOpacity
               style={styles.terminateButton}
               onPress={handleTerminateAllOtherSessions}
@@ -111,6 +122,10 @@ const styles = StyleSheet.create({
     marginTop: hp("2%"),
     marginBottom: hp("1%"),
   },
+  otherDevicesContainer: {
+    width: "100%",
+    paddingHorizontal: wp("2%"),
+  },
   terminateButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -125,12 +140,12 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
   },
   terminateDescription: {
-    fontSize: wp("3.5%"),
+    fontSize: wp("3.8%"),
     marginTop: hp("1%"),
     marginBottom: hp("2%"),
   },
   appInfo: {
-    fontSize: wp("3.5%"),
+    fontSize: wp("3.6%"),
     marginVertical: hp("1%"),
   },
 });

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Linking,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../types/navigation";
 import {
@@ -42,7 +36,6 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = () => {
         <Text style={styles.infoLabel}>mobile</Text>
         <Text style={styles.infoValue}>{currentUser?.phone_number}</Text>
         <View style={styles.separator} />
-
         {currentUser?.email && (
           <>
             <Text style={styles.infoLabel}>email</Text>
@@ -50,7 +43,6 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = () => {
             <View style={styles.separator} />
           </>
         )}
-
         <Text style={styles.infoLabel}>username</Text>
         <Text style={styles.infoValue}>@{currentUser?.username}</Text>
         <View style={styles.separator} />

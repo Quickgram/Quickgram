@@ -36,6 +36,8 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
             ? options.tabBarLabel
             : options.title !== undefined
             ? options.title
+            : route.name === "Home"
+            ? "Chats"
             : route.name;
 
         if (["_sitemap", "+not-found"].includes(route.name)) return null;

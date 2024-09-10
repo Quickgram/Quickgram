@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import React, { useState, useCallback } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { CommonActions } from "@react-navigation/native";
 import TextInputBox from "../../components/common/TextInputBox";
 import Colors from "@/src/styles/colors";
 import {

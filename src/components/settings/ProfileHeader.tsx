@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/src/styles/colors";
 import {
@@ -8,6 +8,7 @@ import {
 } from "react-native-responsive-screen";
 import FastImage from "react-native-fast-image";
 import { useGlobalState } from "@/src/contexts/GlobalStateContext";
+
 interface ProfileHeaderProps {
   name: string;
   phone: string;
@@ -34,15 +35,25 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     <View style={styles.container}>
       <View style={styles.headerButton}>
         <TouchableOpacity onPress={onGridPress}>
-          <Ionicons name="grid-outline" size={24} color={Colors.primary} />
+          <Ionicons
+            name="grid-outline"
+            size={wp("6%")}
+            color={Colors.primary}
+          />
         </TouchableOpacity>
         {isProfileEditing ? (
           <TouchableOpacity onPress={onCancelPress}>
-            <Text style={{ color: Colors.primary }}>Cancel</Text>
+            <Text style={{ color: Colors.primary, fontSize: wp("4%") }}>
+              Cancel
+            </Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={onEditPress}>
-            <Ionicons name="create-outline" size={24} color={Colors.primary} />
+            <Ionicons
+              name="create-outline"
+              size={wp("6%")}
+              color={Colors.primary}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -59,7 +70,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         style={styles.changePhotoButton}
         onPress={onChangePhoto}
       >
-        <Ionicons name="camera-outline" size={20} color={Colors.primary} />
+        <Ionicons
+          name="camera-outline"
+          size={wp("5%")}
+          color={Colors.primary}
+        />
         <Text style={styles.changePhotoText}>Change Profile Photo</Text>
       </TouchableOpacity>
     </View>

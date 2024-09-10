@@ -205,6 +205,63 @@ export const apiServices = {
     return document as unknown as User;
   },
 
+  updateName: async (userId: string, name: string): Promise<User> => {
+    const document = (await Appwrite.databases.updateDocument(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+      userId,
+      {
+        name: name,
+      }
+    )) as Models.Document;
+    await Appwrite.account.updateName(name);
+    return document as unknown as User;
+  },
+
+  updateUsername: async (userId: string, username: string): Promise<User> => {
+    const document = (await Appwrite.databases.updateDocument(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+      userId,
+      {
+        username: username,
+      }
+    )) as Models.Document;
+    return document as unknown as User;
+  },
+
+  updateAbout: async (userId: string, about: string): Promise<User> => {
+    const document = (await Appwrite.databases.updateDocument(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+      userId,
+      {
+        about: about,
+      }
+    )) as Models.Document;
+    return document as unknown as User;
+  },
+
+  updateNameAndUsernameAndAbout: async (
+    userId: string,
+    name: string,
+    username: string,
+    about: string
+  ): Promise<User> => {
+    const document = (await Appwrite.databases.updateDocument(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+      userId,
+      {
+        name: name,
+        username: username,
+        about: about,
+      }
+    )) as Models.Document;
+    await Appwrite.account.updateName(name);
+    return document as unknown as User;
+  },
+
   subscribeToUserDataChanges: (
     userId: string,
     callback: (user: User) => void

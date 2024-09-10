@@ -13,8 +13,7 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import { pickImageForProfile } from "@/src/utils/filePicker";
 import { apiServices } from "../../services/api/apiServices";
-import { showSnackbar } from "../../components/common/Snackbar";
-import SettingItem, {
+import {
   profile,
   subItems,
   mainItems,
@@ -23,6 +22,7 @@ import SettingItem, {
 } from "../../components/settings/SettingItem";
 import { useGlobalState } from "../../contexts/GlobalStateContext";
 import ProfileEdit from "@/src/components/settings/ProfileEdit";
+import { ShowToast } from "@/src/components/common/ShowToast";
 
 type SettingsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Settings">,
@@ -30,8 +30,9 @@ type SettingsScreenProps = CompositeScreenProps<
 >;
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
-  const { currentUser, logout } = useAuth();
-  const { isProfileEditing, setIsProfileEditing } = useGlobalState();
+  const { currentUser } = useAuth();
+  const { isProfileEditing, setIsProfileEditing, setIsProfileUpdating } =
+    useGlobalState();
 
   const handleChangePhoto = async () => {
     const localUri = await pickImageForProfile();
@@ -43,7 +44,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         );
         await apiServices.updateProfilePicture(currentUser!.uid, photoUrl);
       } catch (error) {
-        showSnackbar("Failed to upload profile picture. Please try again");
+        ShowToast(
+          "error",
+          "Profile Picture Upload Failed",
+          "Failed to upload profile picture. Please try again"
+        );
       }
     }
   };
@@ -58,31 +63,31 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         navigation.navigate("MyProfile");
         break;
       case "Announcements":
-        showSnackbar("Announcements");
+        ShowToast("info", "Announcements", "Announcements");
         break;
       case "Devices":
         navigation.navigate("Devices");
         break;
       case "Account":
-        showSnackbar("Account");
+        ShowToast("error", "Account", "Account");
         break;
       case "Privacy & Security":
-        showSnackbar("Privacy & Security");
+        ShowToast("info", "Privacy & Security", "Privacy & Security");
         break;
       case "Chats":
-        showSnackbar("Chats");
+        ShowToast("info", "Chats", "Chats");
         break;
       case "Notifications":
-        showSnackbar("Notifications");
+        ShowToast("info", "Notifications", "Notifications");
         break;
       case "Storage and Data":
-        showSnackbar("Storage and Data");
+        ShowToast("info", "Storage and Data", "Storage and Data");
         break;
       case "Help":
-        showSnackbar("Help");
+        ShowToast("info", "Help", "Help");
         break;
       case "Tell a Friend":
-        showSnackbar("Tell a Friend");
+        ShowToast("success", "Tell a Friend", "Tell a Friend");
         break;
       default:
         break;
@@ -96,14 +101,61 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const handleUpdatePress = async (updatedProfile: {
     name: string;
     username: string;
+    about: string;
   }) => {
     try {
-      //TODO: Update profile
-      showSnackbar("Updating profile...");
-      console.log(updatedProfile.name);
-      console.log(updatedProfile.username);
+      setIsProfileUpdating(true);
+      if (
+        updatedProfile.name !== currentUser!.name &&
+        updatedProfile.username !== currentUser!.username &&
+        updatedProfile.about !== currentUser!.about
+      ) {
+        const isUsernameAvailable = await apiServices.checkUsernameAvailability(
+          updatedProfile.username
+        );
+        if (!isUsernameAvailable) {
+          ShowToast(
+            "error",
+            "Profile Update Failed",
+            "Username is already taken. Please choose a different one"
+          );
+          return;
+        }
+        await apiServices.updateNameAndUsernameAndAbout(
+          currentUser!.uid,
+          updatedProfile.name,
+          updatedProfile.username,
+          updatedProfile.about
+        );
+      } else if (updatedProfile.name !== currentUser!.name) {
+        await apiServices.updateName(currentUser!.uid, updatedProfile.name);
+      } else if (updatedProfile.username !== currentUser!.username) {
+        const isUsernameAvailable = await apiServices.checkUsernameAvailability(
+          updatedProfile.username
+        );
+        if (!isUsernameAvailable) {
+          ShowToast(
+            "error",
+            "Profile Update Failed",
+            "Username is already taken. Please choose a different one"
+          );
+          return;
+        }
+        await apiServices.updateUsername(
+          currentUser!.uid,
+          updatedProfile.username
+        );
+      } else if (updatedProfile.about !== currentUser!.about) {
+        await apiServices.updateAbout(currentUser!.uid, updatedProfile.about);
+      }
+      setIsProfileUpdating(false);
     } catch (error) {
-      showSnackbar("Failed to update profile. Please try again");
+      setIsProfileUpdating(false);
+      ShowToast(
+        "error",
+        "Profile Update Failed",
+        "Failed to update profile. Please try again"
+      );
     }
   };
 
@@ -112,7 +164,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         contentInsetAdjustmentBehavior="automatic"
-        overScrollMode="never"
+        overScrollMode="always"
+        bounces={true}
       >
         <ProfileHeader
           name={currentUser!.name}
@@ -129,6 +182,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           <ProfileEdit
             name={currentUser!.name}
             username={currentUser!.username}
+            about={currentUser!.about}
             onUpdatePress={handleUpdatePress}
           />
         ) : (
@@ -154,7 +208,7 @@ const styles = StyleSheet.create({
     gap: hp("2%"),
   },
   scrollContent: {
-    paddingBottom: hp("10%"),
+    paddingBottom: hp("18%"),
   },
   itemText: {
     fontSize: wp("4.1%"),
@@ -179,7 +233,7 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: Colors.primary,
-    fontSize: 18,
+    fontSize: wp("4.5%"),
     textAlign: "center",
   },
 });

@@ -18,7 +18,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { showSnackbar } from "../../components/common/Snackbar";
+import { ShowToast } from "../../components/common/ShowToast";
 import TextInputBox from "../../components/common/TextInputBox";
 import { apiServices } from "../../services/api/apiServices";
 import { AppStackParamList } from "../../types/navigation";
@@ -57,19 +57,23 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
         );
         setProfilePictureUrl(photoUrl);
       } catch (error) {
-        showSnackbar("Failed to upload profile picture. Please try again");
+        ShowToast("error", "Profile Picture Upload Failed", "Please try again");
       }
     }
   };
 
   const handleCreateNewUser = async () => {
     if (name.trim() === "") {
-      showSnackbar("Please enter a name to create your profile");
+      ShowToast(
+        "error",
+        "Profile Creation Failed",
+        "Please enter a name to create your profile"
+      );
       return;
     }
 
     if (username.trim() === "") {
-      showSnackbar("Please enter a username");
+      ShowToast("error", "Profile Creation Failed", "Please enter a username");
       return;
     }
 
@@ -78,12 +82,20 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
     );
 
     if (!isUsernameAvailable) {
-      showSnackbar("Username is already taken. Please choose a different one");
+      ShowToast(
+        "error",
+        "Profile Creation Failed",
+        "Username is already taken. Please choose a different one"
+      );
       return;
     }
 
     if (localProfilePictureUri !== "" && profilePictureUrl === "") {
-      showSnackbar("Please wait. Your profile picture is being uploaded");
+      ShowToast(
+        "info",
+        "Profile Picture Uploading",
+        "Please wait. Your profile picture is being uploaded"
+      );
       return;
     }
 
@@ -109,7 +121,9 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      showSnackbar(
+      ShowToast(
+        "error",
+        "Profile Creation Failed",
         "Oops! Something went wrong while creating your account. Please contact the app developer for support!"
       );
     }
@@ -118,6 +132,11 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
   const handleUsernameChange = (text: string) => {
     const sanitizedUsername = text.toLowerCase().replace(/[^a-z0-9.]/g, "");
     setUsername(sanitizedUsername);
+  };
+
+  const handleNameChange = (text: string) => {
+    const sanitizedName = text.replace(/[^a-zA-Z\s]/g, "");
+    setName(sanitizedName);
   };
 
   return (
@@ -156,7 +175,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             <TextInputBox
               value={name}
               placeholder="Name"
-              onChangeText={setName}
+              onChangeText={handleNameChange}
               style={styles.input}
             />
           </View>

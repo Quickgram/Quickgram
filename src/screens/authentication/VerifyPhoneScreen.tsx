@@ -19,7 +19,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { showSnackbar } from "../../components/common/Snackbar";
+import { ShowToast } from "@/src/components/common/ShowToast";
 import { AppStackParamList } from "../../types/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -64,7 +64,7 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
       setLoading(false);
       navigation.navigate("VerifyOtp");
     } catch (error) {
-      showSnackbar("Failed to send OTP. Please try again.");
+      ShowToast("error", "Failed", "Failed to send OTP. Please try again.");
       setLoading(false);
     }
   };
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   emailButton: {
     marginTop: hp("0.5%"),
-    padding: wp("2.5%"),
+    padding: wp("2.2%"),
     backgroundColor: Colors.secondary,
     alignItems: "center",
     borderRadius: wp("1.5%"),

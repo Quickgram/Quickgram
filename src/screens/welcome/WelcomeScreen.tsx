@@ -16,7 +16,6 @@ import {
 import * as Appwrite from "../../config/appwrite";
 import { AppStackParamList } from "../../types/navigation";
 import { apiServices } from "@/src/services/api/apiServices";
-import { showSnackbar } from "@/src/components/common/Snackbar";
 
 type WelcomeScreenProps = NativeStackScreenProps<AppStackParamList, "Welcome">;
 

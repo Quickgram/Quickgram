@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   View,
   TextInput,
@@ -13,41 +13,68 @@ import {
 } from "react-native-responsive-screen";
 import Colors from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { showSnackbar } from "../common/Snackbar";
+import { ShowToast } from "../common/ShowToast";
+import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 
 interface ProfileEditProps {
   name: string;
   username: string;
-  onUpdatePress: (updatedProfile: { name: string; username: string }) => void;
+  about: string;
+  onUpdatePress: (updatedProfile: {
+    name: string;
+    username: string;
+    about: string;
+  }) => void;
 }
 
 const ProfileEdit: React.FC<ProfileEditProps> = ({
   name,
   username,
+  about,
   onUpdatePress,
 }) => {
   const [editedName, setEditedName] = useState(name);
   const [editedUsername, setEditedUsername] = useState(username);
+  const [editedAbout, setEditedAbout] = useState(about);
+  const { isProfileUpdating } = useGlobalState();
+
+  const isButtonEnabled = useMemo(
+    () =>
+      (editedName !== name && editedName.length >= 2) ||
+      (editedUsername !== username && editedUsername.length >= 1) ||
+      (editedAbout !== about && editedAbout.length >= 1),
+    [editedName, editedUsername, editedAbout, name, username, about]
+  );
 
   const handleUpdatePress = () => {
     if (editedName.length < 2) {
-      showSnackbar("Name must be at least 2 characters");
+      ShowToast("error", "Name", "must be at least 2 characters");
       return;
     }
     if (editedUsername.length < 1) {
-      showSnackbar("Username must be at least 1 character");
+      ShowToast("error", "Username", "must be at least 1 character");
+      return;
+    }
+    if (editedAbout.length < 1) {
+      ShowToast("error", "About", "must be at least 1 character");
       return;
     }
 
     onUpdatePress({
       name: editedName,
       username: editedUsername,
+      about: editedAbout,
     });
   };
 
   const handleUsernameChange = (text: string) => {
     const sanitizedUsername = text.toLowerCase().replace(/[^a-z0-9.]/g, "");
     setEditedUsername(sanitizedUsername);
+  };
+
+  const handleNameChange = (text: string) => {
+    const sanitizedName = text.replace(/[^a-zA-Z\s]/g, "");
+    setEditedName(sanitizedName);
   };
 
   return (
@@ -62,8 +89,9 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
         <TextInput
           style={styles.input}
           value={editedName}
-          onChangeText={setEditedName}
+          onChangeText={handleNameChange}
           placeholder="Name"
+          placeholderTextColor={Colors.lightGray}
         />
       </View>
 
@@ -79,11 +107,43 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
           value={editedUsername}
           onChangeText={handleUsernameChange}
           placeholder="Username"
+          placeholderTextColor={Colors.lightGray}
         />
       </View>
 
-      <TouchableOpacity style={styles.updateButton} onPress={handleUpdatePress}>
-        <Text style={styles.updateButtonText}>Update</Text>
+      <View style={styles.inputContainer}>
+        <Ionicons
+          name="information-circle-outline"
+          size={wp("6%")}
+          color={Colors.gray}
+          style={styles.icon}
+        />
+        <TextInput
+          style={styles.input}
+          value={editedAbout}
+          onChangeText={setEditedAbout}
+          placeholder="Username"
+          placeholderTextColor={Colors.lightGray}
+        />
+      </View>
+      <TouchableOpacity
+        style={[
+          styles.updateButton,
+          isButtonEnabled && styles.enabled,
+          { marginBottom: hp("2%"), marginTop: hp("2%") },
+        ]}
+        onPress={handleUpdatePress}
+        disabled={!isButtonEnabled || isProfileUpdating}
+      >
+        {isProfileUpdating ? (
+          <ActivityIndicator color={Colors.background} />
+        ) : (
+          <Text
+            style={[styles.updateButtonText, isButtonEnabled && styles.enabled]}
+          >
+            Update
+          </Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -116,14 +176,18 @@ const styles = StyleSheet.create({
   updateButton: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.lightGray,
     padding: wp("2.5%"),
     borderRadius: wp("2.5%"),
   },
+  enabled: {
+    backgroundColor: Colors.primary,
+    color: "#fff",
+  },
   updateButtonText: {
-    color: Colors.white,
-    fontSize: wp("4%"),
-    fontWeight: "bold",
+    color: Colors.gray,
+    fontSize: wp("5.5%"),
+    fontWeight: "500",
   },
 });
 

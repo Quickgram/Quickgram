@@ -1,5 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
-import { showSnackbar } from "../components/common/Snackbar";
+import { ShowToast } from "@/src/components/common/ShowToast";
 
 export const pickImageForProfile = async (): Promise<string | null> => {
   try {
@@ -14,13 +14,13 @@ export const pickImageForProfile = async (): Promise<string | null> => {
 
     const localUri = result.assets[0].uri;
     if (!localUri) {
-      showSnackbar("Failed to pick image. Please try again.");
+      ShowToast("error", "Failed", "Failed to pick image. Please try again.");
       return null;
     }
 
     return localUri;
   } catch (error) {
-    showSnackbar("Failed to pick image. Please try again");
+    ShowToast("error", "Failed", "Failed to pick image. Please try again.");
     return null;
   }
 };

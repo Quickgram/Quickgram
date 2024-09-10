@@ -23,9 +23,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { showSnackbar } from "../../components/common/Snackbar";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useAuth } from "../../contexts/AuthContext";
+import { ShowToast } from "@/src/components/common/ShowToast";
 
 type VerifyOtpScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -38,7 +38,7 @@ const RESEND_COOLDOWN = 30;
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const otpImage = require("../../../assets/images/otp.png");
   const [code, setCode] = useState("");
-  const { login, userId, phoneNumber, isNewUser } = useAuth();
+  const { login, userId, phoneNumber, isNewUser, isAuthenticated } = useAuth();
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       setLoading(true);
       await login(code);
       setLoading(false);
-      if (isNewUser) {
+      if (isNewUser && !isAuthenticated) {
         navigation.navigate("CreateProfile");
       }
     } catch (error) {
@@ -83,9 +83,9 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
         await apiServices.createPhoneToken(userId!, phoneNumber!);
         setResendTimer(RESEND_COOLDOWN);
         setCanResend(false);
-        showSnackbar("OTP resent successfully");
+        ShowToast("info", "Success", "OTP resent successfully");
       } catch (error) {
-        showSnackbar("Failed to resend OTP. Please try again");
+        ShowToast("error", "Failed", "Failed to resend OTP");
       }
     }
   }, [canResend]);
