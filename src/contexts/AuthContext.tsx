@@ -9,8 +9,7 @@ import { apiServices } from "../services/api/apiServices";
 import User from "../models/user";
 import { localdbServices } from "../services/db/localdbServices";
 import { ShowToast } from "../components/common/ShowToast";
-import { SessionResponse } from "../types/sessionList";
-import { filterSessionInfo } from "../utils/filterSessionInfo";
+import { SessionResponse } from "../types/sessionInfo";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -18,6 +17,7 @@ interface AuthContextType {
   userId: string | null;
   phoneNumber: string | null;
   isNewUser: boolean;
+  isAdmin: boolean;
   activeSessionsData: SessionResponse | null;
   setUserId: (id: string) => void;
   setPhoneNumber: (phone: string) => void;
@@ -39,6 +39,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [userId, setUserId] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [activeSessionsData, setActiveSessionsData] = useState<SessionResponse>(
     {
       sessions: [],
@@ -52,8 +53,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       if (isSigned === "true") {
         try {
           const sessionsResponse = await apiServices.getAllActiveSessions();
-          const filteredSessionsData = filterSessionInfo(sessionsResponse);
-          setActiveSessionsData(filteredSessionsData);
+          setActiveSessionsData(sessionsResponse);
 
           const localdbUserData =
             await localdbServices.getCurrentUserDataFromLocaldb();
@@ -99,8 +99,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         await apiServices.setDataToSecureStore("currentUserId", userId);
         await apiServices.updateUserOnline(userId);
         const sessionsResponse = await apiServices.getAllActiveSessions();
-        const filteredSessionsData = filterSessionInfo(sessionsResponse);
-        setActiveSessionsData(filteredSessionsData);
+        setActiveSessionsData(sessionsResponse);
         setIsAuthenticated(true);
         await localdbServices.updateUserDataInLocaldb(userData);
       }
@@ -151,8 +150,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         await apiServices.setDataToSecureStore("currentUserId", userData.uid!);
         await apiServices.updateUserOnline(userData.uid!);
         const sessionsResponse = await apiServices.getAllActiveSessions();
-        const filteredSessionsData = filterSessionInfo(sessionsResponse);
-        setActiveSessionsData(filteredSessionsData);
+        setActiveSessionsData(sessionsResponse);
         setIsAuthenticated(true);
         await localdbServices.updateUserDataInLocaldb(userData);
       }
@@ -194,8 +192,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       await apiServices.setDataToSecureStore("currentUserId", userId);
       await apiServices.setSignedStatus("true");
       const sessionsResponse = await apiServices.getAllActiveSessions();
-      const filteredSessionsData = filterSessionInfo(sessionsResponse);
-      setActiveSessionsData(filteredSessionsData);
+      setActiveSessionsData(sessionsResponse);
       setIsAuthenticated(true);
       await localdbServices.createUserDataInLocaldb(newUser);
     } catch (error) {
@@ -216,6 +213,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         phoneNumber,
         isNewUser,
         activeSessionsData,
+        isAdmin,
         setUserId,
         setPhoneNumber,
         login,

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../types/navigation";
 import {
@@ -20,36 +20,43 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = () => {
 
   return (
     <View style={styles.container}>
-      <FastImage
-        style={styles.profilePicture}
-        source={{
-          uri: currentUser?.profile_picture_url,
-          cache: FastImage.cacheControl.immutable,
-        }}
-      />
-      <Text style={styles.name}>{currentUser?.name}</Text>
-      <Text style={styles.activeStatus}>
-        {currentUser?.is_online ? "online" : "offline"}
-      </Text>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        contentInsetAdjustmentBehavior="automatic"
+        overScrollMode="always"
+        bounces={true}
+      >
+        <FastImage
+          style={styles.profilePicture}
+          source={{
+            uri: currentUser?.profile_picture_url,
+            cache: FastImage.cacheControl.immutable,
+          }}
+        />
+        <Text style={styles.name}>{currentUser?.name}</Text>
+        <Text style={styles.activeStatus}>
+          {currentUser?.is_online ? "online" : "offline"}
+        </Text>
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoLabel}>mobile</Text>
-        <Text style={styles.infoValue}>{currentUser?.phone_number}</Text>
-        <View style={styles.separator} />
-        {currentUser?.email && (
-          <>
-            <Text style={styles.infoLabel}>email</Text>
-            <Text style={styles.infoValue}>{currentUser?.email}</Text>
-            <View style={styles.separator} />
-          </>
-        )}
-        <Text style={styles.infoLabel}>username</Text>
-        <Text style={styles.infoValue}>@{currentUser?.username}</Text>
-        <View style={styles.separator} />
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoLabel}>Mobile</Text>
+          <Text style={styles.infoValue}>{currentUser?.phone_number}</Text>
+          <View style={styles.separator} />
+          {currentUser?.email && (
+            <>
+              <Text style={styles.infoLabel}>Email</Text>
+              <Text style={styles.infoValue}>{currentUser?.email}</Text>
+              <View style={styles.separator} />
+            </>
+          )}
+          <Text style={styles.infoLabel}>Username</Text>
+          <Text style={styles.infoValue}>@{currentUser?.username}</Text>
+          <View style={styles.separator} />
 
-        <Text style={styles.infoLabel}>About</Text>
-        <Text style={styles.aboutTextValue}>{currentUser?.about}</Text>
-      </View>
+          <Text style={styles.infoLabel}>About</Text>
+          <Text style={styles.aboutTextValue}>{currentUser?.about}</Text>
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -59,14 +66,18 @@ export default MyProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: wp("5%"),
+    padding: wp("2%"),
     backgroundColor: Colors.background,
   },
+  scrollContent: {
+    paddingBottom: hp("10%"),
+    paddingHorizontal: wp("2.2%"),
+  },
   profilePicture: {
-    width: wp("30%"),
-    height: wp("30%"),
-    borderRadius: wp("15%"),
+    width: wp("50%"),
+    height: wp("50%"),
+    alignSelf: "center",
+    borderRadius: wp("25%"),
     borderWidth: 2,
     borderColor: Colors.primary,
     marginBottom: hp("1%"),
@@ -75,11 +86,13 @@ const styles = StyleSheet.create({
     fontSize: wp("6%"),
     fontWeight: "600",
     marginBottom: hp("0.2%"),
+    textAlign: "center",
   },
   activeStatus: {
     fontSize: wp("4%"),
     color: Colors.darkGray,
     marginBottom: hp("3%"),
+    textAlign: "center",
   },
   infoContainer: {
     width: "100%",

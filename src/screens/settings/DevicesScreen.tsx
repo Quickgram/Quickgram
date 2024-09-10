@@ -18,7 +18,6 @@ import RenderDeviceBox from "../../components/settings/RenderDeviceBox";
 import { useAuth } from "../../contexts/AuthContext";
 import { apiServices } from "../../services/api/apiServices";
 import { ShowToast } from "@/src/components/common/ShowToast";
-import { filterSessionInfo } from "@/src/utils/filterSessionInfo";
 
 type DevicesScreenProps = NativeStackScreenProps<AppStackParamList, "Devices">;
 
@@ -45,8 +44,7 @@ const DevicesScreen: React.FC<DevicesScreenProps> = () => {
         })
       );
       const newSessionsResponse = await apiServices.getAllActiveSessions();
-      const filteredSessionsData = filterSessionInfo(newSessionsResponse);
-      setActiveSessionsData(filteredSessionsData);
+      setActiveSessionsData(newSessionsResponse);
       ShowToast(
         "success",
         "Success",

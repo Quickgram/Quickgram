@@ -63,13 +63,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         navigation.navigate("MyProfile");
         break;
       case "Announcements":
-        ShowToast("info", "Announcements", "Announcements");
+        navigation.navigate("Announcements");
         break;
       case "Devices":
         navigation.navigate("Devices");
         break;
       case "Account":
-        ShowToast("error", "Account", "Account");
+        navigation.navigate("Account");
         break;
       case "Privacy & Security":
         ShowToast("info", "Privacy & Security", "Privacy & Security");

@@ -1,5 +1,5 @@
 import Colors from "@/src/styles/colors";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -10,9 +10,7 @@ import {
   Keyboard,
   ActivityIndicator,
 } from "react-native";
-import { CommonActions } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import {
   widthPercentageToDP as wp,

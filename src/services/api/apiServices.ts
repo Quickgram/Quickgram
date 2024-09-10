@@ -4,7 +4,11 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firebaseStorage } from "../../config/firebase";
 import User from "../../models/user";
 import { Models } from "../../config/appwrite";
-import { filterUserData } from "../../utils/filterUserData";
+import {
+  filterUserData,
+  filterSessionInfo,
+  filterAnnouncementInfo,
+} from "../../utils/dataFilters";
 
 export const apiServices = {
   createPhoneToken: async (userId: string, phoneNumber: string) => {
@@ -17,7 +21,8 @@ export const apiServices = {
 
   getAllActiveSessions: async () => {
     const sessions = await Appwrite.account.listSessions();
-    return sessions.sessions;
+    const filteredSessionsData = filterSessionInfo(sessions.sessions);
+    return filteredSessionsData;
   },
 
   terminateAllActiveSessions: async () => {
@@ -32,13 +37,6 @@ export const apiServices = {
     return await Appwrite.account.deleteSession("current");
   },
 
-  // terminateAllSessionsExceptCurrent: async () => {
-  //   const currentSessionId = await apiServices.getDataFromSecureStore(
-  //     "currentSessionId"
-  //   );
-  //   return await Appwrite.account.deleteSessions([currentSessionId]);
-  // },
-
   createEmailPasswordSession: async (email: string, password: string) => {
     return await Appwrite.account.createEmailPasswordSession(email, password);
   },
@@ -47,14 +45,13 @@ export const apiServices = {
     userId: string
   ): Promise<Partial<User> | null> => {
     try {
-      const document = (await Appwrite.databases.getDocument(
+      const response = (await Appwrite.databases.getDocument(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
         process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
         userId
       )) as Models.Document;
-      const filteredUserData = filterUserData(document);
 
-      return filteredUserData;
+      return filterUserData(response);
     } catch (error) {
       return null;
     }
@@ -76,40 +73,39 @@ export const apiServices = {
     }
   },
 
-  checkIfUserExists: async (userId: string): Promise<boolean> => {
-    try {
-      const document = await Appwrite.databases.getDocument(
-        process.env.EXPO_PUBLIC_DATABASE_ID!,
-        process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
-        userId
-      );
-      return document !== null;
-    } catch (error) {
-      return false;
-    }
-  },
-
   getCurrentUserDocument: async (): Promise<Partial<User> | null> => {
     const currentUserId = await apiServices.getDataFromSecureStore(
       "currentUserId"
     );
 
     try {
-      const document = (await Appwrite.databases.getDocument(
+      const response = (await Appwrite.databases.getDocument(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
         process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
         currentUserId!
       )) as Models.Document;
 
-      const filteredUserData = filterUserData(document);
-      return filteredUserData;
+      return filterUserData(response);
     } catch (error) {
       return null;
     }
   },
 
-  updateUserOnline: async (userId: string): Promise<User> => {
-    const document = (await Appwrite.databases.updateDocument(
+  checkIfUserExists: async (userId: string): Promise<boolean> => {
+    try {
+      const response = await Appwrite.databases.getDocument(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+        userId
+      );
+      return response !== null;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  updateUserOnline: async (userId: string) => {
+    return await Appwrite.databases.updateDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
@@ -117,12 +113,11 @@ export const apiServices = {
         is_online: true,
         lastSeenAt: Date.now().toString(),
       }
-    )) as Models.Document;
-    return document as unknown as User;
+    );
   },
 
-  updateUserOffline: async (userId: string): Promise<User> => {
-    const document = (await Appwrite.databases.updateDocument(
+  updateUserOffline: async (userId: string) => {
+    return await Appwrite.databases.updateDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
@@ -130,8 +125,7 @@ export const apiServices = {
         is_online: false,
         lastSeenAt: Date.now().toString(),
       }
-    )) as Models.Document;
-    return document as unknown as User;
+    );
   },
 
   setSignedStatus: async (value: string) => {
@@ -177,7 +171,7 @@ export const apiServices = {
   },
 
   updateAccountName: async (name: string) => {
-    return await Appwrite.account.updateName(name);
+    await Appwrite.account.updateName(name);
   },
 
   uploadProfilePicture: async (userId: string, localUri: string) => {
@@ -190,56 +184,49 @@ export const apiServices = {
     return await getDownloadURL(storageRef);
   },
 
-  updateProfilePicture: async (
-    userId: string,
-    photoUrl: string
-  ): Promise<User> => {
-    const document = (await Appwrite.databases.updateDocument(
+  updateProfilePicture: async (userId: string, photoUrl: string) => {
+    return await Appwrite.databases.updateDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
       {
         profile_picture_url: photoUrl,
       }
-    )) as Models.Document;
-    return document as unknown as User;
+    );
   },
 
-  updateName: async (userId: string, name: string): Promise<User> => {
-    const document = (await Appwrite.databases.updateDocument(
+  updateName: async (userId: string, name: string) => {
+    await Appwrite.account.updateName(name);
+    return await Appwrite.databases.updateDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
       {
         name: name,
       }
-    )) as Models.Document;
-    await Appwrite.account.updateName(name);
-    return document as unknown as User;
+    );
   },
 
-  updateUsername: async (userId: string, username: string): Promise<User> => {
-    const document = (await Appwrite.databases.updateDocument(
+  updateUsername: async (userId: string, username: string) => {
+    return await Appwrite.databases.updateDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
       {
         username: username,
       }
-    )) as Models.Document;
-    return document as unknown as User;
+    );
   },
 
-  updateAbout: async (userId: string, about: string): Promise<User> => {
-    const document = (await Appwrite.databases.updateDocument(
+  updateAbout: async (userId: string, about: string) => {
+    return await Appwrite.databases.updateDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
       {
         about: about,
       }
-    )) as Models.Document;
-    return document as unknown as User;
+    );
   },
 
   updateNameAndUsernameAndAbout: async (
@@ -247,8 +234,8 @@ export const apiServices = {
     name: string,
     username: string,
     about: string
-  ): Promise<User> => {
-    const document = (await Appwrite.databases.updateDocument(
+  ) => {
+    return await Appwrite.databases.updateDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
@@ -257,9 +244,22 @@ export const apiServices = {
         username: username,
         about: about,
       }
-    )) as Models.Document;
-    await Appwrite.account.updateName(name);
-    return document as unknown as User;
+    );
+  },
+
+  getAnnouncements: async () => {
+    const response = await Appwrite.databases.listDocuments(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_ANNOUNCEMENTS_COLLECTION_ID!
+    );
+    const filteredAnnouncements = filterAnnouncementInfo(response.documents);
+    return filteredAnnouncements;
+  },
+
+  getUserLabels: async () => {
+    const response = await Appwrite.account.get();
+    console.log(response.labels);
+    return response.labels;
   },
 
   subscribeToUserDataChanges: (

@@ -122,7 +122,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
           style={styles.input}
           value={editedAbout}
           onChangeText={setEditedAbout}
-          placeholder="Username"
+          placeholder="About"
           placeholderTextColor={Colors.lightGray}
         />
       </View>

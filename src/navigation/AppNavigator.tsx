@@ -11,6 +11,8 @@ import { AppStackParamList } from "../types/navigation";
 import SplashScreen from "../screens/welcome/SplashScreen";
 import MyProfileScreen from "../screens/settings/MyProfileScreen";
 import DevicesScreen from "../screens/settings/DevicesScreen";
+import AccountScreen from "../screens/settings/AccountScreen";
+import AnnouncementsScreen from "../screens/settings/AnnouncementsScreen";
 import { TouchableOpacity, View } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import Colors from "../styles/colors";
@@ -72,6 +74,46 @@ const AppNavigator = () => {
           <Stack.Screen
             name="Devices"
             component={DevicesScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: Colors.background,
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back"
+                    size={wp("7%")}
+                    color={Colors.primary}
+                  />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="Account"
+            component={AccountScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: Colors.background,
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back"
+                    size={wp("7%")}
+                    color={Colors.primary}
+                  />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="Announcements"
+            component={AnnouncementsScreen}
             options={({ navigation }) => ({
               headerShown: true,
               headerTitleAlign: "center",

@@ -6,7 +6,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Colors from "../../styles/colors";
-import { SessionInfo } from "@/src/types/sessionList";
+import { SessionInfo } from "@/src/types/sessionInfo";
 
 interface RenderDeviceBoxProps {
   session: SessionInfo;
