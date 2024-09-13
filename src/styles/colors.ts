@@ -2,6 +2,7 @@ export default {
   primary: "#1063FD",
   secondary: "#007BFF",
   background: "#EFEEF6",
+  border: "#ccc",
 
   // Red Shades
   red: "#FF0000",

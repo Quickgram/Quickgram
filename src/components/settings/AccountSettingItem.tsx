@@ -1,21 +1,21 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/src/styles/colors";
 import BoxedIcon from "../common/BoxedIcon";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { Ionicons } from "@expo/vector-icons";
 
-interface SettingItemProps {
+interface AccountSettingItemProps {
   name: string;
   icon: string;
   backgroundColor: string;
   onPress: (item: any) => void;
 }
 
-const SettingItem: React.FC<SettingItemProps> = ({
+const AccountSettingItem: React.FC<AccountSettingItemProps> = ({
   name,
   icon,
   backgroundColor,
@@ -38,44 +38,29 @@ export const profile = [
   },
 ];
 
-export const subItems = [
+export const mainItems = [
   {
-    name: "Announcements",
-    icon: "megaphone-outline",
-    backgroundColor: Colors.blue,
+    name: "Email & Password",
+    icon: "mail-outline",
+    backgroundColor: Colors.brightYellow,
   },
   {
-    name: "Devices",
-    icon: "phone-portrait-outline",
-    backgroundColor: Colors.brightYellow,
+    name: "Change Number",
+    icon: "call-outline",
+    backgroundColor: Colors.lightNavy,
   },
 ];
 
-export const mainItems = [
+export const subItems = [
   {
-    name: "Account",
-    icon: "key-outline",
-    backgroundColor: Colors.primary,
+    name: "Request Account Info",
+    icon: "information-circle-outline",
+    backgroundColor: Colors.navy,
   },
   {
-    name: "Privacy & Security",
-    icon: "lock-closed-outline",
-    backgroundColor: "#33A5D1",
-  },
-  {
-    name: "Chats",
-    icon: "chatbubbles-outline",
-    backgroundColor: Colors.lightNavy,
-  },
-  {
-    name: "Notifications",
-    icon: "notifications-outline",
+    name: "Delete My Account",
+    icon: "trash-outline",
     backgroundColor: Colors.red,
-  },
-  {
-    name: "Storage",
-    icon: "cloud-outline",
-    backgroundColor: Colors.lightMaroon,
   },
 ];
 
@@ -92,14 +77,14 @@ export const support = [
   },
 ];
 
-export const renderSettingItems = (
+export const renderAccountSettingItems = (
   items: Array<{ name: string; icon: string; backgroundColor: string }>,
   onPress: (item: any) => void
 ) => (
   <View style={styles.block}>
     {items.map((item, index) => (
       <React.Fragment key={item.name}>
-        <SettingItem
+        <AccountSettingItem
           name={item.name}
           icon={item.icon}
           backgroundColor={item.backgroundColor}
@@ -135,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SettingItem;
+export default AccountSettingItem;

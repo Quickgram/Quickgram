@@ -1,7 +1,5 @@
-import { Platform } from "react-native";
 import { Database } from "@nozbe/watermelondb";
 import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite";
-
 import schema from "../models/schema";
 import migrations from "../models/migrations";
 import User from "../models/user";

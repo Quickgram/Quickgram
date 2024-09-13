@@ -7,16 +7,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppStackParamList } from "../../types/navigation";
+import { AppStackParamList } from "@/src/types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "../../styles/colors";
+import Colors from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
-import RenderDeviceBox from "../../components/settings/RenderDeviceBox";
-import { useAuth } from "../../contexts/AuthContext";
-import { apiServices } from "../../services/api/apiServices";
+import RenderDeviceBox from "@/src/components/settings/RenderDeviceBox";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { apiServices } from "@/src/services/api/apiServices";
 import { ShowToast } from "@/src/components/common/ShowToast";
 
 type DevicesScreenProps = NativeStackScreenProps<AppStackParamList, "Devices">;

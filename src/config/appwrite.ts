@@ -55,5 +55,3 @@ export {
   Permission,
   Role,
 };
-
-export default client;

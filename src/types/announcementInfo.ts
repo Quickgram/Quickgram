@@ -8,7 +8,7 @@ export type AnnouncementInfo = {
   imageUrl: string;
   category: string;
   link: string;
-  tags: string;
+  tags: string[];
 };
 
 export type AnnouncementResponse = {

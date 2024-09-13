@@ -1,17 +1,18 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, SafeAreaView, View, Platform } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { AppStackParamList, MainTabParamList } from "../../types/navigation";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
 import Colors from "@/src/styles/colors";
 import { useAuth } from "../../contexts/AuthContext";
 import { apiServices } from "@/src/services/api/apiServices";
 import { localdbServices } from "@/src/services/db/localdbServices";
+import SearchBox from "./components/SearchBox";
+import { useGlobalState } from "@/src/contexts/GlobalStateContext";
+import User from "@/src/models/user";
+import HomeScreenHeader from "./components/HomeScreenHeader";
+import ChatUsersList from "./components/ChatUsersList";
 
 type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Home">,
@@ -20,6 +21,25 @@ type HomeScreenProps = CompositeScreenProps<
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { currentUser, setCurrentUser } = useAuth();
+  const { setCurrentChatUser } = useGlobalState();
+  const [chattedUsers, setChattedUsers] = useState<User[]>([]);
+  const chattedUsersIds = currentUser?.chatted_users || [];
+  const {
+    homeScreenSearchQuery,
+    isHomeScreenScrolling,
+    setIsHomeScreenScrolling,
+  } = useGlobalState();
+
+  useEffect(() => {
+    const fetchChattedUsers = async () => {
+      const chattedUsersData = await apiServices.getChattedUsers(
+        chattedUsersIds
+      );
+      setChattedUsers(chattedUsersData as User[]);
+    };
+
+    fetchChattedUsers();
+  }, []);
 
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
@@ -42,34 +62,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, [currentUser?.uid, setCurrentUser]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome, {currentUser?.name || "User"}!</Text>
-      <Text>This is the Home Screen</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <HomeScreenHeader />
+      <SearchBox />
+      <ChatUsersList
+        chattedUsers={chattedUsers}
+        setCurrentChatUser={setCurrentChatUser}
+        navigation={navigation}
+      />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: wp("2%"),
-    paddingTop: hp("6%"),
     backgroundColor: Colors.background,
-    gap: hp("2%"),
-  },
-  title: {
-    fontSize: wp("6%"),
-    fontWeight: "bold",
-    marginBottom: hp("2%"),
-  },
-  userInfo: {
-    fontSize: wp("4%"),
-    marginBottom: hp("1%"),
-  },
-  noUser: {
-    fontSize: wp("4%"),
-    color: Colors.gray,
   },
 });
 

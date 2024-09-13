@@ -1,16 +1,19 @@
 import React from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppStackParamList } from "../../types/navigation";
+import { AppStackParamList } from "@/src/types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "../../styles/colors";
+import Colors from "@/src/styles/colors";
 
-type AccountScreenProps = NativeStackScreenProps<AppStackParamList, "Account">;
+type SetEmailAndPasswordProps = NativeStackScreenProps<
+  AppStackParamList,
+  "SetEmailAndPassword"
+>;
 
-const AccountScreen: React.FC<AccountScreenProps> = () => {
+const SetEmailAndPassword: React.FC<SetEmailAndPasswordProps> = () => {
   return (
     <View style={styles.container}>
       <ScrollView
@@ -19,14 +22,14 @@ const AccountScreen: React.FC<AccountScreenProps> = () => {
         overScrollMode="always"
         bounces={true}
       >
-        <Text>AccountScreen</Text>
+        <Text>SetEmailAndPassword</Text>
         {/* Add your content here */}
       </ScrollView>
     </View>
   );
 };
 
-export default AccountScreen;
+export default SetEmailAndPassword;
 
 const styles = StyleSheet.create({
   container: {

@@ -5,6 +5,8 @@ import {
 import { SessionInfo, SessionResponse } from "../types/sessionInfo";
 import User from "../models/user";
 import { convertTimestampToReadableFormatForAnnouncements } from "./timeConverter";
+import Message from "../models/message";
+import { ChatInfo } from "../types/chatInfo";
 
 export function filterAnnouncementInfo(response: any[]): AnnouncementResponse {
   const announcements: AnnouncementInfo[] = response.map(
@@ -63,8 +65,35 @@ export function filterUserData(userData: any): Partial<User> {
     is_online: userData.is_online,
     is_verified: userData.is_verified,
     lastSeenAt: userData.lastSeenAt,
-    email: userData.email,
+    email: userData.email || null,
     username: userData.username,
     profile_picture_url: userData.profile_picture_url,
+    chatted_users: userData.chatted_users || [],
+  };
+}
+
+export function filterMessageData(messageData: any): Partial<Message> {
+  return {
+    senderId: messageData.senderId,
+    receiverId: messageData.receiverId,
+    type: messageData.type,
+    messageId: messageData.messageId,
+    text: messageData.text,
+    repliedMessage: messageData.repliedMessage || null,
+    repliedMessageId: messageData.repliedMessageId || null,
+    repliedTo: messageData.repliedTo || null,
+    seenAt: messageData.seenAt || null,
+    is_seen: messageData.is_seen,
+    is_edited: messageData.is_edited,
+    is_deleted: messageData.is_deleted,
+    sentTime: messageData.sentTime,
+  };
+}
+
+export function filterChatInfo(chatData: any): Partial<ChatInfo> {
+  return {
+    id: chatData.id,
+    messageIds: chatData.messageIds,
+    lastMessageId: chatData.lastMessageId,
   };
 }

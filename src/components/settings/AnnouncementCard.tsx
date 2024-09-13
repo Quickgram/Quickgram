@@ -30,7 +30,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ item }) => (
         Created: {item.createdAt} | Expires: {item.expiryDate}
       </Text>
       <View style={styles.tagsContainer}>
-        {item.tags.split(",").map((tag, index) => (
+        {item.tags.map((tag, index) => (
           <Text key={index} style={styles.tag}>
             {tag.trim()}
           </Text>

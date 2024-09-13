@@ -10,14 +10,14 @@ import User from "../models/user";
 import { localdbServices } from "../services/db/localdbServices";
 import { ShowToast } from "../components/common/ShowToast";
 import { SessionResponse } from "../types/sessionInfo";
+import { filterUserData } from "../utils/dataFilters";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  currentUser: User | null;
   userId: string | null;
   phoneNumber: string | null;
   isNewUser: boolean;
-  isAdmin: boolean;
+  currentUser: User | null;
   activeSessionsData: SessionResponse | null;
   setUserId: (id: string) => void;
   setPhoneNumber: (phone: string) => void;
@@ -34,12 +34,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [activeSessionsData, setActiveSessionsData] = useState<SessionResponse>(
     {
       sessions: [],
@@ -65,6 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
             if (apiUserData) {
               setCurrentUser(apiUserData as User);
               setIsAuthenticated(true);
+              await localdbServices.createUserDataInLocaldb(apiUserData);
             }
           }
         } catch (error) {
@@ -155,6 +155,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         await localdbServices.updateUserDataInLocaldb(userData);
       }
     } catch (error: unknown) {
+      console.log(error);
       if (
         error instanceof Error &&
         error.message.includes(
@@ -208,12 +209,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        currentUser,
         userId,
         phoneNumber,
         isNewUser,
+        currentUser,
         activeSessionsData,
-        isAdmin,
         setUserId,
         setPhoneNumber,
         login,

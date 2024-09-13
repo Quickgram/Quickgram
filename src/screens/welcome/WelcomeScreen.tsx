@@ -13,9 +13,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import * as Appwrite from "../../config/appwrite";
 import { AppStackParamList } from "../../types/navigation";
 import { apiServices } from "@/src/services/api/apiServices";
+import { localdbServices } from "@/src/services/db/localdbServices";
 
 type WelcomeScreenProps = NativeStackScreenProps<AppStackParamList, "Welcome">;
 
@@ -31,6 +31,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   }, []);
 
   const handleAgreeAndContinue = useCallback(async () => {
+    try {
+      await localdbServices.resetLocalDatabase();
+      await apiServices.setSignedStatus("false");
+      await apiServices.setDataToSecureStore("currentUserId", "");
+      await apiServices.terminateCurrentSession();
+    } catch (error) {
+      //Database is not there yet which is fine
+    }
     navigation.navigate("VerifyPhone");
   }, [navigation]);
 

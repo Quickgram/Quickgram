@@ -10,7 +10,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { useAuth } from "../../contexts/AuthContext";
 import { pickImageForProfile } from "@/src/utils/filePicker";
 import { apiServices } from "../../services/api/apiServices";
 import {
@@ -23,6 +22,7 @@ import {
 import { useGlobalState } from "../../contexts/GlobalStateContext";
 import ProfileEdit from "@/src/components/settings/ProfileEdit";
 import { ShowToast } from "@/src/components/common/ShowToast";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 type SettingsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Settings">,
@@ -80,14 +80,14 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       case "Notifications":
         ShowToast("info", "Notifications", "Notifications");
         break;
-      case "Storage and Data":
-        ShowToast("info", "Storage and Data", "Storage and Data");
+      case "Storage":
+        ShowToast("info", "Storage", "Storage");
         break;
       case "Help":
         ShowToast("info", "Help", "Help");
         break;
-      case "Tell a Friend":
-        ShowToast("success", "Tell a Friend", "Tell a Friend");
+      case "Invite":
+        ShowToast("success", "Invite", "Invite");
         break;
       default:
         break;
@@ -205,36 +205,9 @@ const styles = StyleSheet.create({
     padding: wp("2%"),
     paddingTop: hp("6%"),
     backgroundColor: Colors.background,
-    gap: hp("2%"),
   },
   scrollContent: {
     paddingBottom: hp("18%"),
-  },
-  itemText: {
-    fontSize: wp("4.1%"),
-    flex: 1,
-  },
-  block: {
-    backgroundColor: "#fff",
-    borderRadius: wp("2.5%"),
-    marginHorizontal: wp("3.5%"),
-    marginTop: hp("2.5%"),
-  },
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: wp("2.5%"),
-    gap: wp("2.7%"),
-  },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Colors.lightGray,
-    marginLeft: wp("12.5%"),
-  },
-  logoutText: {
-    color: Colors.primary,
-    fontSize: wp("4.5%"),
-    textAlign: "center",
   },
 });
 

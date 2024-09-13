@@ -1,11 +1,12 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "../screens/main/HomeScreen";
-import StatusScreen from "../screens/main/StatusScreen";
-import ContactsScreen from "../screens/main/ContactsScreen";
-import SettingsScreen from "../screens/main/SettingsScreen";
+import HomeScreen from "../screens/chats/HomeScreen";
+import StatusScreen from "../screens/status/StatusScreen";
+import ContactsScreen from "../screens/contacts/ContactsScreen";
+import SettingsScreen from "../screens/settings/SettingsScreen";
 import BottomTabBar from "../components/navigation/BottomTabBar";
 import { MainTabParamList } from "../types/navigation";
+import { ScreenStackHeaderSearchBarView } from "react-native-screens";
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 

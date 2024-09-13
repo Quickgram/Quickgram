@@ -3,6 +3,7 @@ import database from "../../config/watermelondb";
 import User from "../../models/user";
 import { filterUserData } from "../../utils/dataFilters";
 import { apiServices } from "../api/apiServices";
+
 const usersCollection = database.get<User>("users");
 
 export const localdbServices = {
@@ -95,6 +96,12 @@ export const localdbServices = {
   deleteAllUsersDataFromLocaldb: async (): Promise<void> => {
     await database.write(async () => {
       await usersCollection.query().destroyAllPermanently();
+    });
+  },
+
+  resetLocalDatabase: async (): Promise<void> => {
+    await database.write(async () => {
+      await database.unsafeResetDatabase();
     });
   },
 };

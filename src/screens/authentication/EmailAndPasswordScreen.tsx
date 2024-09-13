@@ -26,7 +26,9 @@ type EmailAndPasswordProps = NativeStackScreenProps<
   "EmailAndPassword"
 >;
 
-const EmailAndPassword: React.FC<EmailAndPasswordProps> = ({ navigation }) => {
+const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
+  navigation,
+}) => {
   const phoneImage = require("../../../assets/images/phone.png");
   const [email, setEmail] = useState("admin@quickgram.in");
   const [password, setPassword] = useState("admin@123");
@@ -182,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EmailAndPassword;
+export default EmailAndPasswordScreen;

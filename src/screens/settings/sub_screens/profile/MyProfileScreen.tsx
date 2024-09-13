@@ -1,14 +1,14 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppStackParamList } from "../../types/navigation";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "../../styles/colors";
-import { useAuth } from "../../contexts/AuthContext";
+import Colors from "@/src/styles/colors";
 import FastImage from "react-native-fast-image";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { AppStackParamList } from "@/src/types/navigation";
 
 type MyProfileScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: wp("4%"),
-    color: Colors.gray,
+    color: Colors.black,
     marginTop: hp("0.8%"),
     marginBottom: hp("0.41%"),
   },
