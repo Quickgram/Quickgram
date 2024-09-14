@@ -15,6 +15,8 @@ import User from "@/src/models/user";
 import Message from "@/src/models/message";
 import MessageType from "@/src/utils/messageType";
 import * as Appwrite from "../../../config/appwrite";
+import { localdbServices } from "@/src/services/db/localdbServices";
+import { createChatIdForCurrentChatUser } from "../../../utils/createChatId";
 
 interface BottomChatFieldProps {
   currentChatUser: User;
@@ -52,9 +54,9 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
       is_deleted: false,
       sentTime: Date.now().toString(),
     };
+
     setTextMessage("");
     await apiServices.sendTextMessage(newMessage, chatId);
-    setIsTyping(false);
   };
 
   return (
@@ -66,7 +68,14 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
         ]}
       >
         {!isTyping && (
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => {
+              localdbServices.getAllMessagesFromLocaldb().then((messages) => {
+                console.log("messages", messages);
+              });
+            }}
+          >
             <Ionicons name="add-outline" size={wp("8%")} />
           </TouchableOpacity>
         )}

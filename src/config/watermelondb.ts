@@ -3,6 +3,8 @@ import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite";
 import schema from "../models/schema";
 import migrations from "../models/migrations";
 import User from "../models/user";
+import Message from "../models/message";
+import Chat from "../models/chat";
 
 const adapter = new SQLiteAdapter({
   schema,
@@ -15,7 +17,7 @@ const adapter = new SQLiteAdapter({
 
 const database = new Database({
   adapter,
-  modelClasses: [User],
+  modelClasses: [User, Message, Chat],
 });
 
 export default database;

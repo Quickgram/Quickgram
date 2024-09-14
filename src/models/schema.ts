@@ -39,5 +39,13 @@ export default appSchema({
         { name: "file_url", type: "string", isOptional: true },
       ],
     }),
+    tableSchema({
+      name: "chats",
+      columns: [
+        { name: "chatId", type: "string", isIndexed: true },
+        { name: "messageIds", type: "string", isOptional: true },
+        { name: "lastMessageId", type: "string" },
+      ],
+    }),
   ],
 });

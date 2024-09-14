@@ -21,7 +21,7 @@ type HomeScreenProps = CompositeScreenProps<
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { currentUser, setCurrentUser } = useAuth();
-  const { setCurrentChatUser } = useGlobalState();
+  const { setCurrentChatUser, setCurrentChatId } = useGlobalState();
   const [chattedUsers, setChattedUsers] = useState<User[]>([]);
   const chattedUsersIds = currentUser?.chatted_users || [];
   const {
@@ -66,9 +66,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <HomeScreenHeader />
       <SearchBox />
       <ChatUsersList
+        currentUser={currentUser!}
         chattedUsers={chattedUsers}
         setCurrentChatUser={setCurrentChatUser}
         navigation={navigation}
+        setCurrentChatId={setCurrentChatId}
       />
     </SafeAreaView>
   );

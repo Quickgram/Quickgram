@@ -7,7 +7,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 
 const ChatUserBox = ({
   user,

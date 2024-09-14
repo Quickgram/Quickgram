@@ -38,6 +38,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
       await apiServices.terminateCurrentSession();
     } catch (error) {
       //Database is not there yet which is fine
+      //There is no session to terminate which is fine
     }
     navigation.navigate("VerifyPhone");
   }, [navigation]);

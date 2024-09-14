@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  SafeAreaView,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, KeyboardAvoidingView, SafeAreaView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import {
@@ -19,14 +12,17 @@ import ChatUserProfileHeader from "../components/ChatUserProfileHeader";
 import User from "@/src/models/user";
 import BottomChatField from "../components/BottomChatField";
 import { useAuth } from "@/src/contexts/AuthContext";
-import createChatId from "@/src/utils/createChatId";
+import MessagesList from "../components/MessagesList";
+import { apiServices } from "@/src/services/api/apiServices";
+import { localdbServices } from "@/src/services/db/localdbServices";
+import Chat from "@/src/models/chat";
 
 type ChatScreenProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
-  const { currentChatUser, isIos } = useGlobalState();
+  const { currentChatUser, currentChatId, isIos, hasInternetConnection } =
+    useGlobalState();
   const { currentUser } = useAuth();
-  const chatId = createChatId(currentUser!.uid, currentChatUser!.uid);
 
   return (
     <KeyboardAvoidingView
@@ -38,21 +34,17 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
           navigation={navigation}
           currentChatUser={currentChatUser as User}
         />
-        {/* <MessagesList /> */}
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: Colors.gray,
-          }}
-        >
-          <Text>Chat Screen</Text>
-        </View>
+
+        <MessagesList
+          currentChatUser={currentChatUser as User}
+          currentUser={currentUser as User}
+          chatId={currentChatId!}
+        />
+
         <BottomChatField
           currentChatUser={currentChatUser as User}
           currentUser={currentUser as User}
-          chatId={chatId}
+          chatId={currentChatId!}
         />
       </SafeAreaView>
     </KeyboardAvoidingView>

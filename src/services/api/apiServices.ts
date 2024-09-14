@@ -8,8 +8,12 @@ import {
   filterUserData,
   filterSessionInfo,
   filterAnnouncementInfo,
+  filterChatData,
+  filterMessageData,
 } from "../../utils/dataFilters";
 import Message from "@/src/models/message";
+import Chat from "@/src/models/chat";
+import { createChatIdForCurrentChatUser } from "../../utils/createChatId";
 
 export const apiServices = {
   createPhoneToken: async (userId: string, phoneNumber: string) => {
@@ -158,13 +162,17 @@ export const apiServices = {
     }
   },
 
-  createNewUser: async (userId: string, userData: Partial<User>) => {
-    await Appwrite.databases.createDocument(
+  createNewUser: async (
+    userId: string,
+    userData: Partial<User>
+  ): Promise<User> => {
+    const document = (await Appwrite.databases.createDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
       userId,
       userData
-    );
+    )) as Models.Document;
+    return document as unknown as User;
   },
 
   updateAccountName: async (name: string) => {
@@ -290,7 +298,27 @@ export const apiServices = {
     return unsubscribe;
   },
 
-  updateChatDoc: async (chatId: string, messageData: Partial<Message>) => {
+  subscribeToChatDataChanges: (
+    chatId: string,
+    callback: (chat: Chat) => void
+  ) => {
+    const unsubscribe = Appwrite.client.subscribe(
+      `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID}.documents.${chatId}`,
+      (response) => {
+        if (
+          response.events.includes(
+            "databases.*.collections.*.documents.*.update"
+          )
+        ) {
+          callback(response.payload as unknown as Chat);
+        }
+      }
+    );
+
+    return unsubscribe;
+  },
+
+  updateChatDocument: async (chatId: string, messageData: Partial<Message>) => {
     try {
       const chatDoc = await Appwrite.databases.getDocument(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -327,39 +355,61 @@ export const apiServices = {
   },
 
   sendTextMessage: async (messageData: Partial<Message>, chatId: string) => {
-    try {
-      await Appwrite.databases.createDocument(
-        process.env.EXPO_PUBLIC_DATABASE_ID!,
-        process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
-        messageData.messageId!,
-        messageData
-      );
-      await apiServices.updateChatDoc(chatId, messageData);
-    } catch (error) {
-      console.log("error while sending message", error);
-    }
-  },
-
-  getMessages: async (currentUserId: string, chattedUserId: string) => {
-    const response = await Appwrite.databases.listDocuments(
+    await Appwrite.databases.createDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
-      [
-        Appwrite.Query.equal("senderId", currentUserId),
-        Appwrite.Query.equal("receiverId", chattedUserId),
-      ]
+      messageData.messageId!,
+      messageData
     );
-    return response.documents;
+    await apiServices.updateChatDocument(chatId, messageData);
+    await apiServices.updateChatDocument(
+      createChatIdForCurrentChatUser(
+        messageData.receiverId!,
+        messageData.senderId!
+      ),
+      messageData
+    );
   },
 
-  getChats: async (currentUserId: string) => {
-    const response = await Appwrite.databases.listDocuments(
+  getMessageByID: async (
+    messageId: string
+  ): Promise<Partial<Message> | null> => {
+    const response = await Appwrite.databases.getDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
-      process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID!,
-      [Appwrite.Query.equal("userId", currentUserId)]
+      process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
+      messageId
     );
-    return response.documents;
+    return filterMessageData(response);
   },
 
-  getChatInfo: async () => {},
+  getMessages: async (messageIds: string[]) => {
+    const messages = [];
+    for (const messageId of messageIds) {
+      const message = await Appwrite.databases.getDocument(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
+        messageId
+      );
+      if (message) {
+        messages.push(filterMessageData(message));
+      }
+    }
+    return messages;
+  },
+
+  getChatDocumentById: async (
+    chatId: string
+  ): Promise<Partial<Chat> | null> => {
+    try {
+      const response = (await Appwrite.databases.getDocument(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID!,
+        chatId
+      )) as Models.Document;
+
+      return filterChatData(response);
+    } catch (error) {
+      return null;
+    }
+  },
 };

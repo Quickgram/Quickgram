@@ -6,7 +6,7 @@ import { SessionInfo, SessionResponse } from "../types/sessionInfo";
 import User from "../models/user";
 import { convertTimestampToReadableFormatForAnnouncements } from "./timeConverter";
 import Message from "../models/message";
-import { ChatInfo } from "../types/chatInfo";
+import Chat from "../models/chat";
 
 export function filterAnnouncementInfo(response: any[]): AnnouncementResponse {
   const announcements: AnnouncementInfo[] = response.map(
@@ -90,10 +90,10 @@ export function filterMessageData(messageData: any): Partial<Message> {
   };
 }
 
-export function filterChatInfo(chatData: any): Partial<ChatInfo> {
+export function filterChatData(chatData: any): Partial<Chat> {
   return {
-    id: chatData.id,
-    messageIds: chatData.messageIds,
+    chatId: chatData.chatId,
+    messageIds: chatData.messageIds || [],
     lastMessageId: chatData.lastMessageId,
   };
 }

@@ -1,9 +1,24 @@
-const createChatId = (userId1: string, userId2: string): string => {
-  const trimmedId1 = userId1.slice(10);
-  const trimmedId2 = userId2.slice(10);
-  const combinedId = `${trimmedId1}_${trimmedId2}`;
+const createChatIdForMe = (
+  currentUserId: string,
+  currentChatUserId: string
+): string => {
+  const trimmedCurrentUserId = currentUserId.slice(10);
+  const trimmedCurrentChatUserId = currentChatUserId.slice(10);
+  const ChatIdForMe = `${trimmedCurrentUserId}_${trimmedCurrentChatUserId}`;
 
-  return combinedId;
+  return ChatIdForMe;
 };
 
-export default createChatId;
+const createChatIdForCurrentChatUser = (
+  currentChatUserId: string,
+  currentUserId: string
+): string => {
+  const trimmedCurrentChatUserId = currentChatUserId.slice(10);
+  const trimmedCurrentUserId = currentUserId.slice(10);
+
+  const ChatIdForCurrentChatUser = `${trimmedCurrentChatUserId}_${trimmedCurrentUserId}`;
+
+  return ChatIdForCurrentChatUser;
+};
+
+export { createChatIdForMe, createChatIdForCurrentChatUser };
