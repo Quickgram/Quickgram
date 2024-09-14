@@ -3,7 +3,7 @@ import ChatUserBox from "./ChatUserBox";
 import User from "../../../models/user";
 import { FlashList } from "@shopify/flash-list";
 import Chat from "@/src/models/chat";
-import { createChatIdForMe } from "@/src/utils/createChatId";
+import { getChatId } from "@/src/utils/getChatId";
 
 const ChatUsersList = ({
   currentUser,
@@ -23,7 +23,7 @@ const ChatUsersList = ({
       user={item}
       onPress={() => {
         setCurrentChatUser(item);
-        setCurrentChatId(createChatIdForMe(currentUser?.uid, item.uid));
+        setCurrentChatId(getChatId(currentUser?.uid, item.uid));
         navigation.navigate("Chat");
       }}
     />

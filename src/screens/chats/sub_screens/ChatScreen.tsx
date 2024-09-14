@@ -13,9 +13,6 @@ import User from "@/src/models/user";
 import BottomChatField from "../components/BottomChatField";
 import { useAuth } from "@/src/contexts/AuthContext";
 import MessagesList from "../components/MessagesList";
-import { apiServices } from "@/src/services/api/apiServices";
-import { localdbServices } from "@/src/services/db/localdbServices";
-import Chat from "@/src/models/chat";
 
 type ChatScreenProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 

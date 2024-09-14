@@ -87,6 +87,8 @@ export function filterMessageData(messageData: any): Partial<Message> {
     is_edited: messageData.is_edited,
     is_deleted: messageData.is_deleted,
     sentTime: messageData.sentTime,
+    file_url: messageData.file_url || null,
+    chatId: messageData.chatId,
   };
 }
 

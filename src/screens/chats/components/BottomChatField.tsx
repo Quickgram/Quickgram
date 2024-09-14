@@ -16,7 +16,6 @@ import Message from "@/src/models/message";
 import MessageType from "@/src/utils/messageType";
 import * as Appwrite from "../../../config/appwrite";
 import { localdbServices } from "@/src/services/db/localdbServices";
-import { createChatIdForCurrentChatUser } from "../../../utils/createChatId";
 
 interface BottomChatFieldProps {
   currentChatUser: User;
@@ -53,10 +52,12 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
       is_edited: false,
       is_deleted: false,
       sentTime: Date.now().toString(),
+      file_url: null,
+      chatId: chatId,
     };
 
     setTextMessage("");
-    await apiServices.sendTextMessage(newMessage, chatId);
+    await apiServices.sendTextMessage(newMessage);
   };
 
   return (

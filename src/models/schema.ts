@@ -37,6 +37,7 @@ export default appSchema({
         { name: "is_deleted", type: "boolean" },
         { name: "sentTime", type: "string" },
         { name: "file_url", type: "string", isOptional: true },
+        { name: "chatId", type: "string" },
       ],
     }),
     tableSchema({

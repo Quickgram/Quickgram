@@ -101,29 +101,74 @@ export const localdbServices = {
     }
   },
 
-  createMessagesInLocaldb: async (
+  createMessageInLocaldb: async (
     messageData: Partial<Message>
   ): Promise<void> => {
-    try {
-      const filteredMessageData = filterMessageData(messageData);
+    await database.write(async () => {
       try {
-        const existingMessage = await messagesCollection.find(
-          filteredMessageData.messageId!
-        );
-        await existingMessage.update((message) => {
-          Object.assign(message, filteredMessageData);
-        });
-      } catch (error) {
-        await database.write(async () => {
+        const filteredMessageData = filterMessageData(messageData);
+        try {
+          const existingMessage = await messagesCollection.find(
+            filteredMessageData.messageId!
+          );
+          if (existingMessage !== filteredMessageData) {
+            await existingMessage.update((message) => {
+              Object.assign(message, filteredMessageData);
+            });
+          }
+        } catch (error) {
           await messagesCollection.create((message) => {
             message._raw.id = filteredMessageData.messageId!;
             Object.assign(message, filteredMessageData);
           });
-        });
+        }
+      } catch (error) {
+        console.log("error updating/creating single message", error);
       }
-    } catch (error) {
-      console.log("error", error);
-    }
+    });
+  },
+
+  createMessagesInLocaldb: async (
+    messages: Partial<Message>[]
+  ): Promise<void> => {
+    await database.write(async () => {
+      try {
+        for (const message of messages) {
+          const filteredMessageData = filterMessageData(message);
+          try {
+            try {
+              const existingMessage = await messagesCollection.find(
+                filteredMessageData.messageId!
+              );
+              if (existingMessage !== filteredMessageData) {
+                await existingMessage.update((message) => {
+                  Object.assign(message, filteredMessageData);
+                });
+              }
+            } catch (error) {
+              console.log(
+                "error updating message // message data same  -> creating new message ",
+                filteredMessageData.messageId,
+                "error is:",
+                error
+              );
+
+              await messagesCollection.create((message) => {
+                message._raw.id = filteredMessageData.messageId!;
+                Object.assign(message, filteredMessageData);
+              });
+            }
+          } catch (error) {
+            console.log(
+              "error for this message",
+              filteredMessageData.messageId
+            );
+          }
+        }
+      } catch (error) {
+        console.log("error creating messages in local db", error);
+      }
+    });
   },
 
   getMessagesFromLocaldb: async (messageIds: string[]): Promise<Message[]> => {

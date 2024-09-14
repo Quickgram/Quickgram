@@ -17,5 +17,6 @@ export default class Message extends Model {
   @field("is_edited") is_edited!: boolean;
   @field("is_deleted") is_deleted!: boolean;
   @field("sentTime") sentTime!: string;
-  @field("file_url") file_url!: string;
+  @field("file_url") file_url!: string | null;
+  @field("chatId") chatId!: string;
 }
