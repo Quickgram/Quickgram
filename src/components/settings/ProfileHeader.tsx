@@ -6,7 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import FastImage from "react-native-fast-image";
+import { Image } from "expo-image";
 import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 
 interface ProfileHeaderProps {
@@ -57,12 +57,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </TouchableOpacity>
         )}
       </View>
-      <FastImage
+      <Image
         style={styles.profilePicture}
         source={{
           uri: profile_picture_url,
-          cache: FastImage.cacheControl.immutable,
         }}
+        placeholderContentFit="contain"
+        cachePolicy="memory-disk"
       />
       <Text style={styles.profileName}>{name}</Text>
       <Text style={styles.profileInfo}>{`${phone} • @${username}`}</Text>

@@ -8,7 +8,6 @@ import React, {
 import User from "../models/user";
 import { Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
-
 interface GlobalStateContextType {
   isProfileEditing: boolean;
   setIsProfileEditing: (value: boolean) => void;

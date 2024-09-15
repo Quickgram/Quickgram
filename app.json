@@ -40,6 +40,10 @@
       [
         "expo-build-properties",
         {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "extraProguardRules": "-keep class com.nozbe.watermelondb.** { *; }\n-keep class com.nozbe.watermelondb.**$* { *; }\n-keep class com.swmansion.reanimated.** { *; }\n-keep class com.facebook.react.turbomodule.** { *; }\n-keep class com.google.firebase.** { *; }\n"
+          },
           "ios": {
             "extraPods": [
               {

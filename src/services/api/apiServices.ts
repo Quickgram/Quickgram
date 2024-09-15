@@ -362,7 +362,7 @@ export const apiServices = {
     );
   },
 
-  getInitialMessages: async (chatId: string) => {
+  getInitialMessages: async (chatId: string): Promise<Partial<Message>[]> => {
     const response = await Appwrite.databases.listDocuments(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
@@ -372,21 +372,41 @@ export const apiServices = {
         Appwrite.Query.limit(25),
       ]
     );
-    return response.documents;
+    return response.documents as Partial<Message>[];
   },
 
-  getNextMessages: async (chatId: string, lastFetchedMessageId: string) => {
+  getNextMessages: async (
+    chatId: string,
+    lastFetchedMessageId: string
+  ): Promise<Partial<Message>[]> => {
     const response = await Appwrite.databases.listDocuments(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
       [
         Appwrite.Query.equal("chatId", chatId),
-        Appwrite.Query.orderDesc("sentTime"),
+        Appwrite.Query.orderAsc("sentTime"),
         Appwrite.Query.cursorAfter(lastFetchedMessageId),
         Appwrite.Query.limit(25),
       ]
     );
-    return response.documents;
+    return response.documents as Partial<Message>[];
+  },
+
+  getMessagesAfterMessageId: async (
+    chatId: string,
+    lastFetchedMessageId: string
+  ): Promise<Partial<Message>[]> => {
+    const response = await Appwrite.databases.listDocuments(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
+      [
+        Appwrite.Query.equal("chatId", chatId),
+        Appwrite.Query.orderAsc("sentTime"),
+        Appwrite.Query.cursorAfter(lastFetchedMessageId),
+        Appwrite.Query.limit(25),
+      ]
+    );
+    return response.documents as Partial<Message>[];
   },
 
   // getMessageByID: async (

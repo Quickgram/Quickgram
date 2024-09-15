@@ -3,6 +3,8 @@ export default {
   secondary: "#007BFF",
   background: "#EFEEF6",
   border: "#ccc",
+  rightMessageBox: "#BBDEFB",
+  leftMessageBox: "#E7EBF4",
 
   // Red Shades
   red: "#FF0000",

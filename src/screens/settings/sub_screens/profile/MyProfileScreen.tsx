@@ -6,7 +6,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Colors from "@/src/styles/colors";
-import FastImage from "react-native-fast-image";
+import { Image } from "expo-image";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { AppStackParamList } from "@/src/types/navigation";
 
@@ -26,12 +26,13 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = () => {
         overScrollMode="always"
         bounces={true}
       >
-        <FastImage
+        <Image
           style={styles.profilePicture}
           source={{
             uri: currentUser?.profile_picture_url,
-            cache: FastImage.cacheControl.immutable,
           }}
+          placeholderContentFit="contain"
+          cachePolicy="memory-disk"
         />
         <Text style={styles.name}>{currentUser?.name}</Text>
         <Text style={styles.activeStatus}>

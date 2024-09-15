@@ -12,7 +12,6 @@ import Chat from "@/src/models/chat";
 
 const usersCollection = database.get<User>("users");
 const messagesCollection = database.get<Message>("messages");
-const chatsCollection = database.get<Chat>("chats");
 
 export const localdbServices = {
   createUserDataInLocaldb: async (userData: Partial<User>): Promise<void> => {
@@ -128,7 +127,7 @@ export const localdbServices = {
     });
   },
 
-  createMessagesInLocaldb: async (
+  saveMessagesInLocaldb: async (
     messages: Partial<Message>[]
   ): Promise<void> => {
     await database.write(async () => {
@@ -146,13 +145,6 @@ export const localdbServices = {
                 });
               }
             } catch (error) {
-              console.log(
-                "error updating message // message data same  -> creating new message ",
-                filteredMessageData.messageId,
-                "error is:",
-                error
-              );
-
               await messagesCollection.create((message) => {
                 message._raw.id = filteredMessageData.messageId!;
                 Object.assign(message, filteredMessageData);
@@ -171,13 +163,13 @@ export const localdbServices = {
     });
   },
 
-  getMessagesFromLocaldb: async (messageIds: string[]): Promise<Message[]> => {
-    const messages = [];
+  getMessagesFromLocaldbByChatId: async (
+    chatId: string
+  ): Promise<Message[]> => {
     try {
-      for (const messageId of messageIds) {
-        const message = await messagesCollection.find(messageId);
-        messages.push(message);
-      }
+      const messages = await messagesCollection
+        .query(Q.where("chatId", chatId))
+        .fetch();
       return messages;
     } catch (error) {
       return [];
@@ -193,39 +185,39 @@ export const localdbServices = {
     }
   },
 
-  getChatDataFromLocaldbByID: async (chatId: string): Promise<Chat | null> => {
-    try {
-      const chat = await chatsCollection.find(chatId);
-      return chat;
-    } catch (error) {
-      console.log("error", error);
-      return null;
-    }
-  },
+  // getChatDataFromLocaldbByID: async (chatId: string): Promise<Chat | null> => {
+  //   try {
+  //     const chat = await chatsCollection.find(chatId);
+  //     return chat;
+  //   } catch (error) {
+  //     console.log("error", error);
+  //     return null;
+  //   }
+  // },
 
-  updateChatDataInLocaldb: async (chatData: Partial<Chat>) => {
-    try {
-      const filteredChatData = filterChatData(chatData);
-      await database.write(async () => {
-        try {
-          const existingChat = await chatsCollection.find(
-            filteredChatData.chatId!
-          );
+  // updateChatDataInLocaldb: async (chatData: Partial<Chat>) => {
+  //   try {
+  //     const filteredChatData = filterChatData(chatData);
+  //     await database.write(async () => {
+  //       try {
+  //         const existingChat = await chatsCollection.find(
+  //           filteredChatData.chatId!
+  //         );
 
-          await existingChat.update((chat) => {
-            Object.assign(chat, filteredChatData);
-          });
-        } catch (error) {
-          await chatsCollection.create((chat) => {
-            chat._raw.id = filteredChatData.chatId!;
-            Object.assign(chat, filteredChatData);
-          });
-        }
-      });
-    } catch (error) {
-      console.log("error", error);
-    }
-  },
+  //         await existingChat.update((chat) => {
+  //           Object.assign(chat, filteredChatData);
+  //         });
+  //       } catch (error) {
+  //         await chatsCollection.create((chat) => {
+  //           chat._raw.id = filteredChatData.chatId!;
+  //           Object.assign(chat, filteredChatData);
+  //         });
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   }
+  // },
 
   deleteAllUsersDataFromLocaldb: async (): Promise<void> => {
     await database.write(async () => {

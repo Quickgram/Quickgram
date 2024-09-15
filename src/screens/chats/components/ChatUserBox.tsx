@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Colors from "../../../styles/colors";
 import User from "../../../models/user";
-import FastImage from "react-native-fast-image";
+import { Image } from "expo-image";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -18,12 +18,13 @@ const ChatUserBox = ({
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
-        <FastImage
+        <Image
           source={{
             uri: user.profile_picture_url,
-            cache: FastImage.cacheControl.immutable,
           }}
           style={styles.profileImage}
+          placeholderContentFit="contain"
+          cachePolicy="memory-disk"
         />
         <View style={styles.textContainer}>
           <Text style={styles.userName}>{user.name}</Text>

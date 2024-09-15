@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { apiServices } from "../../../services/api/apiServices";
 import Message from "@/src/models/message";
 import User from "@/src/models/user";
-import Chat from "@/src/models/chat";
 import { localdbServices } from "@/src/services/db/localdbServices";
 import * as Appwrite from "@/src/config/appwrite";
+import { useGlobalState } from "@/src/contexts/GlobalStateContext";
+import { ShowToast } from "@/src/components/common/ShowToast";
+import { hp, wp } from "@/src/styles/responsive";
+import { MessageBubble } from "./MessageBubble";
 
 interface MessagesListProps {
   currentChatUser: User;
@@ -22,50 +25,93 @@ const MessagesList: React.FC<MessagesListProps> = ({
   const [messages, setMessages] = useState<Partial<Message>[]>([]);
   const lastFetchedMessageId = useRef<string | null>(null);
   const subscription = useRef<any>(null);
+  const { hasInternetConnection } = useGlobalState();
+  const prevInternetConnection = useRef<boolean | null>(null);
+
+  const shortingMessagesByTime = (messages: Partial<Message>[]) => {
+    const messageMap = new Map<string, Partial<Message>>();
+    messages.forEach((msg) => messageMap.set(msg.messageId!, msg));
+    return Array.from(messageMap.values()).sort((a, b) =>
+      b.sentTime! > a.sentTime! ? 1 : -1
+    );
+  };
 
   const fetchInitialMessages = async () => {
-    const initialMessages = await apiServices.getInitialMessages(chatId);
-    setMessages(initialMessages as Partial<Message>[]);
+    const localMessages = await localdbServices.getMessagesFromLocaldbByChatId(
+      chatId
+    );
+    const shortedLocalMessages = shortingMessagesByTime(localMessages);
+    setMessages(shortedLocalMessages as Partial<Message>[]);
+
+    const apiMessages = await apiServices.getInitialMessages(chatId);
+    const mergedMessages = mergeMessages(localMessages, apiMessages);
+    setMessages(mergedMessages);
+    await localdbServices.saveMessagesInLocaldb(apiMessages);
     lastFetchedMessageId.current =
-      initialMessages[initialMessages.length - 1]?.messageId;
+      apiMessages[apiMessages.length - 1]?.messageId ?? null;
   };
 
   const fetchNextMessages = async () => {
+    console.log("fetchNextMessages");
     if (!lastFetchedMessageId.current) return;
     const nextMessages = await apiServices.getNextMessages(
       chatId,
       lastFetchedMessageId.current
     );
-    setMessages((prevMessages) => [
-      ...(prevMessages as Partial<Message>[]),
-      ...(nextMessages as Partial<Message>[]),
-    ]);
-
+    setMessages((prevMessages) => mergeMessages(prevMessages, nextMessages));
+    await localdbServices.saveMessagesInLocaldb(nextMessages);
     lastFetchedMessageId.current =
-      nextMessages[nextMessages.length - 1]?.messageId;
+      nextMessages[nextMessages.length - 1]?.messageId ?? null;
   };
 
-  // Handle real-time updates
+  const fetchMissedMessages = async () => {
+    ShowToast("error", "fetchMissedMessages", "fetchMissedMessages");
+    if (lastFetchedMessageId.current) {
+      const missedMessages = await apiServices.getMessagesAfterMessageId(
+        chatId,
+        lastFetchedMessageId.current
+      );
+      console.log("missedMessages", missedMessages);
+      setMessages((prevMessages) =>
+        mergeMessages(prevMessages, missedMessages)
+      );
+      await localdbServices.saveMessagesInLocaldb(missedMessages);
+      if (missedMessages.length > 0) {
+        lastFetchedMessageId.current =
+          missedMessages[missedMessages.length - 1]?.messageId ?? null;
+      }
+    }
+  };
+
+  const mergeMessages = (
+    localMessages: Partial<Message>[],
+    apiMessages: Partial<Message>[]
+  ) => {
+    const messageMap = new Map<string, Partial<Message>>();
+    localMessages.forEach((msg) => messageMap.set(msg.messageId!, msg));
+    apiMessages.forEach((msg) => messageMap.set(msg.messageId!, msg));
+    return Array.from(messageMap.values()).sort((a, b) =>
+      b.sentTime! > a.sentTime! ? 1 : -1
+    );
+  };
+
   const handleRealTimeUpdate = useCallback(
-    (event: any) => {
+    async (event: any) => {
       const updatedMessage = event.payload;
-      // Check if the update pertains to the specific chatId
       if (updatedMessage.chatId === chatId) {
         setMessages((prevMessages) => {
-          // Check if message exists and update or add
           const messageIndex = prevMessages.findIndex(
             (msg) => msg.messageId === updatedMessage.messageId
           );
           if (messageIndex >= 0) {
-            // Update existing message
             const updatedMessages = [...prevMessages];
             updatedMessages[messageIndex] = updatedMessage;
             return updatedMessages;
           } else {
-            // Add new message
             return [updatedMessage, ...prevMessages];
           }
         });
+        await localdbServices.saveMessagesInLocaldb([updatedMessage]);
       }
     },
     [chatId]
@@ -74,24 +120,28 @@ const MessagesList: React.FC<MessagesListProps> = ({
   useEffect(() => {
     fetchInitialMessages();
 
-    // Subscribe to the entire messages collection
     subscription.current = Appwrite.client.subscribe(
       `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID}.documents`,
       (event) => handleRealTimeUpdate(event)
     );
 
     return () => {
-      // Unsubscribe on unmount
       if (subscription.current) {
         subscription.current();
       }
     };
   }, [chatId, handleRealTimeUpdate]);
 
+  useEffect(() => {
+    if (prevInternetConnection.current === false && hasInternetConnection) {
+      // The user just came online, so fetch missed messages
+      fetchMissedMessages();
+    }
+    prevInternetConnection.current = hasInternetConnection; // Update the previous state
+  }, [hasInternetConnection]);
+
   const renderItem = ({ item }: { item: Partial<Message> }) => (
-    <View style={styles.item}>
-      <Text>{item.text}</Text>
-    </View>
+    <MessageBubble message={item} currentUserId={currentUser.uid} />
   );
 
   return (
@@ -100,17 +150,18 @@ const MessagesList: React.FC<MessagesListProps> = ({
       renderItem={renderItem}
       keyExtractor={(item) => item.messageId || Math.random().toString()}
       estimatedItemSize={100}
-      contentContainerStyle={styles.listContent}
       onEndReached={fetchNextMessages}
       onEndReachedThreshold={0.2}
+      inverted
+      contentContainerStyle={{
+        paddingTop: hp("6%"),
+        paddingHorizontal: wp("1%"),
+      }}
     />
   );
 };
 
 const styles = StyleSheet.create({
-  listContent: {
-    paddingBottom: 50,
-  },
   item: {
     backgroundColor: "#fff",
     padding: 10,

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import FastImage from "react-native-fast-image";
+import { Image } from "expo-image";
 import { AnnouncementInfo } from "@/src/types/announcementInfo";
 import Colors from "@/src/styles/colors";
 import {
@@ -15,12 +15,13 @@ interface AnnouncementCardProps {
 const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ item }) => (
   <TouchableOpacity style={styles.announcementItem}>
     {item.imageUrl && (
-      <FastImage
+      <Image
         source={{
           uri: item.imageUrl,
-          cache: FastImage.cacheControl.immutable,
         }}
         style={styles.announcementImage}
+        placeholderContentFit="contain"
+        cachePolicy="memory-disk"
       />
     )}
     <View style={styles.announcementContent}>

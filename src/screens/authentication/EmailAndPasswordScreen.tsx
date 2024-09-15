@@ -69,6 +69,7 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
               placeholder="Email"
               value={email}
               keyboardType="email-address"
+              autoCapitalize="none"
               onChangeText={setEmail}
               style={styles.input}
             />
@@ -84,6 +85,7 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
               placeholder="Password"
               value={password}
               secureTextEntry
+              autoCapitalize="none"
               onChangeText={setPassword}
               style={styles.input}
             />

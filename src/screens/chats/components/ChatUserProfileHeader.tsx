@@ -7,7 +7,7 @@ import {
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import FastImage from "react-native-fast-image";
+import { Image } from "expo-image";
 import Colors from "../../../styles/colors";
 import {
   widthPercentageToDP as wp,
@@ -29,11 +29,12 @@ const ChatUserProfileHeader: React.FC<ChatUserProfileHeaderProps> = ({
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="chevron-back" size={wp("9%")} color={Colors.primary} />
       </TouchableOpacity>
-      <FastImage
+      <Image
         source={{
           uri: currentChatUser.profile_picture_url,
-          cache: FastImage.cacheControl.immutable,
         }}
+        placeholderContentFit="contain"
+        cachePolicy="memory-disk"
         style={styles.profilePic}
       />
       <View style={styles.userInfo}>

@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, KeyboardAvoidingView, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  KeyboardAvoidingView,
+  View,
+  SafeAreaView,
+} from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import {
@@ -55,10 +60,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-  },
-  listContent: {
-    paddingBottom: hp("10%"),
-    paddingHorizontal: wp("4%"),
   },
   item: {
     backgroundColor: Colors.white,
