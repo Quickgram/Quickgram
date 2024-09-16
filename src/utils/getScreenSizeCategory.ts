@@ -24,5 +24,5 @@ export const getScreenSizeCategory = () => {
     if (isRegularScreenAndroid) return "regular";
     if (isLargeScreenAndroid) return "large";
   }
-  return "unknown";
+  return "regular";
 };

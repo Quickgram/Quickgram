@@ -12,7 +12,7 @@ import SplashScreen from "../screens/welcome/SplashScreen";
 import { TouchableOpacity, View } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { Colors } from "../styles/colors";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import { wp } from "@/src/styles/responsive";
 import MyProfileScreen from "../screens/settings/sub_screens/profile/MyProfileScreen";
 import AccountScreen from "../screens/settings/sub_screens/account/AccountScreen";
 import AnnouncementsScreen from "../screens/settings/sub_screens/announcements/AnnouncementsScreen";
@@ -63,14 +63,14 @@ const AppNavigator = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                   <Ionicons
                     name="chevron-back"
-                    size={wp("7%")}
+                    size={wp(7)}
                     color={Colors.primary}
                   />
                 </TouchableOpacity>
               ),
               headerRight: () => (
                 <TouchableOpacity onPress={() => logout()}>
-                  <Feather name="log-out" size={wp("7%")} color={Colors.red} />
+                  <Feather name="log-out" size={wp(7)} color={Colors.red} />
                 </TouchableOpacity>
               ),
             })}
@@ -88,7 +88,7 @@ const AppNavigator = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                   <Ionicons
                     name="chevron-back"
-                    size={wp("7%")}
+                    size={wp(7)}
                     color={Colors.primary}
                   />
                 </TouchableOpacity>
@@ -108,7 +108,7 @@ const AppNavigator = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                   <Ionicons
                     name="chevron-back"
-                    size={wp("7%")}
+                    size={wp(7)}
                     color={Colors.primary}
                   />
                 </TouchableOpacity>
@@ -128,7 +128,7 @@ const AppNavigator = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                   <Ionicons
                     name="chevron-back"
-                    size={wp("7%")}
+                    size={wp(7)}
                     color={Colors.primary}
                   />
                 </TouchableOpacity>
@@ -148,7 +148,7 @@ const AppNavigator = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                   <Ionicons
                     name="chevron-back"
-                    size={wp("7%")}
+                    size={wp(7)}
                     color={Colors.primary}
                   />
                 </TouchableOpacity>

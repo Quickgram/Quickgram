@@ -2,10 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/src/styles/colors";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Image } from "expo-image";
 import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 
@@ -35,15 +32,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     <View style={styles.container}>
       <View style={styles.headerButton}>
         <TouchableOpacity onPress={onGridPress}>
-          <Ionicons
-            name="grid-outline"
-            size={wp("6%")}
-            color={Colors.primary}
-          />
+          <Ionicons name="grid-outline" size={wp(6)} color={Colors.primary} />
         </TouchableOpacity>
         {isProfileEditing ? (
           <TouchableOpacity onPress={onCancelPress}>
-            <Text style={{ color: Colors.primary, fontSize: wp("4%") }}>
+            <Text style={{ color: Colors.primary, fontSize: wp(4) }}>
               Cancel
             </Text>
           </TouchableOpacity>
@@ -51,7 +44,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <TouchableOpacity onPress={onEditPress}>
             <Ionicons
               name="create-outline"
-              size={wp("6%")}
+              size={wp(6)}
               color={Colors.primary}
             />
           </TouchableOpacity>
@@ -71,11 +64,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         style={styles.changePhotoButton}
         onPress={onChangePhoto}
       >
-        <Ionicons
-          name="camera-outline"
-          size={wp("5%")}
-          color={Colors.primary}
-        />
+        <Ionicons name="camera-outline" size={wp(5)} color={Colors.primary} />
         <Text style={styles.changePhotoText}>Change Profile Photo</Text>
       </TouchableOpacity>
     </View>
@@ -85,41 +74,41 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingVertical: hp("1%"),
+    paddingVertical: hp(1),
   },
   headerButton: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    paddingHorizontal: wp("2%"),
-    marginBottom: hp("2%"),
+    paddingHorizontal: wp(2),
+    marginBottom: hp(2),
   },
   profilePicture: {
-    width: wp("25%"),
-    height: wp("25%"),
-    borderRadius: wp("15%"),
+    width: wp(25),
+    height: wp(25),
+    borderRadius: wp(15),
     borderWidth: 2,
     borderColor: Colors.primary,
   },
   profileName: {
-    fontSize: wp("5%"),
+    fontSize: wp(5),
     fontWeight: "bold",
-    marginTop: hp("1%"),
+    marginTop: hp(1),
   },
   profileInfo: {
-    fontSize: wp("3.5%"),
+    fontSize: wp(3.5),
     color: Colors.gray,
-    marginTop: hp("0.5%"),
+    marginTop: hp(0.5),
   },
   changePhotoButton: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: hp("1%"),
+    marginTop: hp(1),
   },
   changePhotoText: {
     color: Colors.primary,
-    marginLeft: wp("1%"),
-    fontSize: wp("3.5%"),
+    marginLeft: wp(1),
+    fontSize: wp(3.5),
   },
 });
 

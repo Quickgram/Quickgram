@@ -7,10 +7,7 @@ import {
   Text,
   ActivityIndicator,
 } from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { ShowToast } from "../common/ShowToast";
@@ -82,7 +79,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
       <View style={styles.inputContainer}>
         <Ionicons
           name="person-outline"
-          size={wp("6%")}
+          size={wp(6)}
           color={Colors.gray}
           style={styles.icon}
         />
@@ -98,7 +95,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
       <View style={styles.inputContainer}>
         <Ionicons
           name="at-outline"
-          size={wp("6%")}
+          size={wp(6)}
           color={Colors.gray}
           style={styles.icon}
         />
@@ -114,7 +111,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
       <View style={styles.inputContainer}>
         <Ionicons
           name="information-circle-outline"
-          size={wp("6%")}
+          size={wp(6)}
           color={Colors.gray}
           style={styles.icon}
         />
@@ -130,7 +127,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
         style={[
           styles.updateButton,
           isButtonEnabled && styles.enabled,
-          { marginBottom: hp("2%"), marginTop: hp("2%") },
+          { marginBottom: hp(2), marginTop: hp(2) },
         ]}
         onPress={handleUpdatePress}
         disabled={!isButtonEnabled || isProfileUpdating}
@@ -152,33 +149,33 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: wp("4%"),
-    marginTop: hp("2%"),
+    paddingHorizontal: wp(4),
+    marginTop: hp(2),
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: Colors.white,
-    borderRadius: wp("3%"),
-    marginBottom: hp("2%"),
-    paddingHorizontal: wp("3%"),
+    borderRadius: wp(3),
+    marginBottom: hp(2),
+    paddingHorizontal: wp(3),
     borderWidth: 1,
     borderColor: Colors.lightGray,
   },
   icon: {
-    marginRight: wp("2%"),
+    marginRight: wp(2),
   },
   input: {
     flex: 1,
-    padding: wp("3%"),
-    fontSize: wp("4%"),
+    padding: wp(3),
+    fontSize: wp(4),
   },
   updateButton: {
     width: "100%",
     alignItems: "center",
     backgroundColor: Colors.lightGray,
-    padding: wp("2.5%"),
-    borderRadius: wp("2.5%"),
+    padding: wp(2.5),
+    borderRadius: wp(2.5),
   },
   enabled: {
     backgroundColor: Colors.primary,
@@ -186,7 +183,7 @@ const styles = StyleSheet.create({
   },
   updateButtonText: {
     color: Colors.gray,
-    fontSize: wp("5.5%"),
+    fontSize: wp(5.5),
     fontWeight: "500",
   },
 });

@@ -2,10 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "@/src/types/navigation";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 
 type SetEmailAndPasswordProps = NativeStackScreenProps<
@@ -35,11 +32,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    padding: wp("2%"),
+    padding: wp(2),
     backgroundColor: Colors.background,
   },
   scrollContent: {
-    paddingBottom: hp("10%"),
-    paddingHorizontal: wp("2.2%"),
+    paddingBottom: hp(10),
+    paddingHorizontal: wp(2.2),
   },
 });

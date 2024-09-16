@@ -13,10 +13,7 @@ import React, { useState, useCallback } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import TextInputBox from "../../components/common/TextInputBox";
 import { Colors } from "@/src/styles/colors";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Ionicons } from "@expo/vector-icons";
 import { AppStackParamList } from "../../types/navigation";
 import { useAuth } from "../../contexts/AuthContext";
@@ -61,7 +58,7 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
           <View style={styles.inputWrapper}>
             <Ionicons
               name="mail-outline"
-              size={wp("5%")}
+              size={wp(5)}
               color={Colors.gray}
               style={styles.inputIcon}
             />
@@ -77,7 +74,7 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
           <View style={styles.inputWrapper}>
             <Ionicons
               name="lock-closed-outline"
-              size={wp("5%")}
+              size={wp(5)}
               color={Colors.gray}
               style={styles.inputIcon}
             />
@@ -125,35 +122,35 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: wp("5%"),
-    paddingTop: hp("6%"),
+    padding: wp(5),
+    paddingTop: hp(6),
     backgroundColor: Colors.background,
   },
   inputContainer: {
-    marginVertical: hp("3%"),
+    marginVertical: hp(3),
   },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: Colors.white,
-    borderRadius: wp("2.5%"),
-    marginVertical: wp("1.5%"),
-    height: hp("6%"),
+    borderRadius: wp(2.5),
+    marginVertical: wp(1.5),
+    height: hp(6),
   },
   inputIcon: {
-    paddingLeft: wp("3%"),
+    paddingLeft: wp(3),
   },
   input: {
     flex: 1,
-    marginLeft: wp("2%"),
+    marginLeft: wp(2),
     height: "100%",
     paddingVertical: 0,
   },
   legal: {
-    fontSize: wp("3%"),
+    fontSize: wp(3),
     textAlign: "center",
     color: "#000",
-    marginTop: hp("2%"),
+    marginTop: hp(2),
   },
   link: {
     color: Colors.primary,
@@ -162,16 +159,16 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     backgroundColor: Colors.lightGray,
-    padding: wp("2.5%"),
-    borderRadius: wp("2.5%"),
-    marginTop: hp("3%"),
+    padding: wp(2.5),
+    borderRadius: wp(2.5),
+    marginTop: hp(3),
   },
   enabled: {
     backgroundColor: Colors.primary,
   },
   buttonText: {
     color: Colors.gray,
-    fontSize: wp("5.5%"),
+    fontSize: wp(5.5),
     fontWeight: "500",
   },
   enabledText: {
@@ -179,10 +176,10 @@ const styles = StyleSheet.create({
   },
   phoneImage: {
     alignSelf: "center",
-    marginBottom: hp("2%"),
-    width: wp("70%"),
-    height: hp("25%"),
-    borderRadius: wp("15%"),
+    marginBottom: hp(2),
+    width: wp(70),
+    height: hp(25),
+    borderRadius: wp(15),
   },
 });
 

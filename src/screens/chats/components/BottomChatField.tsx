@@ -33,7 +33,7 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
   const { isIos } = useGlobalState();
   const [isTyping, setIsTyping] = useState(false);
   const [textMessage, setTextMessage] = useState("");
-  const MAX_HEIGHT = hp("6%");
+  const MAX_HEIGHT = hp(6);
 
   const textChange = (text: string) => {
     setTextMessage(text);
@@ -80,7 +80,7 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
               });
             }}
           >
-            <Ionicons name="add-outline" size={wp("8%")} />
+            <Ionicons name="add-outline" size={wp(8)} />
           </TouchableOpacity>
         )}
 
@@ -95,9 +95,9 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
             onContentSizeChange={(event) => {
               const { height } = event.nativeEvent.contentSize;
               if (height <= MAX_HEIGHT) {
-                onHeightChange(height + hp("4.9%"));
+                onHeightChange(height + hp(4.9));
               } else {
-                onHeightChange(MAX_HEIGHT + hp("4.9%"));
+                onHeightChange(MAX_HEIGHT + hp(4.9));
               }
             }}
           />
@@ -105,10 +105,10 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
         {!isTyping ? (
           <>
             <TouchableOpacity style={styles.button}>
-              <Ionicons name="camera-outline" size={wp("8%")} />
+              <Ionicons name="camera-outline" size={wp(8)} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
-              <Ionicons name="happy-outline" size={wp("7%")} />
+              <Ionicons name="happy-outline" size={wp(7)} />
             </TouchableOpacity>
           </>
         ) : (
@@ -116,13 +116,13 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
             style={[
               styles.sendButton,
               {
-                width: isIos ? hp("4%") : hp("5.5%"),
-                height: isIos ? hp("4%") : hp("5.5%"),
+                width: isIos ? hp(4) : hp(5.5),
+                height: isIos ? hp(4) : hp(5.5),
               },
             ]}
             onPress={sendTextMessage}
           >
-            <Ionicons name="send" size={wp("5%")} color={Colors.white} />
+            <Ionicons name="send" size={wp(5)} color={Colors.white} />
           </TouchableOpacity>
         )}
       </View>
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     flexDirection: "row",
-    maxHeight: hp("10.2%"),
-    padding: hp("1%"),
+    maxHeight: hp(10.2),
+    padding: hp(1),
     backgroundColor: Colors.background,
   },
   inputWrapper: {
@@ -147,27 +147,27 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     borderWidth: 1,
     borderRadius: 20,
-    marginRight: wp("2%"),
+    marginRight: wp(2),
   },
   addButton: {
     justifyContent: "center",
     alignItems: "center",
-    width: hp("4%"),
-    height: hp("4%"),
+    width: hp(4),
+    height: hp(4),
   },
   inputContainer: {
     height: "100%",
-    paddingHorizontal: wp("3%"),
-    paddingVertical: hp("1%"),
-    fontSize: wp("4%"),
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(1),
+    fontSize: wp(4),
   },
   button: {
     justifyContent: "center",
     alignItems: "center",
-    width: hp("4%"),
-    height: hp("4%"),
+    width: hp(4),
+    height: hp(4),
     elevation: 2,
-    marginHorizontal: wp("0.5%"),
+    marginHorizontal: wp(0.5),
   },
   sendButton: {
     justifyContent: "center",

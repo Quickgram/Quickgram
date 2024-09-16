@@ -1,10 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Image } from "expo-image";
 import { useAuth } from "@/src/contexts/AuthContext";
@@ -67,54 +64,54 @@ export default MyProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: wp("2%"),
+    padding: wp(2),
     backgroundColor: Colors.background,
   },
   scrollContent: {
-    paddingBottom: hp("10%"),
-    paddingHorizontal: wp("2.2%"),
+    paddingBottom: hp(10),
+    paddingHorizontal: wp(2.2),
   },
   profilePicture: {
-    width: wp("50%"),
-    height: wp("50%"),
+    width: wp(50),
+    height: wp(50),
     alignSelf: "center",
-    borderRadius: wp("25%"),
+    borderRadius: wp(25),
     borderWidth: 2,
     borderColor: Colors.primary,
-    marginBottom: hp("1%"),
+    marginBottom: hp(1),
   },
   name: {
-    fontSize: wp("6%"),
+    fontSize: wp(6),
     fontWeight: "600",
-    marginBottom: hp("0.2%"),
+    marginBottom: hp(0.2),
     textAlign: "center",
   },
   activeStatus: {
-    fontSize: wp("4%"),
+    fontSize: wp(4),
     color: Colors.darkGray,
-    marginBottom: hp("3%"),
+    marginBottom: hp(3),
     textAlign: "center",
   },
   infoContainer: {
     width: "100%",
     backgroundColor: Colors.white,
-    borderRadius: wp("3%"),
-    paddingHorizontal: wp("4%"),
+    borderRadius: wp(3),
+    paddingHorizontal: wp(4),
   },
   infoLabel: {
-    fontSize: wp("4%"),
+    fontSize: wp(4),
     color: Colors.black,
-    marginTop: hp("0.8%"),
-    marginBottom: hp("0.41%"),
+    marginTop: hp(0.8),
+    marginBottom: hp(0.41),
   },
   infoValue: {
-    fontSize: wp("4.5%"),
-    marginBottom: hp("1.2%"),
+    fontSize: wp(4.5),
+    marginBottom: hp(1.2),
     color: Colors.secondary,
   },
   aboutTextValue: {
-    fontSize: wp("4.5%"),
-    marginBottom: hp("1.2%"),
+    fontSize: wp(4.5),
+    marginBottom: hp(1.2),
   },
   separator: {
     height: StyleSheet.hairlineWidth,

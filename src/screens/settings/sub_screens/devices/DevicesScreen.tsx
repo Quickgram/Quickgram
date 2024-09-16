@@ -8,10 +8,7 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "@/src/types/navigation";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
 import RenderDeviceBox from "@/src/components/settings/RenderDeviceBox";
@@ -77,7 +74,7 @@ const DevicesScreen: React.FC<DevicesScreenProps> = () => {
             >
               <Ionicons
                 name="hand-left-outline"
-                size={wp("5%")}
+                size={wp(5)}
                 color={Colors.red}
               />
               <Text style={styles.terminateText}>
@@ -106,45 +103,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    padding: wp("2%"),
+    padding: wp(2),
     backgroundColor: Colors.background,
   },
   scrollContent: {
-    paddingBottom: hp("10%"),
-    paddingHorizontal: wp("2.2%"),
+    paddingBottom: hp(10),
+    paddingHorizontal: wp(2.2),
   },
   sectionTitle: {
-    fontSize: wp("3.5%"),
+    fontSize: wp(3.5),
     fontWeight: "bold",
     color: Colors.primary,
-    marginTop: hp("2%"),
-    marginBottom: hp("1%"),
+    marginTop: hp(2),
+    marginBottom: hp(1),
   },
   otherDevicesContainer: {
     width: "100%",
-    paddingHorizontal: wp("2%"),
+    paddingHorizontal: wp(2),
   },
   terminateButton: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: Colors.white,
     borderRadius: 10,
-    padding: wp("3%"),
-    marginTop: hp("1%"),
+    padding: wp(3),
+    marginTop: hp(1),
   },
   terminateText: {
     color: Colors.red,
-    marginLeft: wp("2%"),
-    fontSize: wp("4%"),
+    marginLeft: wp(2),
+    fontSize: wp(4),
   },
   terminateDescription: {
-    fontSize: wp("3.8%"),
-    marginTop: hp("1%"),
-    marginBottom: hp("2%"),
+    fontSize: wp(3.8),
+    marginTop: hp(1),
+    marginBottom: hp(2),
   },
   appInfo: {
-    fontSize: wp("3.6%"),
-    marginVertical: hp("1%"),
+    fontSize: wp(3.6),
+    marginVertical: hp(1),
   },
 });
 

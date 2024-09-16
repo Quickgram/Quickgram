@@ -1,10 +1,7 @@
 import { Colors } from "@/src/styles/colors";
 import React from "react";
 import { StyleSheet, View, Image } from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 
 const SplashScreen = () => {
   const iconImage = require("../../../assets/images/icon.png");
@@ -23,8 +20,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   icon: {
-    width: wp("50%"),
-    height: wp("50%"),
+    width: wp(50),
+    height: wp(50),
   },
 });
 

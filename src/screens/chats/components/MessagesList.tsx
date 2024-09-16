@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { apiServices } from "../../../services/api/apiServices";
 import Message from "@/src/models/Message";
@@ -10,7 +9,6 @@ import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 import { ShowToast } from "@/src/components/common/ShowToast";
 import { hp, wp } from "@/src/styles/responsive";
 import { MessageBubble } from "./MessageBubble";
-import { Colors } from "@/src/styles/colors";
 
 interface MessagesListProps {
   currentChatUser: User;
@@ -55,28 +53,24 @@ const MessagesList: React.FC<MessagesListProps> = ({
   };
 
   const fetchNextMessages = async () => {
-    console.log("fetchNextMessages");
     if (!lastFetchedMessageId.current) return;
     const nextMessages = await apiServices.getNextMessages(
       chatId,
       lastFetchedMessageId.current
     );
-    console.log("nextMessages", nextMessages);
     setMessages((prevMessages) => mergeMessages(prevMessages, nextMessages));
-    console.log("success");
+
     await localdbServices.saveMessagesInLocaldb(nextMessages);
     lastFetchedMessageId.current =
       nextMessages[nextMessages.length - 1]?.messageId ?? null;
   };
 
   const fetchMissedMessages = async () => {
-    ShowToast("error", "fetchMissedMessages", "fetchMissedMessages");
     if (lastFetchedMessageId.current) {
       const missedMessages = await apiServices.getMessagesAfterMessageId(
         chatId,
         lastFetchedMessageId.current
       );
-      console.log("missedMessages", missedMessages);
       setMessages((prevMessages) =>
         mergeMessages(prevMessages, missedMessages)
       );
@@ -159,7 +153,7 @@ const MessagesList: React.FC<MessagesListProps> = ({
       inverted
       contentContainerStyle={{
         paddingTop: bottomPadding,
-        paddingHorizontal: wp("1%"),
+        paddingHorizontal: wp(1),
       }}
     />
   );

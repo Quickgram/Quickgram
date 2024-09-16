@@ -1,10 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import {
   renderAccountSettingItems,
   mainItems,
@@ -49,10 +46,10 @@ export default AccountScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: wp("2%"),
+    padding: wp(2),
     backgroundColor: Colors.background,
   },
   scrollContent: {
-    paddingBottom: hp("18%"),
+    paddingBottom: hp(18),
   },
 });

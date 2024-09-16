@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { FlashList } from "@shopify/flash-list";
 import { apiServices } from "@/src/services/api/apiServices";
 import AnnouncementCard from "@/src/components/settings/AnnouncementCard";
-import { AnnouncementResponse } from "@/src/types/AnnouncementInfoType";
 import { AppStackParamList } from "@/src/types/navigation";
+import { AnnouncementResponse } from "@/src/types/AnnouncementInfo";
 
 type AnnouncementsScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -52,7 +49,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   listContent: {
-    paddingBottom: hp("10%"),
-    paddingHorizontal: wp("4%"),
+    paddingBottom: hp(10),
+    paddingHorizontal: wp(4),
   },
 });

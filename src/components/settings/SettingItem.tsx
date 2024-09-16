@@ -3,10 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/src/styles/colors";
 import BoxedIcon from "../common/BoxedIcon";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 
 interface SettingItemProps {
   name: string;
@@ -25,7 +22,7 @@ const SettingItem: React.FC<SettingItemProps> = ({
     <TouchableOpacity style={styles.item} onPress={() => onPress(name)}>
       <BoxedIcon name={icon} backgroundColor={backgroundColor} />
       <Text style={styles.itemText}>{name}</Text>
-      <Ionicons name="chevron-forward" size={wp("5%")} color={Colors.gray} />
+      <Ionicons name="chevron-forward" size={wp(5)} color={Colors.gray} />
     </TouchableOpacity>
   );
 };
@@ -115,23 +112,23 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    padding: wp("2.5%"),
-    gap: wp("2.7%"),
+    padding: wp(2.5),
+    gap: wp(2.7),
   },
   itemText: {
-    fontSize: wp("4.1%"),
+    fontSize: wp(4.1),
     flex: 1,
   },
   block: {
     backgroundColor: "#fff",
-    borderRadius: wp("2.5%"),
-    marginHorizontal: wp("3.4%"),
-    marginTop: hp("2.5%"),
+    borderRadius: wp(2.5),
+    marginHorizontal: wp(3.4),
+    marginTop: hp(2.5),
   },
   separator: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: Colors.lightGray,
-    marginLeft: wp("12.5%"),
+    marginLeft: wp(12.5),
   },
 });
 

@@ -1,12 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "../../styles/colors";
-import { SessionInfo } from "@/src/types/SessionInfoType";
+import { SessionInfo } from "@/src/types/SessionInfo";
 
 interface RenderDeviceBoxProps {
   session: SessionInfo;
@@ -34,13 +31,13 @@ const RenderDeviceBox: React.FC<RenderDeviceBoxProps> = ({ session }) => {
       {isDeviceIOS ? (
         <Ionicons
           name="phone-portrait-outline"
-          size={wp("7%")}
+          size={wp(7)}
           color={Colors.primary}
         />
       ) : (
         <MaterialIcons
           name="phone-android"
-          size={wp("7%")}
+          size={wp(7)}
           color={Colors.primary}
         />
       )}
@@ -59,21 +56,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.white,
     borderRadius: 10,
-    padding: wp("4%"),
-    marginBottom: hp("1%"),
+    padding: wp(4),
+    marginBottom: hp(1),
   },
   deviceInfo: {
-    marginLeft: wp("3%"),
+    marginLeft: wp(3),
   },
   deviceName: {
-    fontSize: wp("3.8%"),
+    fontSize: wp(3.8),
     fontWeight: "bold",
   },
   deviceDetails: {
-    fontSize: wp("3.5%"),
+    fontSize: wp(3.5),
   },
   deviceLocation: {
-    fontSize: wp("3.5%"),
+    fontSize: wp(3.5),
   },
 });
 

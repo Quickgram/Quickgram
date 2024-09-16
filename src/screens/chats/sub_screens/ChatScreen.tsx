@@ -7,10 +7,7 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "../../../styles/colors";
 import { useGlobalState } from "../../../contexts/GlobalStateContext";
 import ChatUserProfileHeader from "../components/ChatUserProfileHeader";
@@ -79,9 +76,9 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: Colors.white,
-    padding: wp("3%"),
-    marginVertical: hp("1%"),
-    borderRadius: wp("2%"),
+    padding: wp(3),
+    marginVertical: hp(1),
+    borderRadius: wp(2),
   },
 });
 

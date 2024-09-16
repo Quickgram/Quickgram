@@ -9,10 +9,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Colors } from "../../../styles/colors";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import User from "@/src/models/User";
 
 interface ChatUserProfileHeaderProps {
@@ -27,7 +24,7 @@ const ChatUserProfileHeader: React.FC<ChatUserProfileHeaderProps> = ({
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Ionicons name="chevron-back" size={wp("9%")} color={Colors.primary} />
+        <Ionicons name="chevron-back" size={wp(9)} color={Colors.primary} />
       </TouchableOpacity>
       <Image
         source={{
@@ -53,26 +50,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: Colors.background,
-    paddingHorizontal: wp("3%"),
-    paddingVertical: hp("1%"),
-    paddingTop: Platform.OS === "ios" ? hp("1%") : hp("5%"),
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(1),
+    paddingTop: Platform.OS === "ios" ? hp(1) : hp(5),
   },
   profilePic: {
-    width: wp("11%"),
-    height: wp("11%"),
-    borderRadius: wp("6%"),
-    marginHorizontal: wp("2%"),
+    width: wp(11),
+    height: wp(11),
+    borderRadius: wp(6),
+    marginHorizontal: wp(2),
   },
   userInfo: {
     flex: 1,
-    paddingHorizontal: wp("2%"),
+    paddingHorizontal: wp(2),
   },
   userName: {
     fontWeight: "bold",
-    fontSize: wp("4.2%"),
+    fontSize: wp(4.2),
   },
   userStatus: {
-    fontSize: wp("3.2%"),
+    fontSize: wp(3.2),
     color: Colors.gray,
   },
 });

@@ -2,11 +2,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useCallback, useMemo } from "react";
 import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { wp, hp } from "@/src/styles/responsive";
 
 const icons: { [key: string]: keyof typeof Ionicons.glyphMap } = {
   Home: "chatbubbles-outline",
@@ -22,7 +19,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
 }) => {
   const renderIcon = useCallback(
     (routeName: string, color: string) => (
-      <Ionicons name={icons[routeName]} size={wp("6%")} color={color} />
+      <Ionicons name={icons[routeName]} size={wp(6)} color={color} />
     ),
     []
   );
@@ -70,7 +67,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
             <Text
               style={{
                 color: isFocused ? Colors.primary : Colors.gray,
-                fontSize: wp("2.75%"),
+                fontSize: wp(2.75),
               }}
             >
               {label}
@@ -87,18 +84,18 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
 const styles = StyleSheet.create({
   tabbar: {
     position: "absolute",
-    bottom: hp("3%"),
+    bottom: hp(3),
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "white",
-    marginHorizontal: wp("5%"),
-    paddingVertical: hp("2%"),
-    borderRadius: wp("6%"),
+    marginHorizontal: wp(5),
+    paddingVertical: hp(2),
+    borderRadius: wp(6),
     borderCurve: "continuous",
     shadowColor: "black",
-    shadowOffset: { width: 0, height: hp("1.25%") },
-    shadowRadius: wp("2.5%"),
+    shadowOffset: { width: 0, height: hp(1.25) },
+    shadowRadius: wp(2.5),
     shadowOpacity: 0.1,
   },
   tabbarItem: {

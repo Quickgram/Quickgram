@@ -19,10 +19,7 @@ import {
 import { apiServices } from "../../services/api/apiServices";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../types/navigation";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useAuth } from "../../contexts/AuthContext";
 import { ShowToast } from "@/src/components/common/ShowToast";
@@ -130,7 +127,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           </TouchableOpacity>
         ) : (
           <View style={styles.timerContainer}>
-            <Entypo name="stopwatch" size={wp("4%")} color={Colors.darkGray} />
+            <Entypo name="stopwatch" size={wp(4)} color={Colors.darkGray} />
             <Text style={styles.timerText}>Resend code in {resendTimer}s</Text>
           </View>
         )}
@@ -163,13 +160,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    padding: wp("5%"),
-    paddingTop: hp("6%"),
+    padding: wp(5),
+    paddingTop: hp(6),
     backgroundColor: Colors.background,
-    gap: hp("2%"),
+    gap: hp(2),
   },
   legal: {
-    fontSize: wp("3%"),
+    fontSize: wp(3),
     textAlign: "center",
     color: "#000",
   },
@@ -179,7 +176,7 @@ const styles = StyleSheet.create({
   },
   resendButtonText: {
     color: Colors.primary,
-    fontSize: wp("4.5%"),
+    fontSize: wp(4.5),
   },
   timerContainer: {
     flexDirection: "row",
@@ -188,25 +185,25 @@ const styles = StyleSheet.create({
   },
   timerText: {
     color: Colors.darkGray,
-    fontSize: wp("3%"),
-    marginLeft: wp("1%"),
+    fontSize: wp(3),
+    marginLeft: wp(1),
   },
   codeFieldRoot: {
-    marginTop: hp("2%"),
-    width: wp("65%"),
+    marginTop: hp(2),
+    width: wp(65),
     marginLeft: "auto",
     marginRight: "auto",
-    gap: wp("1%"),
+    gap: wp(1),
   },
   otpImage: {
     alignSelf: "center",
-    width: wp("70%"),
-    height: hp("25%"),
-    borderRadius: wp("15%"),
+    width: wp(70),
+    height: hp(25),
+    borderRadius: wp(15),
   },
   cellRoot: {
-    width: wp("10%"),
-    height: hp("5%"),
+    width: wp(10),
+    height: hp(5),
     justifyContent: "center",
     alignItems: "center",
     borderBottomColor: "#ccc",
@@ -214,11 +211,11 @@ const styles = StyleSheet.create({
   },
   cellText: {
     color: "#000",
-    fontSize: wp("9%"),
+    fontSize: wp(9),
     textAlign: "center",
   },
   focusCell: {
-    paddingBottom: hp("0.5%"),
+    paddingBottom: hp(0.5),
     borderBottomColor: "#000",
     borderBottomWidth: 2,
   },
@@ -226,8 +223,8 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     backgroundColor: Colors.lightGray,
-    padding: wp("2.5%"),
-    borderRadius: wp("2.5%"),
+    padding: wp(2.5),
+    borderRadius: wp(2.5),
   },
   enabled: {
     backgroundColor: Colors.primary,
@@ -235,7 +232,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: Colors.gray,
-    fontSize: wp("5.5%"),
+    fontSize: wp(5.5),
     fontWeight: "500",
   },
 });

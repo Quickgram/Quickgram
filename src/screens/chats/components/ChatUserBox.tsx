@@ -3,10 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Colors } from "../../../styles/colors";
 import User from "../../../models/User";
 import { Image } from "expo-image";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 
 const ChatUserBox = ({
   user,
@@ -41,28 +38,28 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    gap: wp("3%"),
-    paddingLeft: wp("5%"),
-    paddingVertical: hp("1.1%"),
+    gap: wp(3),
+    paddingLeft: wp(5),
+    paddingVertical: hp(1.1),
   },
   profileImage: {
-    width: wp("13.5%"),
-    height: wp("13.5%"),
-    borderRadius: wp("6.75%"),
+    width: wp(13.5),
+    height: wp(13.5),
+    borderRadius: wp(6.75),
   },
   textContainer: {
     flex: 1,
   },
   userName: {
-    fontSize: wp("4.5%"),
+    fontSize: wp(4.5),
   },
   lastMessage: {
-    fontSize: wp("4%"),
+    fontSize: wp(4),
     color: Colors.gray,
   },
   dateText: {
     color: Colors.gray,
-    paddingRight: wp("5%"),
+    paddingRight: wp(5),
     alignSelf: "flex-start",
   },
 });

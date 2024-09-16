@@ -6,10 +6,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { AppStackParamList, MainTabParamList } from "../../types/navigation";
 import { Colors } from "../../styles/colors";
 import ProfileHeader from "../../components/settings/ProfileHeader";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { pickImageForProfile } from "@/src/utils/filePicker";
 import { apiServices } from "../../services/api/apiServices";
 import {
@@ -202,12 +199,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    padding: wp("2%"),
-    paddingTop: hp("6%"),
+    padding: wp(2),
+    paddingTop: hp(6),
     backgroundColor: Colors.background,
   },
   scrollContent: {
-    paddingBottom: hp("18%"),
+    paddingBottom: hp(18),
   },
 });
 

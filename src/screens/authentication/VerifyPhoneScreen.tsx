@@ -15,10 +15,7 @@ import {
 } from "react-native";
 import MaskInput from "react-native-mask-input";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { ShowToast } from "@/src/components/common/ShowToast";
 import { AppStackParamList } from "../../types/navigation";
 import { useAuth } from "../../contexts/AuthContext";
@@ -146,13 +143,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    padding: wp("5%"),
-    paddingTop: hp("6%"),
+    padding: wp(5),
+    paddingTop: hp(6),
     backgroundColor: Colors.background,
-    gap: hp("2%"),
+    gap: hp(2),
   },
   legal: {
-    fontSize: wp("3%"),
+    fontSize: wp(3),
     textAlign: "center",
     color: "#000",
   },
@@ -163,8 +160,8 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     backgroundColor: Colors.lightGray,
-    padding: wp("2.5%"),
-    borderRadius: wp("2.5%"),
+    padding: wp(2.5),
+    borderRadius: wp(2.5),
   },
   enabled: {
     backgroundColor: Colors.primary,
@@ -172,24 +169,24 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: Colors.gray,
-    fontSize: wp("5.5%"),
+    fontSize: wp(5.5),
     fontWeight: "500",
   },
   list: {
     backgroundColor: "#fff",
     width: "100%",
-    borderRadius: wp("2.5%"),
-    padding: wp("2.5%"),
+    borderRadius: wp(2.5),
+    padding: wp(2.5),
   },
   listItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: wp("1.5%"),
-    marginBottom: hp("1%"),
+    padding: wp(1.5),
+    marginBottom: hp(1),
   },
   listItemText: {
-    fontSize: wp("4.5%"),
+    fontSize: wp(4.5),
     color: Colors.primary,
   },
   separator: {
@@ -199,29 +196,29 @@ const styles = StyleSheet.create({
     opacity: 0.2,
   },
   emailButton: {
-    marginTop: hp("0.5%"),
-    padding: wp("2.2%"),
+    marginTop: hp(0.5),
+    padding: wp(2.2),
     backgroundColor: Colors.secondary,
     alignItems: "center",
-    borderRadius: wp("1.5%"),
+    borderRadius: wp(1.5),
   },
   emailButtonText: {
     color: "white",
-    fontSize: wp("3%"),
+    fontSize: wp(3),
   },
   input: {
     backgroundColor: "#fff",
     width: "100%",
-    fontSize: wp("4%"),
-    padding: wp("1.5%"),
-    marginTop: hp("1%"),
+    fontSize: wp(4),
+    padding: wp(1.5),
+    marginTop: hp(1),
   },
   phoneImage: {
     alignSelf: "center",
-    marginBottom: hp("2%"),
-    width: wp("70%"),
-    height: hp("25%"),
-    borderRadius: wp("15%"),
+    marginBottom: hp(2),
+    width: wp(70),
+    height: hp(25),
+    borderRadius: wp(15),
   },
 });
 

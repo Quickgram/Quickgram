@@ -12,17 +12,14 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-import { ShowToast } from "../../components/common/ShowToast";
-import TextInputBox from "../../components/common/TextInputBox";
-import { apiServices } from "../../services/api/apiServices";
-import { AppStackParamList } from "../../types/navigation";
-import User from "../../models/User";
-import { useAuth } from "../../contexts/AuthContext";
-import { pickImageForProfile } from "../../utils/filePicker";
+import { wp, hp } from "@/src/styles/responsive";
+import { ShowToast } from "@/src/components/common/ShowToast";
+import TextInputBox from "@/src/components/common/TextInputBox";
+import { apiServices } from "@/src/services/api/apiServices";
+import { AppStackParamList } from "@/src/types/navigation";
+import User from "@/src/models/User";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { pickImageForProfile } from "@/src/utils/filePicker";
 
 type CreateProfileScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -154,11 +151,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             style={styles.addImageButton}
             onPress={handlePickImage}
           >
-            <Ionicons
-              name="add-circle"
-              size={wp("7.5%")}
-              color={Colors.primary}
-            />
+            <Ionicons name="add-circle" size={wp(7.5)} color={Colors.primary} />
           </TouchableOpacity>
         </View>
 
@@ -166,7 +159,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
           <View style={styles.inputWrapper}>
             <Ionicons
               name="person-outline"
-              size={wp("5%")}
+              size={wp(5)}
               color={Colors.gray}
               style={styles.inputIcon}
             />
@@ -181,7 +174,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
           <View style={styles.inputWrapper}>
             <Ionicons
               name="at-outline"
-              size={wp("5%")}
+              size={wp(5)}
               color={Colors.gray}
               style={styles.inputIcon}
             />
@@ -196,7 +189,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
           <View style={styles.inputWrapper}>
             <Ionicons
               name="information-circle-outline"
-              size={wp("5%")}
+              size={wp(5)}
               color={Colors.gray}
               style={styles.inputIcon}
             />
@@ -215,7 +208,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
           style={[
             styles.button,
             name !== "" && styles.enabled,
-            { marginBottom: hp("5%"), marginTop: hp("7.5%") },
+            { marginBottom: hp(5), marginTop: hp(7.5) },
           ]}
           onPress={handleCreateNewUser}
           disabled={loading}
@@ -239,56 +232,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    padding: wp("5%"),
-    paddingTop: hp("6%"),
+    padding: wp(5),
+    paddingTop: hp(6),
     backgroundColor: Colors.background,
-    gap: hp("2%"),
+    gap: hp(2),
   },
   inputContainer: {
-    marginVertical: hp("3%"),
+    marginVertical: hp(3),
     width: "100%",
   },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: Colors.white,
-    borderRadius: wp("2.5%"),
-    marginVertical: wp("1.5%"),
-    height: hp("6%"),
+    borderRadius: wp(2.5),
+    marginVertical: wp(1.5),
+    height: hp(6),
   },
   inputIcon: {
-    paddingLeft: wp("3%"),
+    paddingLeft: wp(3),
   },
   input: {
     flex: 1,
-    marginLeft: wp("2%"),
+    marginLeft: wp(2),
     height: "100%",
     paddingVertical: 0,
   },
   profileImageContainer: {
     position: "relative",
-    marginTop: hp("2%"),
-    marginBottom: hp("2%"),
+    marginTop: hp(2),
+    marginBottom: hp(2),
   },
   profilePic: {
-    width: wp("35%"),
-    height: wp("35%"),
-    borderRadius: wp("17.5%"),
+    width: wp(35),
+    height: wp(35),
+    borderRadius: wp(17.5),
   },
   addImageButton: {
     position: "absolute",
     bottom: 0,
     right: 0,
     backgroundColor: "white",
-    borderRadius: wp("3.75%"),
-    padding: wp("0.5%"),
+    borderRadius: wp(3.75),
+    padding: wp(0.5),
   },
   button: {
     width: "100%",
     alignItems: "center",
     backgroundColor: Colors.lightGray,
-    padding: wp("2.5%"),
-    borderRadius: wp("2.5%"),
+    padding: wp(2.5),
+    borderRadius: wp(2.5),
   },
   enabled: {
     backgroundColor: Colors.primary,
@@ -296,7 +289,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: Colors.gray,
-    fontSize: wp("5.5%"),
+    fontSize: wp(5.5),
     fontWeight: "500",
   },
 });

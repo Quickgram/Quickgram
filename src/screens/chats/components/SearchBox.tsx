@@ -10,7 +10,7 @@ const SearchBox = () => {
 
   return (
     <Animated.View style={[styles.container]}>
-      <Ionicons name="search" size={wp("5%")} style={styles.icon} />
+      <Ionicons name="search" size={wp(5)} style={styles.icon} />
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -29,11 +29,11 @@ const SearchBox = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.lightGray,
-    padding: wp("2%"),
-    height: hp("5%"),
-    marginHorizontal: wp("3%"),
-    marginVertical: hp("1%"),
-    borderRadius: wp("3%"),
+    padding: wp(2),
+    height: hp(5),
+    marginHorizontal: wp(3),
+    marginVertical: hp(1),
+    borderRadius: wp(3),
     flexDirection: "row",
     alignItems: "center",
   },
@@ -42,13 +42,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   input: {
-    fontSize: wp("4%"),
+    fontSize: wp(4),
     flex: 1,
     padding: 0,
   },
   icon: {
     color: Colors.gray,
-    marginRight: wp("2%"),
+    marginRight: wp(2),
   },
 });
 

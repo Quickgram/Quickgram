@@ -9,10 +9,7 @@ import {
 } from "react-native";
 import { Colors } from "@/src/styles/colors";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 import { AppStackParamList } from "../../types/navigation";
 import { apiServices } from "@/src/services/api/apiServices";
 import { localdbServices } from "@/src/services/db/localdbServices";
@@ -74,24 +71,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: wp("5%"),
+    padding: wp(5),
     backgroundColor: "#fff",
   },
   welcomeImage: {
-    width: wp("80%"),
-    height: hp("35%"),
-    borderRadius: wp("15%"),
-    marginBottom: hp("10%"),
+    width: wp(80),
+    height: hp(35),
+    borderRadius: wp(15),
+    marginBottom: hp(10),
   },
   headline: {
-    fontSize: wp("6%"),
+    fontSize: wp(6),
     fontWeight: "bold",
-    marginVertical: hp("2%"),
+    marginVertical: hp(2),
   },
   description: {
-    fontSize: wp("3.5%"),
+    fontSize: wp(3.5),
     textAlign: "center",
-    marginBottom: hp("10%"),
+    marginBottom: hp(10),
     color: Colors.gray,
   },
   link: {
@@ -103,7 +100,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: Colors.primary,
-    fontSize: wp("5.5%"),
+    fontSize: wp(5.5),
     fontWeight: "500",
   },
 });

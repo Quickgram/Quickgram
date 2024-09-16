@@ -10,7 +10,6 @@ import User from "../models/User";
 import { localdbServices } from "../services/db/localdbServices";
 import { ShowToast } from "../components/common/ShowToast";
 import { SessionResponse } from "../types/SessionInfo";
-import { filterUserData } from "../utils/dataFilters";
 
 interface AuthContextType {
   isAuthenticated: boolean;

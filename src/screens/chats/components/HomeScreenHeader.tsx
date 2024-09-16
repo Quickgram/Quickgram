@@ -2,10 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../../styles/colors";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { wp, hp } from "@/src/styles/responsive";
 
 const HomeScreenHeader: React.FC = () => {
   return (
@@ -25,19 +22,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: Colors.background,
-    paddingHorizontal: wp("3%"),
-    paddingVertical: hp("0.22%"),
-    paddingTop: Platform.OS === "ios" ? hp("1%") : hp("5%"),
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(0.22),
+    paddingTop: Platform.OS === "ios" ? hp(1) : hp(5),
   },
   headerTitle: {
-    fontSize: wp("9.68%"),
+    fontSize: wp(9.68),
     fontWeight: "bold",
   },
   headerIcons: {
     flexDirection: "row",
   },
   icon: {
-    marginLeft: wp("4%"),
+    marginLeft: wp(4),
   },
 });
 
