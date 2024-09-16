@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   MessagesListContainer: {
     flex: 1,
-    backgroundColor: "red",
+    backgroundColor: Colors.white,
   },
   item: {
     backgroundColor: Colors.white,

@@ -1,9 +1,10 @@
 import Message from "@/src/models/Message";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Colors } from "../../../styles/colors";
 import { formatTimeForMessages } from "@/src/utils/timeConverter";
+import { wp, hp } from "@/src/styles/responsive";
 
 interface MessageBubbleProps {
   message: Partial<Message>;
@@ -19,52 +20,59 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   const isOwnMessage = message.senderId === currentUserId;
 
   return (
-    <View
-      style={[
-        styles.bubble,
-        {
-          backgroundColor: isOwnMessage
-            ? Colors.rightMessageBox
-            : Colors.leftMessageBox,
-          alignSelf: isOwnMessage ? "flex-end" : "flex-start",
-        },
-      ]}
-    >
+    <TouchableOpacity>
       <View
         style={[
-          styles.messageContainer,
-          { flexDirection: isMultipleLines ? "column" : "row" },
+          styles.container,
+          {
+            backgroundColor: isOwnMessage
+              ? Colors.rightMessageBox
+              : Colors.leftMessageBox,
+            alignSelf: isOwnMessage ? "flex-end" : "flex-start",
+            maxWidth: wp(80),
+          },
         ]}
       >
-        <Text>{message.text}</Text>
-        <View style={styles.timestampContainer}>
-          <Text style={styles.timestamp}>
-            {formatTimeForMessages(message.sentTime!)}
-          </Text>
-          <View style={styles.seenContainer}>
-            {isOwnMessage &&
-              (message.is_seen ? (
-                <Ionicons
-                  name="checkmark-done-outline"
-                  size={13}
-                  color="black"
-                />
-              ) : (
-                <Ionicons name="checkmark-outline" size={13} color="black" />
-              ))}
+        <View
+          style={[
+            styles.messageContainer,
+            { flexDirection: isMultipleLines ? "column" : "row" },
+          ]}
+        >
+          <Text style={{ fontSize: wp(3.7) }}>{message.text}</Text>
+          <View
+            style={[
+              styles.timestampContainer,
+              { paddingTop: isMultipleLines ? 3 : 0 },
+            ]}
+          >
+            <Text style={styles.timestamp}>
+              {formatTimeForMessages(message.sentTime!)}
+            </Text>
+            <View style={styles.seenContainer}>
+              {isOwnMessage &&
+                (message.is_seen ? (
+                  <Ionicons
+                    name="checkmark-done-outline"
+                    size={13}
+                    color="black"
+                  />
+                ) : (
+                  <Ionicons name="checkmark-outline" size={13} color="black" />
+                ))}
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  bubble: {
-    padding: 10,
-    margin: 5,
-    borderRadius: 10,
-    maxWidth: "80%",
+  container: {
+    padding: wp(2.5),
+    margin: wp(0.9),
+    borderRadius: wp(2.5),
   },
   messageContainer: {
     alignItems: "flex-end",
@@ -74,13 +82,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   timestamp: {
-    fontSize: 10,
+    fontSize: wp(2.5),
     color: "#666",
-    marginLeft: 5,
+    marginLeft: wp(1.25),
     flexShrink: 0,
   },
   seenContainer: {
-    marginLeft: 2,
+    marginLeft: wp(0.5),
     flexShrink: 0,
   },
 });
