@@ -4,12 +4,11 @@ import {
 } from "react-native-responsive-screen";
 import { getScreenSizeCategory } from "../utils/getScreenSizeCategory";
 
-// Adjustments based on screen size
 const screenSizeAdjustments: { [key: string]: number } = {
-  small: 1.2, // Increase size by 20%
-  regular: 1, // No change
-  large: 0.8, // Decrease size by 20%
-  unknown: 1, // Default no change
+  small: 1.2,
+  regular: 1,
+  large: 0.8,
+  unknown: 1,
 };
 
 export const wp = (percentage: number) => {
