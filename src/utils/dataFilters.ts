@@ -1,12 +1,12 @@
 import {
   AnnouncementInfo,
   AnnouncementResponse,
-} from "../types/announcementInfo";
-import { SessionInfo, SessionResponse } from "../types/sessionInfo";
-import User from "../models/user";
+} from "../types/AnnouncementInfo";
+import { SessionInfo, SessionResponse } from "../types/SessionInfo";
+import User from "../models/User";
 import { convertTimestampToReadableFormatForAnnouncements } from "./timeConverter";
-import Message from "../models/message";
-import Chat from "../models/chat";
+import Message from "../models/Message";
+import Chat from "../models/Chat";
 
 export function filterAnnouncementInfo(response: any[]): AnnouncementResponse {
   const announcements: AnnouncementInfo[] = response.map(

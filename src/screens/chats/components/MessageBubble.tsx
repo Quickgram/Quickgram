@@ -1,8 +1,8 @@
-import Message from "@/src/models/message";
+import Message from "@/src/models/Message";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Colors from "../../../styles/colors";
+import { Colors } from "../../../styles/colors";
 import { formatTimeForMessages } from "@/src/utils/timeConverter";
 
 interface MessageBubbleProps {

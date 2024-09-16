@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Colors from "../../../styles/colors";
+import { Colors } from "../../../styles/colors";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,

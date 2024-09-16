@@ -5,7 +5,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { Image } from "expo-image";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { AppStackParamList } from "@/src/types/navigation";

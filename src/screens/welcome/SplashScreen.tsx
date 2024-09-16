@@ -1,4 +1,4 @@
-import colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import React from "react";
 import { StyleSheet, View, Image } from "react-native";
 import {
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.background,
+    backgroundColor: Colors.background,
   },
   icon: {
     width: wp("50%"),

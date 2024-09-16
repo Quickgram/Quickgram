@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useCallback, useMemo } from "react";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
 import {
   widthPercentageToDP as wp,

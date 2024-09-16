@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import BoxedIcon from "../common/BoxedIcon";
 import {
   widthPercentageToDP as wp,

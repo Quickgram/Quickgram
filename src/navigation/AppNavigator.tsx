@@ -11,7 +11,7 @@ import { AppStackParamList } from "../types/navigation";
 import SplashScreen from "../screens/welcome/SplashScreen";
 import { TouchableOpacity, View } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import Colors from "../styles/colors";
+import { Colors } from "../styles/colors";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import MyProfileScreen from "../screens/settings/sub_screens/profile/MyProfileScreen";
 import AccountScreen from "../screens/settings/sub_screens/account/AccountScreen";

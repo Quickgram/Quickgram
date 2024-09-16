@@ -7,13 +7,13 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { apiServices } from "@/src/services/api/apiServices";
 import { wp, hp } from "@/src/styles/responsive";
 import { useGlobalState } from "@/src/contexts/GlobalStateContext";
-import User from "@/src/models/user";
-import Message from "@/src/models/message";
-import MessageType from "@/src/utils/messageType";
+import User from "@/src/models/User";
+import Message from "@/src/models/Message";
+import MessageEnum from "@/src/utils/messageEnum";
 import * as Appwrite from "../../../config/appwrite";
 import { localdbServices } from "@/src/services/db/localdbServices";
 
@@ -21,16 +21,19 @@ interface BottomChatFieldProps {
   currentChatUser: User;
   currentUser: User;
   chatId: string;
+  onHeightChange: (height: number) => void;
 }
 
 const BottomChatField: React.FC<BottomChatFieldProps> = ({
   currentChatUser,
   currentUser,
   chatId,
+  onHeightChange,
 }) => {
   const { isIos } = useGlobalState();
   const [isTyping, setIsTyping] = useState(false);
   const [textMessage, setTextMessage] = useState("");
+  const MAX_HEIGHT = hp("6%");
 
   const textChange = (text: string) => {
     setTextMessage(text);
@@ -41,7 +44,7 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
     const newMessage: Partial<Message> = {
       senderId: currentUser.uid,
       receiverId: currentChatUser.uid,
-      type: MessageType.TEXT,
+      type: MessageEnum.TEXT,
       messageId: Appwrite.ID.unique(),
       text: textMessage,
       repliedMessage: null,
@@ -89,6 +92,14 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
             placeholderTextColor={Colors.gray}
             onChangeText={textChange}
             value={textMessage}
+            onContentSizeChange={(event) => {
+              const { height } = event.nativeEvent.contentSize;
+              if (height <= MAX_HEIGHT) {
+                onHeightChange(height + hp("4.9%"));
+              } else {
+                onHeightChange(MAX_HEIGHT + hp("4.9%"));
+              }
+            }}
           />
         </View>
         {!isTyping ? (
@@ -121,13 +132,13 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
     position: "absolute",
     left: 0,
+    right: 0,
     bottom: 0,
-    maxHeight: hp("10%"),
+    flexDirection: "row",
+    maxHeight: hp("10.2%"),
     padding: hp("1%"),
-    width: wp("100%"),
     backgroundColor: Colors.background,
   },
   inputWrapper: {

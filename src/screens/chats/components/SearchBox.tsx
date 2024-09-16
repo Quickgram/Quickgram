@@ -1,4 +1,4 @@
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import React from "react";
 import { Animated, TextInput, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";

@@ -1,8 +1,8 @@
 import React from "react";
 import ChatUserBox from "./ChatUserBox";
-import User from "../../../models/user";
+import User from "../../../models/User";
 import { FlashList } from "@shopify/flash-list";
-import Chat from "@/src/models/chat";
+import Chat from "@/src/models/Chat";
 import { getChatId } from "@/src/utils/getChatId";
 
 const ChatUsersList = ({

@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
-import { AnnouncementInfo } from "@/src/types/announcementInfo";
-import Colors from "@/src/styles/colors";
+import { AnnouncementInfo } from "@/src/types/AnnouncementInfoType";
+import { Colors } from "@/src/styles/colors";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,

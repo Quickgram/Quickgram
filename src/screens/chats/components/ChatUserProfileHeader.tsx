@@ -8,12 +8,12 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import Colors from "../../../styles/colors";
+import { Colors } from "../../../styles/colors";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import User from "@/src/models/user";
+import User from "@/src/models/User";
 
 interface ChatUserProfileHeaderProps {
   navigation: any;

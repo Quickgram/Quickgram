@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   KeyboardAvoidingView,
-  View,
   SafeAreaView,
+  View,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
@@ -11,20 +11,28 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "../../../styles/colors";
+import { Colors } from "../../../styles/colors";
 import { useGlobalState } from "../../../contexts/GlobalStateContext";
 import ChatUserProfileHeader from "../components/ChatUserProfileHeader";
-import User from "@/src/models/user";
+import User from "@/src/models/User";
 import BottomChatField from "../components/BottomChatField";
 import { useAuth } from "@/src/contexts/AuthContext";
 import MessagesList from "../components/MessagesList";
+import { ImageBackground } from "expo-image";
 
 type ChatScreenProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
+  const [bottomFieldHeight, setBottomFieldHeight] = useState(0);
   const { currentChatUser, currentChatId, isIos, hasInternetConnection } =
     useGlobalState();
   const { currentUser } = useAuth();
+  const Wallpaper = require("../../../../assets/images/wallpaper.jpg");
+  const handleBottomFieldHeightChange = (height: number) => {
+    if (height !== bottomFieldHeight) {
+      setBottomFieldHeight(height);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -36,17 +44,20 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
           navigation={navigation}
           currentChatUser={currentChatUser as User}
         />
-
-        <MessagesList
-          currentChatUser={currentChatUser as User}
-          currentUser={currentUser as User}
-          chatId={currentChatId!}
-        />
+        <View style={styles.MessagesListContainer}>
+          <MessagesList
+            currentChatUser={currentChatUser as User}
+            currentUser={currentUser as User}
+            chatId={currentChatId!}
+            bottomPadding={bottomFieldHeight}
+          />
+        </View>
 
         <BottomChatField
           currentChatUser={currentChatUser as User}
           currentUser={currentUser as User}
           chatId={currentChatId!}
+          onHeightChange={handleBottomFieldHeightChange}
         />
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -60,6 +71,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+    justifyContent: "space-between",
+  },
+  MessagesListContainer: {
+    flex: 1,
+    backgroundColor: "red",
   },
   item: {
     backgroundColor: Colors.white,

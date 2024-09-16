@@ -2,25 +2,28 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { apiServices } from "../../../services/api/apiServices";
-import Message from "@/src/models/message";
-import User from "@/src/models/user";
+import Message from "@/src/models/Message";
+import User from "@/src/models/User";
 import { localdbServices } from "@/src/services/db/localdbServices";
 import * as Appwrite from "@/src/config/appwrite";
 import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 import { ShowToast } from "@/src/components/common/ShowToast";
 import { hp, wp } from "@/src/styles/responsive";
 import { MessageBubble } from "./MessageBubble";
+import { Colors } from "@/src/styles/colors";
 
 interface MessagesListProps {
   currentChatUser: User;
   currentUser: User;
   chatId: string;
+  bottomPadding: number;
 }
 
 const MessagesList: React.FC<MessagesListProps> = ({
   currentChatUser,
   currentUser,
   chatId,
+  bottomPadding,
 }) => {
   const [messages, setMessages] = useState<Partial<Message>[]>([]);
   const lastFetchedMessageId = useRef<string | null>(null);
@@ -58,7 +61,9 @@ const MessagesList: React.FC<MessagesListProps> = ({
       chatId,
       lastFetchedMessageId.current
     );
+    console.log("nextMessages", nextMessages);
     setMessages((prevMessages) => mergeMessages(prevMessages, nextMessages));
+    console.log("success");
     await localdbServices.saveMessagesInLocaldb(nextMessages);
     lastFetchedMessageId.current =
       nextMessages[nextMessages.length - 1]?.messageId ?? null;
@@ -134,10 +139,9 @@ const MessagesList: React.FC<MessagesListProps> = ({
 
   useEffect(() => {
     if (prevInternetConnection.current === false && hasInternetConnection) {
-      // The user just came online, so fetch missed messages
       fetchMissedMessages();
     }
-    prevInternetConnection.current = hasInternetConnection; // Update the previous state
+    prevInternetConnection.current = hasInternetConnection;
   }, [hasInternetConnection]);
 
   const renderItem = ({ item }: { item: Partial<Message> }) => (
@@ -154,20 +158,11 @@ const MessagesList: React.FC<MessagesListProps> = ({
       onEndReachedThreshold={0.2}
       inverted
       contentContainerStyle={{
-        paddingTop: hp("6%"),
+        paddingTop: bottomPadding,
         paddingHorizontal: wp("1%"),
       }}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  item: {
-    backgroundColor: "#fff",
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
-  },
-});
 
 export default React.memo(MessagesList);

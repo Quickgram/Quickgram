@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Colors from "../../../styles/colors";
-import User from "../../../models/user";
+import { Colors } from "../../../styles/colors";
+import User from "../../../models/User";
 import { Image } from "expo-image";
 import {
   widthPercentageToDP as wp,

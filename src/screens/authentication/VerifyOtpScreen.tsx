@@ -1,4 +1,4 @@
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   View,

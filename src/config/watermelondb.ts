@@ -2,9 +2,9 @@ import { Database } from "@nozbe/watermelondb";
 import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite";
 import schema from "../models/schema";
 import migrations from "../models/migrations";
-import User from "../models/user";
-import Message from "../models/message";
-import Chat from "../models/chat";
+import User from "../models/User";
+import Message from "../models/Message";
+import Chat from "../models/Chat";
 
 const adapter = new SQLiteAdapter({
   schema,

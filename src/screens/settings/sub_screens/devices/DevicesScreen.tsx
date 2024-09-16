@@ -12,7 +12,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
 import RenderDeviceBox from "@/src/components/settings/RenderDeviceBox";
 import { useAuth } from "@/src/contexts/AuthContext";

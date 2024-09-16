@@ -2,7 +2,7 @@ import * as Appwrite from "../../config/appwrite";
 import * as SecureStore from "expo-secure-store";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firebaseStorage } from "../../config/firebase";
-import User from "../../models/user";
+import User from "../../models/User";
 import { Models } from "../../config/appwrite";
 import {
   filterUserData,
@@ -11,8 +11,8 @@ import {
   filterChatData,
   filterMessageData,
 } from "../../utils/dataFilters";
-import Message from "@/src/models/message";
-import Chat from "@/src/models/chat";
+import Message from "@/src/models/Message";
+import Chat from "@/src/models/Chat";
 
 export const apiServices = {
   createPhoneToken: async (userId: string, phoneNumber: string) => {
@@ -384,7 +384,7 @@ export const apiServices = {
       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
       [
         Appwrite.Query.equal("chatId", chatId),
-        Appwrite.Query.orderAsc("sentTime"),
+        Appwrite.Query.orderDesc("sentTime"),
         Appwrite.Query.cursorAfter(lastFetchedMessageId),
         Appwrite.Query.limit(25),
       ]

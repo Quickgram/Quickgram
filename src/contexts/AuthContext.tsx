@@ -6,10 +6,10 @@ import React, {
   ReactNode,
 } from "react";
 import { apiServices } from "../services/api/apiServices";
-import User from "../models/user";
+import User from "../models/User";
 import { localdbServices } from "../services/db/localdbServices";
 import { ShowToast } from "../components/common/ShowToast";
-import { SessionResponse } from "../types/sessionInfo";
+import { SessionResponse } from "../types/SessionInfo";
 import { filterUserData } from "../utils/dataFilters";
 
 interface AuthContextType {

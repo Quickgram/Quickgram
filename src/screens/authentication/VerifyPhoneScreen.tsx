@@ -1,4 +1,4 @@
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { useState, useCallback, useMemo } from "react";
 import * as Appwrite from "../../config/appwrite";
 import { apiServices } from "../../services/api/apiServices";

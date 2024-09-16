@@ -1,4 +1,4 @@
-enum MessageType {
+enum MessageEnum {
   TEXT = "text",
   IMAGE = "image",
   AUDIO = "audio",
@@ -14,4 +14,4 @@ enum MessageType {
   TXT = "txt",
 }
 
-export default MessageType;
+export default MessageEnum;

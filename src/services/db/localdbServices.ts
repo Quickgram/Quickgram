@@ -1,14 +1,12 @@
 import { Q } from "@nozbe/watermelondb";
 import database from "../../config/watermelondb";
-import User from "../../models/user";
+import User from "@/src/models/User";
 import {
-  filterChatData,
   filterMessageData,
   filterUserData,
 } from "../../utils/dataFilters";
 import { apiServices } from "../api/apiServices";
-import Message from "@/src/models/message";
-import Chat from "@/src/models/chat";
+import Message from "@/src/models/Message";
 
 const usersCollection = database.get<User>("users");
 const messagesCollection = database.get<Message>("messages");

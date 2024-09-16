@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
   widthPercentageToDP as wp,

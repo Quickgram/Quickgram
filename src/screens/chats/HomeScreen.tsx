@@ -4,13 +4,13 @@ import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { AppStackParamList, MainTabParamList } from "../../types/navigation";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { useAuth } from "../../contexts/AuthContext";
 import { apiServices } from "@/src/services/api/apiServices";
 import { localdbServices } from "@/src/services/db/localdbServices";
 import SearchBox from "./components/SearchBox";
 import { useGlobalState } from "@/src/contexts/GlobalStateContext";
-import User from "@/src/models/user";
+import User from "@/src/models/User";
 import HomeScreenHeader from "./components/HomeScreenHeader";
 import ChatUsersList from "./components/ChatUsersList";
 

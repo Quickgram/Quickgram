@@ -5,26 +5,10 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import User from "../models/user";
+import User from "../models/User";
 import { Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
-interface GlobalStateContextType {
-  isProfileEditing: boolean;
-  setIsProfileEditing: (value: boolean) => void;
-  isProfileUpdating: boolean;
-  setIsProfileUpdating: (value: boolean) => void;
-  homeScreenSearchQuery: string;
-  setHomeScreenSearchQuery: (value: string) => void;
-  isHomeScreenScrolling: boolean;
-  setIsHomeScreenScrolling: (value: boolean) => void;
-  currentChatUser: User | null;
-  setCurrentChatUser: (value: User | null) => void;
-  currentChatId: string | null;
-  setCurrentChatId: (value: string | null) => void;
-  hasInternetConnection: boolean;
-  setHasInternetConnection: (value: boolean) => void;
-  isIos: boolean;
-}
+import { GlobalStateContextType } from "../types/GlobalStateContextType";
 
 const GlobalStateContext = createContext<GlobalStateContextType | undefined>(
   undefined

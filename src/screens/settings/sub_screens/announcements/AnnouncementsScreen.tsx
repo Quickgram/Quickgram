@@ -5,11 +5,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { FlashList } from "@shopify/flash-list";
 import { apiServices } from "@/src/services/api/apiServices";
 import AnnouncementCard from "@/src/components/settings/AnnouncementCard";
-import { AnnouncementResponse } from "@/src/types/announcementInfo";
+import { AnnouncementResponse } from "@/src/types/AnnouncementInfoType";
 import { AppStackParamList } from "@/src/types/navigation";
 
 type AnnouncementsScreenProps = NativeStackScreenProps<

@@ -6,7 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 
 type SetEmailAndPasswordProps = NativeStackScreenProps<
   AppStackParamList,

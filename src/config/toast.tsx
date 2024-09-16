@@ -8,7 +8,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "../styles/colors";
+import { Colors } from "../styles/colors";
 
 const toastConfig = {
   success: (props: ToastProps) => (

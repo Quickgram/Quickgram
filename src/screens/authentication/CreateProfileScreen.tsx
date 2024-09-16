@@ -1,4 +1,4 @@
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { useState } from "react";
 import {
   View,
@@ -20,7 +20,7 @@ import { ShowToast } from "../../components/common/ShowToast";
 import TextInputBox from "../../components/common/TextInputBox";
 import { apiServices } from "../../services/api/apiServices";
 import { AppStackParamList } from "../../types/navigation";
-import User from "../../models/user";
+import User from "../../models/User";
 import { useAuth } from "../../contexts/AuthContext";
 import { pickImageForProfile } from "../../utils/filePicker";
 

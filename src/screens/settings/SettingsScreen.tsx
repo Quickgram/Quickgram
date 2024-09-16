@@ -4,7 +4,7 @@ import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { AppStackParamList, MainTabParamList } from "../../types/navigation";
-import Colors from "../../styles/colors";
+import { Colors } from "../../styles/colors";
 import ProfileHeader from "../../components/settings/ProfileHeader";
 import {
   widthPercentageToDP as wp,

@@ -12,7 +12,7 @@ import {
 import React, { useState, useCallback } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import TextInputBox from "../../components/common/TextInputBox";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,

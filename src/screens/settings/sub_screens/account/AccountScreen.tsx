@@ -12,7 +12,7 @@ import {
 } from "@/src/components/settings/AccountSettingItem";
 import { AppStackParamList } from "@/src/types/navigation";
 import { useAuth } from "@/src/contexts/AuthContext";
-import Colors from "@/src/styles/colors";
+import { Colors } from "@/src/styles/colors";
 
 type AccountScreenProps = NativeStackScreenProps<AppStackParamList, "Account">;
 
