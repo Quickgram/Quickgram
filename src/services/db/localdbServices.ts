@@ -1,10 +1,7 @@
 import { Q } from "@nozbe/watermelondb";
 import database from "../../config/watermelondb";
 import User from "@/src/models/User";
-import {
-  filterMessageData,
-  filterUserData,
-} from "../../utils/dataFilters";
+import { filterMessageData, filterUserData } from "../../utils/dataFilters";
 import { apiServices } from "../api/apiServices";
 import Message from "@/src/models/Message";
 
@@ -98,32 +95,32 @@ export const localdbServices = {
     }
   },
 
-  createMessageInLocaldb: async (
-    messageData: Partial<Message>
-  ): Promise<void> => {
-    await database.write(async () => {
-      try {
-        const filteredMessageData = filterMessageData(messageData);
-        try {
-          const existingMessage = await messagesCollection.find(
-            filteredMessageData.messageId!
-          );
-          if (existingMessage !== filteredMessageData) {
-            await existingMessage.update((message) => {
-              Object.assign(message, filteredMessageData);
-            });
-          }
-        } catch (error) {
-          await messagesCollection.create((message) => {
-            message._raw.id = filteredMessageData.messageId!;
-            Object.assign(message, filteredMessageData);
-          });
-        }
-      } catch (error) {
-        console.log("error updating/creating single message", error);
-      }
-    });
-  },
+  // createMessageInLocaldb: async (
+  //   messageData: Partial<Message>
+  // ): Promise<void> => {
+  //   await database.write(async () => {
+  //     try {
+  //       const filteredMessageData = filterMessageData(messageData);
+  //       try {
+  //         const existingMessage = await messagesCollection.find(
+  //           filteredMessageData.messageId!
+  //         );
+  //         if (existingMessage !== filteredMessageData) {
+  //           await existingMessage.update((message) => {
+  //             Object.assign(message, filteredMessageData);
+  //           });
+  //         }
+  //       } catch (error) {
+  //         await messagesCollection.create((message) => {
+  //           message._raw.id = filteredMessageData.messageId!;
+  //           Object.assign(message, filteredMessageData);
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.log("error updating/creating single message", error);
+  //     }
+  //   });
+  // },
 
   saveMessagesInLocaldb: async (
     messages: Partial<Message>[]

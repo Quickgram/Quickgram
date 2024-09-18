@@ -85,17 +85,16 @@ export function filterMessageData(messageData: any): Partial<Message> {
     seenAt: messageData.seenAt || null,
     is_seen: messageData.is_seen,
     is_edited: messageData.is_edited,
-    is_deleted: messageData.is_deleted,
     sentTime: messageData.sentTime,
     file_url: messageData.file_url || null,
     chatId: messageData.chatId,
+    deleteMessageFor: messageData.deleteMessageFor || [],
   };
 }
 
 export function filterChatData(chatData: any): Partial<Chat> {
   return {
     chatId: chatData.chatId,
-    messageIds: chatData.messageIds || [],
     lastMessageId: chatData.lastMessageId,
   };
 }

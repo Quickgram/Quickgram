@@ -17,7 +17,7 @@ const GlobalStateContext = createContext<GlobalStateContextType | undefined>(
 export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [isIos, setIsIos] = useState(Platform.OS === "ios");
+  const [isiOS, setIsiOS] = useState(Platform.OS === "ios");
   const [isProfileEditing, setIsProfileEditing] = useState(false);
   const [isProfileUpdating, setIsProfileUpdating] = useState(false);
   const [homeScreenSearchQuery, setHomeScreenSearchQuery] = useState("");
@@ -51,7 +51,7 @@ export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({
         setCurrentChatId,
         hasInternetConnection,
         setHasInternetConnection,
-        isIos,
+        isiOS,
       }}
     >
       {children}

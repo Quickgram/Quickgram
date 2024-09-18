@@ -192,10 +192,9 @@ const MessagesList: React.FC<MessagesListProps> = ({
   const subscription = useRef<any>(null);
   const { hasInternetConnection } = useGlobalState();
   const prevInternetConnection = useRef<boolean | null>(null);
-  const flashListRef = useRef<FlashList<any>>(null); // Reference for FlashList
-  const [showScrollToBottom, setShowScrollToBottom] = useState(false); // State for arrow visibility
-  const scrollY = useRef(new Animated.Value(0)).current; // For tracking scroll
-
+  const flashListRef = useRef<FlashList<any>>(null);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const scrollY = useRef(new Animated.Value(0)).current;
   const shortingMessagesByTime = (messages: Partial<Message>[]) => {
     const messageMap = new Map<string, Partial<Message>>();
     messages.forEach((msg) => messageMap.set(msg.messageId!, msg));

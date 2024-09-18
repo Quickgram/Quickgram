@@ -21,25 +21,6 @@ type HomeScreenProps = CompositeScreenProps<
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { currentUser, setCurrentUser } = useAuth();
-  const { setCurrentChatUser, setCurrentChatId } = useGlobalState();
-  const [chattedUsers, setChattedUsers] = useState<User[]>([]);
-  const chattedUsersIds = currentUser?.chatted_users || [];
-  const {
-    homeScreenSearchQuery,
-    isHomeScreenScrolling,
-    setIsHomeScreenScrolling,
-  } = useGlobalState();
-
-  useEffect(() => {
-    const fetchChattedUsers = async () => {
-      const chattedUsersData = await apiServices.getChattedUsers(
-        chattedUsersIds
-      );
-      setChattedUsers(chattedUsersData as User[]);
-    };
-
-    fetchChattedUsers();
-  }, []);
 
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
@@ -65,13 +46,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <HomeScreenHeader />
       <SearchBox />
-      <ChatUsersList
-        currentUser={currentUser!}
-        chattedUsers={chattedUsers}
-        setCurrentChatUser={setCurrentChatUser}
-        navigation={navigation}
-        setCurrentChatId={setCurrentChatId}
-      />
+      <ChatUsersList currentUser={currentUser!} navigation={navigation} />
     </SafeAreaView>
   );
 };

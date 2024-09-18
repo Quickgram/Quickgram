@@ -15,5 +15,5 @@ export interface GlobalStateContextType {
   setCurrentChatId: (value: string | null) => void;
   hasInternetConnection: boolean;
   setHasInternetConnection: (value: boolean) => void;
-  isIos: boolean;
+  isiOS: boolean;
 }

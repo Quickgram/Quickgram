@@ -34,17 +34,16 @@ export default appSchema({
         { name: "seenAt", type: "string", isOptional: true },
         { name: "is_seen", type: "boolean" },
         { name: "is_edited", type: "boolean" },
-        { name: "is_deleted", type: "boolean" },
         { name: "sentTime", type: "string" },
         { name: "file_url", type: "string", isOptional: true },
         { name: "chatId", type: "string" },
+        { name: "deleteMessageFor", type: "string" },
       ],
     }),
     tableSchema({
       name: "chats",
       columns: [
         { name: "chatId", type: "string", isIndexed: true },
-        { name: "messageIds", type: "string", isOptional: true },
         { name: "lastMessageId", type: "string" },
       ],
     }),

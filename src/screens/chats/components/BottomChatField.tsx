@@ -30,7 +30,7 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
   chatId,
   onHeightChange,
 }) => {
-  const { isIos } = useGlobalState();
+  const { isiOS } = useGlobalState();
   const [isTyping, setIsTyping] = useState(false);
   const [textMessage, setTextMessage] = useState("");
   const MAX_HEIGHT = hp(6);
@@ -53,10 +53,10 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
       seenAt: null,
       is_seen: false,
       is_edited: false,
-      is_deleted: false,
       sentTime: Date.now().toString(),
       file_url: null,
       chatId: chatId,
+      deleteMessageFor: [],
     };
 
     setTextMessage("");
@@ -116,8 +116,8 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
             style={[
               styles.sendButton,
               {
-                width: isIos ? hp(4) : hp(5.5),
-                height: isIos ? hp(4) : hp(5.5),
+                width: isiOS ? hp(4) : hp(5.5),
+                height: isiOS ? hp(4) : hp(5.5),
               },
             ]}
             onPress={sendTextMessage}

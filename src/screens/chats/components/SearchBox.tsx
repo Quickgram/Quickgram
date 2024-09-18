@@ -20,6 +20,8 @@ const SearchBox = () => {
           onChangeText={setHomeScreenSearchQuery}
           numberOfLines={1}
           multiline={false}
+          keyboardType="default"
+          returnKeyType="done"
         />
       </View>
     </Animated.View>
