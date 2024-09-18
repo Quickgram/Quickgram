@@ -8,14 +8,12 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/src/styles/colors";
-import { apiServices } from "@/src/services/api/apiServices";
 import { wp, hp } from "@/src/styles/responsive";
 import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 import User from "@/src/models/User";
 import Message from "@/src/models/Message";
 import MessageEnum from "@/src/utils/messageEnum";
 import * as Appwrite from "../../../config/appwrite";
-import { localdbServices } from "@/src/services/db/localdbServices";
 
 interface BottomChatFieldProps {
   currentChatUser: User;

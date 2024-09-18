@@ -5,14 +5,15 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { AppStackParamList, MainTabParamList } from "../../types/navigation";
 import { Colors } from "@/src/styles/colors";
-import { useAuth } from "../../contexts/AuthContext";
-import { apiServices } from "@/src/services/api/apiServices";
-import { localdbServices } from "@/src/services/db/localdbServices";
 import SearchBox from "./components/SearchBox";
-import { useGlobalState } from "@/src/contexts/GlobalStateContext";
-import User from "@/src/models/User";
 import HomeScreenHeader from "./components/HomeScreenHeader";
 import ChatUsersList from "./components/ChatUsersList";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { setCurrentUser } from "@/src/redux/reducers/userReducer";
+import { userApi } from "@/src/services/api/userApi";
+import { localUserDb } from "@/src/services/db/localUserDb";
+import User from "@/src/models/User";
 
 type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Home">,
@@ -20,17 +21,18 @@ type HomeScreenProps = CompositeScreenProps<
 >;
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { currentUser, setCurrentUser } = useAuth();
+  const dispatch = useAppDispatch();
+  const { currentUser } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
 
     if (currentUser?.uid) {
-      unsubscribe = apiServices.subscribeToUserDataChanges(
+      unsubscribe = userApi.subscribeToUserDataChanges(
         currentUser.uid,
         async (updatedUser) => {
-          setCurrentUser(updatedUser);
-          await localdbServices.updateUserDataInLocaldb(updatedUser);
+          dispatch(setCurrentUser(updatedUser as User));
+          await localUserDb.upsertUserData(updatedUser);
         }
       );
     }
@@ -46,7 +48,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <HomeScreenHeader />
       <SearchBox />
-      <ChatUsersList currentUser={currentUser!} navigation={navigation} />
+      <ChatUsersList
+        currentUser={currentUser as User}
+        navigation={navigation}
+      />
     </SafeAreaView>
   );
 };

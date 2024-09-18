@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { Colors } from "@/src/styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
-import { AnnouncementInfo } from "@/src/types/AnnouncementInfo";
+import { AnnouncementInfo } from "@/src/types/AnnouncementTypes";
 
 interface AnnouncementCardProps {
   item: AnnouncementInfo;

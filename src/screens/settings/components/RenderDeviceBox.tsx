@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "../../styles/colors";
-import { SessionInfo } from "@/src/types/SessionInfo";
+import { SessionInfo } from "@/src/types/SessionTypes";
 
 interface RenderDeviceBoxProps {
   session: SessionInfo;

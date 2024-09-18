@@ -7,7 +7,7 @@ import { FlashList } from "@shopify/flash-list";
 import { apiServices } from "@/src/services/api/apiServices";
 import AnnouncementCard from "@/src/components/settings/AnnouncementCard";
 import { AppStackParamList } from "@/src/types/navigation";
-import { AnnouncementResponse } from "@/src/types/AnnouncementInfo";
+import { AnnouncementResponse } from "@/src/types/AnnouncementTypes";
 
 type AnnouncementsScreenProps = NativeStackScreenProps<
   AppStackParamList,

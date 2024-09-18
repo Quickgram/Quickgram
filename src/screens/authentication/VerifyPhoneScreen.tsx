@@ -1,7 +1,5 @@
 import { Colors } from "@/src/styles/colors";
 import { useState, useCallback, useMemo } from "react";
-import * as Appwrite from "../../config/appwrite";
-import { apiServices } from "../../services/api/apiServices";
 import {
   View,
   Text,
@@ -16,9 +14,9 @@ import {
 import MaskInput from "react-native-mask-input";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { wp, hp } from "@/src/styles/responsive";
-import { ShowToast } from "@/src/components/common/ShowToast";
-import { AppStackParamList } from "../../types/navigation";
-import { useAuth } from "../../contexts/AuthContext";
+import { AppStackParamList } from "@/src/types/navigation";
+import { initiatePhoneLogin } from "@/src/redux/actions/authActions";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
 
 type VerifyPhoneScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -28,9 +26,9 @@ type VerifyPhoneScreenProps = NativeStackScreenProps<
 const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
   navigation,
 }) => {
+  const dispatch = useAppDispatch();
   const phoneImage = require("../../../assets/images/phone.png");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { setUserId, setPhoneNumber: setAuthPhoneNumber } = useAuth();
   const IN_PHONE = [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   const [loading, setLoading] = useState(false);
   const openLink = useCallback(() => {
@@ -52,16 +50,10 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
 
     setLoading(true);
     try {
-      const { userId } = await apiServices.createPhoneToken(
-        Appwrite.ID.unique(),
-        `+91${phoneNumber}`
-      );
-      setUserId(userId);
-      setAuthPhoneNumber(`+91${phoneNumber}`);
+      await dispatch(initiatePhoneLogin(phoneNumber));
       setLoading(false);
       navigation.navigate("VerifyOtp");
     } catch (error) {
-      ShowToast("error", "Failed", "Failed to send OTP. Please try again.");
       setLoading(false);
     }
   };

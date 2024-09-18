@@ -15,11 +15,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { wp, hp } from "@/src/styles/responsive";
 import { ShowToast } from "@/src/components/common/ShowToast";
 import TextInputBox from "@/src/components/common/TextInputBox";
-import { apiServices } from "@/src/services/api/apiServices";
 import { AppStackParamList } from "@/src/types/navigation";
 import User from "@/src/models/User";
-import { useAuth } from "@/src/contexts/AuthContext";
 import { pickImageForProfile } from "@/src/utils/filePicker";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { createAccount } from "@/src/redux/actions/authActions";
+import { storageApi } from "@/src/services/api/storageApi";
+import { userApi } from "@/src/services/api/userApi";
 
 type CreateProfileScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -30,7 +33,8 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
   navigation,
 }) => {
   const defaultProfileImage = require("../../../assets/images/defualt_user_image.png");
-  const { createAccount, userId, phoneNumber } = useAuth();
+  const dispatch = useAppDispatch();
+  const { userId, phoneNumber } = useAppSelector((state) => state.auth);
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
   const [username, setUsername] = useState("");
@@ -46,7 +50,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
       setLocalProfilePictureUri(localUri);
 
       try {
-        const photoUrl = await apiServices.uploadProfilePicture(
+        const photoUrl = await storageApi.uploadProfilePicture(
           userId!,
           localUri
         );
@@ -72,7 +76,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
       return;
     }
 
-    const isUsernameAvailable = await apiServices.checkUsernameAvailability(
+    const isUsernameAvailable = await userApi.checkUsernameAvailability(
       username
     );
 
@@ -112,7 +116,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
         profile_picture_url: profilePictureUrl || defaultProfilePicture,
       };
 
-      await createAccount(newUser);
+      await dispatch(createAccount(newUser));
       setLoading(false);
     } catch (error) {
       setLoading(false);

@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { AppStackParamList, MainTabParamList } from "../../types/navigation";
 import { Colors } from "../../styles/colors";
-import ProfileHeader from "../../components/settings/ProfileHeader";
+import ProfileHeader from "./components/ProfileHeader";
 import { wp, hp } from "@/src/styles/responsive";
 import { pickImageForProfile } from "@/src/utils/filePicker";
 import { apiServices } from "../../services/api/apiServices";
@@ -19,7 +19,7 @@ import {
 import { useGlobalState } from "../../contexts/GlobalStateContext";
 import ProfileEdit from "@/src/components/settings/ProfileEdit";
 import { ShowToast } from "@/src/components/common/ShowToast";
-import { useAuth } from "@/src/contexts/AuthContext";
+import { useAppSelector } from "@/src/redux/hooks/useAppSelector";
 
 type SettingsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Settings">,
@@ -27,9 +27,9 @@ type SettingsScreenProps = CompositeScreenProps<
 >;
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
-  const { currentUser } = useAuth();
   const { isProfileEditing, setIsProfileEditing, setIsProfileUpdating } =
     useGlobalState();
+  const { currentUser } = useAppSelector((state) => state.user);
 
   const handleChangePhoto = async () => {
     const localUri = await pickImageForProfile();

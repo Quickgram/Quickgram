@@ -4,8 +4,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Image } from "expo-image";
-import { useAuth } from "@/src/contexts/AuthContext";
 import { AppStackParamList } from "@/src/types/navigation";
+import { useAppSelector } from "@/src/redux/hooks/useAppSelector";
 
 type MyProfileScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -13,7 +13,7 @@ type MyProfileScreenProps = NativeStackScreenProps<
 >;
 
 const MyProfileScreen: React.FC<MyProfileScreenProps> = () => {
-  const { currentUser } = useAuth();
+  const { currentUser } = useAppSelector((state) => state.user);
 
   return (
     <View style={styles.container}>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useAuth } from "../contexts/AuthContext";
 import WelcomeScreen from "../screens/welcome/WelcomeScreen";
 import VerifyPhoneScreen from "../screens/authentication/VerifyPhoneScreen";
 import VerifyOtpScreen from "../screens/authentication/VerifyOtpScreen";
@@ -19,21 +18,27 @@ import AnnouncementsScreen from "../screens/settings/sub_screens/announcements/A
 import DevicesScreen from "../screens/settings/sub_screens/devices/DevicesScreen";
 import SetEmailAndPasswordScreen from "../screens/settings/sub_screens/account/screens/SetEmailAndPasswordScreen";
 import ChatScreen from "../screens/chats/sub_screens/ChatScreen";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { checkAuthStatus } from "@/src/redux/actions/authActions";
+import { initiateLogout } from "@/src/redux/actions/authActions";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppNavigator = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const { currentUser } = useAuth();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { currentUser } = useAppSelector((state) => state.user);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    dispatch(checkAuthStatus());
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2800);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [dispatch]);
 
   if (isLoading) {
     return <SplashScreen />;
@@ -69,7 +74,7 @@ const AppNavigator = () => {
                 </TouchableOpacity>
               ),
               headerRight: () => (
-                <TouchableOpacity onPress={() => logout()}>
+                <TouchableOpacity onPress={() => dispatch(initiateLogout())}>
                   <Feather name="log-out" size={wp(7)} color={Colors.red} />
                 </TouchableOpacity>
               ),

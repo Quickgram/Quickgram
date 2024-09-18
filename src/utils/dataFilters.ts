@@ -1,8 +1,8 @@
 import {
   AnnouncementInfo,
   AnnouncementResponse,
-} from "../types/AnnouncementInfo";
-import { SessionInfo, SessionResponse } from "../types/SessionInfo";
+} from "../types/AnnouncementTypes";
+import { SessionInfo, SessionResponse } from "../types/SessionTypes";
 import User from "../models/User";
 import { convertTimestampToReadableFormatForAnnouncements } from "./timeConverter";
 import Message from "../models/Message";

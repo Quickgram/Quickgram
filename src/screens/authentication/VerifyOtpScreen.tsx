@@ -16,13 +16,15 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
-import { apiServices } from "../../services/api/apiServices";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../types/navigation";
 import { wp, hp } from "@/src/styles/responsive";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useAuth } from "../../contexts/AuthContext";
 import { ShowToast } from "@/src/components/common/ShowToast";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { verifyOtp } from "@/src/redux/actions/authActions";
+import { authApi } from "@/src/services/api/authApi";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 type VerifyOtpScreenProps = NativeStackScreenProps<
   AppStackParamList,
@@ -35,7 +37,10 @@ const RESEND_COOLDOWN = 30;
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const otpImage = require("../../../assets/images/otp.png");
   const [code, setCode] = useState("");
-  const { login, userId, phoneNumber, isNewUser, isAuthenticated } = useAuth();
+  const dispatch = useAppDispatch();
+  const { userId, phoneNumber, isAuthenticated, isNewUser } = useAppSelector(
+    (state) => state.auth
+  );
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -43,7 +48,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const handleVerify = async () => {
     try {
       setLoading(true);
-      await login(code);
+      await dispatch(verifyOtp(code));
       setLoading(false);
       if (isNewUser && !isAuthenticated) {
         navigation.navigate("CreateProfile");
@@ -77,7 +82,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const handleResendCode = useCallback(async () => {
     if (canResend) {
       try {
-        await apiServices.createPhoneToken(userId!, phoneNumber!);
+        await authApi.createPhoneToken(userId!, phoneNumber!);
         setResendTimer(RESEND_COOLDOWN);
         setCanResend(false);
         ShowToast("info", "Success", "OTP resent successfully");

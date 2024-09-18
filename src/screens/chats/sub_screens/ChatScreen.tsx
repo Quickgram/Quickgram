@@ -13,17 +13,16 @@ import { useGlobalState } from "../../../contexts/GlobalStateContext";
 import ChatUserProfileHeader from "../components/ChatUserProfileHeader";
 import User from "@/src/models/User";
 import BottomChatField from "../components/BottomChatField";
-import { useAuth } from "@/src/contexts/AuthContext";
 import MessagesList from "../components/MessagesList";
-import { ImageBackground } from "expo-image";
+import { useAppSelector } from "@/src/redux/hooks/useAppSelector";
 
 type ChatScreenProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const [bottomFieldHeight, setBottomFieldHeight] = useState(0);
-  const { currentChatUser, currentChatId, isIos, hasInternetConnection } =
+  const { currentChatUser, currentChatId, isiOS, hasInternetConnection } =
     useGlobalState();
-  const { currentUser } = useAuth();
+  const { currentUser } = useAppSelector((state) => state.user);
   const Wallpaper = require("../../../../assets/images/wallpaper.jpg");
   const handleBottomFieldHeightChange = (height: number) => {
     if (height !== bottomFieldHeight) {
@@ -33,7 +32,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={isIos ? "padding" : "height"}
+      behavior={isiOS ? "padding" : "height"}
       style={styles.keyboardAvoidingView}
     >
       <SafeAreaView style={styles.container}>

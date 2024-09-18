@@ -14,8 +14,6 @@ import { Colors } from "@/src/styles/colors";
 type AccountScreenProps = NativeStackScreenProps<AppStackParamList, "Account">;
 
 const AccountScreen: React.FC<AccountScreenProps> = ({ navigation }) => {
-  const { currentUser } = useAuth();
-
   const handleItemPress = (item: any) => {
     switch (item) {
       case "Email & Password":

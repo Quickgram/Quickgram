@@ -12,20 +12,22 @@ import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
 import RenderDeviceBox from "@/src/components/settings/RenderDeviceBox";
-import { useAuth } from "@/src/contexts/AuthContext";
 import { apiServices } from "@/src/services/api/apiServices";
 import { ShowToast } from "@/src/components/common/ShowToast";
-
+import { useAppSelector } from "@/src/redux/hooks/useAppSelector";
+import { SessionInfo } from "@/src/types/SessionTypes";
+import { useAppDispatch } from "@/src/redux/hooks/useAppDispatch";
+import { setActiveSessionsData } from "@/src/redux/reducers/sessionReducer";
 type DevicesScreenProps = NativeStackScreenProps<AppStackParamList, "Devices">;
 
 const DevicesScreen: React.FC<DevicesScreenProps> = () => {
-  const { activeSessionsData, setActiveSessionsData } = useAuth();
-
+  const { activeSessionsData } = useAppSelector((state) => state.session);
+  const dispatch = useAppDispatch();
   const currentDevice = activeSessionsData!.sessions.find(
-    (session) => session.isCurrent
+    (session: SessionInfo) => session.isCurrent
   );
   const otherDevices = activeSessionsData!.sessions.filter(
-    (session) => !session.isCurrent
+    (session: SessionInfo) => !session.isCurrent
   );
 
   const handleTerminateAllOtherSessions = async () => {
@@ -34,14 +36,14 @@ const DevicesScreen: React.FC<DevicesScreenProps> = () => {
     const currentSessionId = currentDevice?.sessionId;
     try {
       await Promise.all(
-        otherDevices.map((session) => {
+        otherDevices.map((session: SessionInfo) => {
           if (session.sessionId !== currentSessionId) {
             return apiServices.terminateSession(session.sessionId);
           }
         })
       );
       const newSessionsResponse = await apiServices.getAllActiveSessions();
-      setActiveSessionsData(newSessionsResponse);
+      dispatch(setActiveSessionsData(newSessionsResponse));
       ShowToast(
         "success",
         "Success",
@@ -86,7 +88,7 @@ const DevicesScreen: React.FC<DevicesScreenProps> = () => {
             </Text>
 
             <Text style={styles.sectionTitle}>ACTIVE SESSIONS</Text>
-            {otherDevices.map((session) => (
+            {otherDevices.map((session: SessionInfo) => (
               <RenderDeviceBox key={session.sessionId} session={session} />
             ))}
           </View>

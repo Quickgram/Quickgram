@@ -16,7 +16,8 @@ import { Colors } from "@/src/styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
 import { Ionicons } from "@expo/vector-icons";
 import { AppStackParamList } from "../../types/navigation";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { initiateEmailLogin } from "@/src/redux/actions/authActions";
 
 type EmailAndPasswordProps = NativeStackScreenProps<
   AppStackParamList,
@@ -29,7 +30,7 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
   const phoneImage = require("../../../assets/images/phone.png");
   const [email, setEmail] = useState("admin@quickgram.in");
   const [password, setPassword] = useState("admin@123");
-  const { emailLogin } = useAuth();
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
   const openLink = useCallback(() => {
@@ -40,7 +41,7 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
     if (loading || !email || !password) return;
 
     setLoading(true);
-    await emailLogin(email, password);
+    await dispatch(initiateEmailLogin(email, password));
     setLoading(false);
   };
 
