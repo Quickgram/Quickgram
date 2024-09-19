@@ -9,26 +9,25 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/src/styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
-import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 import User from "@/src/models/User";
 import Message from "@/src/models/Message";
 import MessageEnum from "@/src/utils/messageEnum";
 import * as Appwrite from "../../../config/appwrite";
+import { chatApi } from "@/src/services/api/chatApi";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 interface BottomChatFieldProps {
-  currentChatUser: User;
-  currentUser: User;
   chatId: string;
   onHeightChange: (height: number) => void;
 }
 
 const BottomChatField: React.FC<BottomChatFieldProps> = ({
-  currentChatUser,
-  currentUser,
   chatId,
   onHeightChange,
 }) => {
-  const { isiOS } = useGlobalState();
+  const { isiOS } = useAppSelector((state) => state.global);
+  const { currentChatUser } = useAppSelector((state) => state.chat);
+  const { currentUser } = useAppSelector((state) => state.user);
   const [isTyping, setIsTyping] = useState(false);
   const [textMessage, setTextMessage] = useState("");
   const MAX_HEIGHT = hp(6);
@@ -58,7 +57,7 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
     };
 
     setTextMessage("");
-    await apiServices.sendTextMessage(newMessage);
+    await chatApi.sendTextMessage(newMessage);
   };
 
   return (
@@ -70,14 +69,7 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
         ]}
       >
         {!isTyping && (
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => {
-              localdbServices.getAllMessagesFromLocaldb().then((messages) => {
-                console.log("messages", messages);
-              });
-            }}
-          >
+          <TouchableOpacity style={styles.addButton} onPress={() => {}}>
             <Ionicons name="add-outline" size={wp(8)} />
           </TouchableOpacity>
         )}

@@ -1,5 +1,6 @@
 import User from "@/src/models/User";
+import Chat from "../models/Chat";
 
 export interface UserState {
-  currentUser: User | null;
+  currentUser: Partial<User> | null;
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { wp, hp } from "@/src/styles/responsive";
-import { Colors } from "../../styles/colors";
+import { Colors } from "@/src/styles/colors";
 import { SessionInfo } from "@/src/types/SessionTypes";
 
 interface RenderDeviceBoxProps {

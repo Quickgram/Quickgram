@@ -102,7 +102,7 @@ export const userApi = {
         userId,
         userData
       )) as Models.Document;
-      return filterUserData(document);
+      return filterUserData(document) as Partial<User>;
     } catch (error) {
       return null;
     }
@@ -118,7 +118,7 @@ export const userApi = {
         userId
       )) as Models.Document;
 
-      return filterUserData(response);
+      return filterUserData(response) as Partial<User>;
     } catch (error) {
       return null;
     }
@@ -135,7 +135,7 @@ export const userApi = {
       );
       if (response.documents.length > 0) {
         const document = response.documents[0] as Models.Document;
-        return filterUserData(document);
+        return filterUserData(document) as Partial<User>;
       }
       return null;
     } catch (error) {
@@ -153,7 +153,7 @@ export const userApi = {
           currentUserId
         )) as Models.Document;
 
-        return filterUserData(response);
+        return filterUserData(response) as Partial<User>;
       } catch (error) {
         return null;
       }
@@ -202,15 +202,17 @@ export const userApi = {
     }
   },
 
-  fetchChattedUsersDocumentsByIds: async (chattedUsersIds: string[]) => {
+  fetchChattedUsersDocumentsByIds: async (
+    chattedUsersIds: string[]
+  ): Promise<Partial<User>[]> => {
     const users = [];
     for (const userId of chattedUsersIds) {
       const user = await userApi.fetchUserDocumentById(userId);
       if (user) {
-        users.push(user);
+        users.push(user as Partial<User>);
       }
     }
-    return users;
+    return users as Partial<User>[];
   },
 
   subscribeToUserDataChanges: (

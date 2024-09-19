@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Colors } from "@/src/styles/colors";
-import BoxedIcon from "../common/BoxedIcon";
+import BoxedIcon from "@/src/components/common/BoxedIcon";
 import { wp, hp } from "@/src/styles/responsive";
 import { Ionicons } from "@expo/vector-icons";
 

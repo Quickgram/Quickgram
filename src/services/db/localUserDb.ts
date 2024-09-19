@@ -30,7 +30,9 @@ export const localUserDb = {
         return null;
       }
       const currentUser = await usersCollection.find(currentUserId);
-      const filteredCurrentUserData = filterUserData(currentUser);
+      const filteredCurrentUserData = filterUserData(
+        currentUser
+      ) as Partial<User>;
       return filteredCurrentUserData;
     } catch (error) {
       return null;
@@ -43,7 +45,7 @@ export const localUserDb = {
       if (!user) {
         return null;
       }
-      return filterUserData(user);
+      return filterUserData(user) as Partial<User>;
     } catch (error) {
       return null;
     }
@@ -57,7 +59,7 @@ export const localUserDb = {
       if (!users) {
         return [];
       }
-      return users.map((user) => filterUserData(user));
+      return users.map((user) => filterUserData(user) as Partial<User>);
     } catch (error) {
       return [];
     }
@@ -89,7 +91,7 @@ export const localUserDb = {
       if (!users) {
         return [];
       }
-      return users.map((user) => filterUserData(user));
+      return users.map((user) => filterUserData(user) as Partial<User>);
     } catch (error) {
       return [];
     }

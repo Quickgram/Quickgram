@@ -9,20 +9,21 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "../../../styles/colors";
-import { useGlobalState } from "../../../contexts/GlobalStateContext";
 import ChatUserProfileHeader from "../components/ChatUserProfileHeader";
-import User from "@/src/models/User";
 import BottomChatField from "../components/BottomChatField";
 import MessagesList from "../components/MessagesList";
-import { useAppSelector } from "@/src/redux/hooks/useAppSelector";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
 
 type ChatScreenProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
+  const dispatch = useAppDispatch();
+  const { isiOS } = useAppSelector((state) => state.global);
+  const { currentChatId, currentChatUser } = useAppSelector(
+    (state) => state.chat
+  );
   const [bottomFieldHeight, setBottomFieldHeight] = useState(0);
-  const { currentChatUser, currentChatId, isiOS, hasInternetConnection } =
-    useGlobalState();
-  const { currentUser } = useAppSelector((state) => state.user);
   const Wallpaper = require("../../../../assets/images/wallpaper.jpg");
   const handleBottomFieldHeightChange = (height: number) => {
     if (height !== bottomFieldHeight) {
@@ -36,22 +37,15 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
       style={styles.keyboardAvoidingView}
     >
       <SafeAreaView style={styles.container}>
-        <ChatUserProfileHeader
-          navigation={navigation}
-          currentChatUser={currentChatUser as User}
-        />
+        <ChatUserProfileHeader navigation={navigation} />
         <View style={styles.MessagesListContainer}>
           <MessagesList
-            currentChatUser={currentChatUser as User}
-            currentUser={currentUser as User}
-            chatId={currentChatId!}
+            chatId={currentChatId}
             bottomPadding={bottomFieldHeight}
           />
         </View>
 
         <BottomChatField
-          currentChatUser={currentChatUser as User}
-          currentUser={currentUser as User}
           chatId={currentChatId!}
           onHeightChange={handleBottomFieldHeightChange}
         />

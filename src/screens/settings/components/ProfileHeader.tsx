@@ -4,7 +4,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/src/styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
 import { Image } from "expo-image";
-import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 
 interface ProfileHeaderProps {
   name: string;

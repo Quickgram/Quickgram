@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView, View, Platform } from "react-native";
+import { StyleSheet, SafeAreaView } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
@@ -13,7 +13,6 @@ import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
 import { setCurrentUser } from "@/src/redux/reducers/userReducer";
 import { userApi } from "@/src/services/api/userApi";
 import { localUserDb } from "@/src/services/db/localUserDb";
-import User from "@/src/models/User";
 
 type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Home">,
@@ -23,6 +22,7 @@ type HomeScreenProps = CompositeScreenProps<
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { currentUser } = useAppSelector((state) => state.user);
+  const { hasInternetConnection } = useAppSelector((state) => state.global);
 
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
@@ -31,7 +31,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       unsubscribe = userApi.subscribeToUserDataChanges(
         currentUser.uid,
         async (updatedUser) => {
-          dispatch(setCurrentUser(updatedUser as User));
+          dispatch(setCurrentUser(updatedUser));
           await localUserDb.upsertUserData(updatedUser);
         }
       );
@@ -48,10 +48,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <HomeScreenHeader />
       <SearchBox />
-      <ChatUsersList
-        currentUser={currentUser as User}
-        navigation={navigation}
-      />
+      <ChatUsersList navigation={navigation} />
     </SafeAreaView>
   );
 };

@@ -162,39 +162,35 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
-import { apiServices } from "../../../services/api/apiServices";
 import Message from "@/src/models/Message";
 import User from "@/src/models/User";
-import { localdbServices } from "@/src/services/db/localdbServices";
 import * as Appwrite from "@/src/config/appwrite";
-import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 import { hp, wp } from "@/src/styles/responsive";
 import { MessageBubble } from "./MessageBubble";
 import { View, TouchableOpacity, Animated } from "react-native";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/src/styles/colors";
+import { localChatDb } from "@/src/services/db/localChatDb";
+import { chatApi } from "@/src/services/api/chatApi";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 interface MessagesListProps {
-  currentChatUser: User;
-  currentUser: User;
   chatId: string;
   bottomPadding: number;
 }
 
 const MessagesList: React.FC<MessagesListProps> = ({
-  currentChatUser,
-  currentUser,
   chatId,
   bottomPadding,
 }) => {
   const [messages, setMessages] = useState<Partial<Message>[]>([]);
   const lastFetchedMessageId = useRef<string | null>(null);
   const subscription = useRef<any>(null);
-  const { hasInternetConnection } = useGlobalState();
+  const { hasInternetConnection } = useAppSelector((state) => state.global);
+  const { currentUser } = useAppSelector((state) => state.user);
   const prevInternetConnection = useRef<boolean | null>(null);
   const flashListRef = useRef<FlashList<any>>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
-  const scrollY = useRef(new Animated.Value(0)).current;
   const shortingMessagesByTime = (messages: Partial<Message>[]) => {
     const messageMap = new Map<string, Partial<Message>>();
     messages.forEach((msg) => messageMap.set(msg.messageId!, msg));
@@ -204,43 +200,40 @@ const MessagesList: React.FC<MessagesListProps> = ({
   };
 
   const fetchInitialMessages = async () => {
-    const localMessages = await localdbServices.getMessagesFromLocaldbByChatId(
-      chatId
-    );
+    const localMessages = await localChatDb.getMessagesByChatId(chatId);
     const shortedLocalMessages = shortingMessagesByTime(localMessages);
-    setMessages(shortedLocalMessages as Partial<Message>[]);
-
-    const apiMessages = await apiServices.getInitialMessages(chatId);
+    setMessages(shortedLocalMessages);
+    const apiMessages = await chatApi.fetchInitialMessages(chatId);
     const mergedMessages = mergeMessages(localMessages, apiMessages);
     setMessages(mergedMessages);
-    await localdbServices.saveMessagesInLocaldb(apiMessages);
+    await localChatDb.upsertMessages(apiMessages);
     lastFetchedMessageId.current =
       apiMessages[apiMessages.length - 1]?.messageId ?? null;
   };
 
-  const fetchNextMessages = async () => {
+  const fetchMoreMessages = async () => {
     if (!lastFetchedMessageId.current) return;
-    const nextMessages = await apiServices.getNextMessages(
+    const nextMessages = await chatApi.fetchMoreMessages(
       chatId,
       lastFetchedMessageId.current
     );
     setMessages((prevMessages) => mergeMessages(prevMessages, nextMessages));
-
-    await localdbServices.saveMessagesInLocaldb(nextMessages);
+    await localChatDb.upsertMessages(nextMessages);
     lastFetchedMessageId.current =
       nextMessages[nextMessages.length - 1]?.messageId ?? null;
   };
 
   const fetchMissedMessages = async () => {
     if (lastFetchedMessageId.current) {
-      const missedMessages = await apiServices.getMessagesAfterMessageId(
-        chatId,
-        lastFetchedMessageId.current
-      );
+      const missedMessages =
+        await chatApi.fetchMessagesAfterLastFetchedMessageId(
+          chatId,
+          lastFetchedMessageId.current
+        );
       setMessages((prevMessages) =>
         mergeMessages(prevMessages, missedMessages)
       );
-      await localdbServices.saveMessagesInLocaldb(missedMessages);
+      await localChatDb.upsertMessages(missedMessages);
       if (missedMessages.length > 0) {
         lastFetchedMessageId.current =
           missedMessages[missedMessages.length - 1]?.messageId ?? null;
@@ -276,7 +269,7 @@ const MessagesList: React.FC<MessagesListProps> = ({
             return [updatedMessage, ...prevMessages];
           }
         });
-        await localdbServices.saveMessagesInLocaldb([updatedMessage]);
+        await localChatDb.upsertMessages([updatedMessage]);
       }
     },
     [chatId]
@@ -304,10 +297,9 @@ const MessagesList: React.FC<MessagesListProps> = ({
     prevInternetConnection.current = hasInternetConnection;
   }, [hasInternetConnection]);
 
-  // Track scroll position and show arrow icon if not at the bottom
   const onScroll = (event: any) => {
     const yOffset = event.nativeEvent.contentOffset.y;
-    setShowScrollToBottom(yOffset > 200); // Show the arrow if scrolled more than 200px from bottom
+    setShowScrollToBottom(yOffset > 200);
   };
 
   const scrollToBottom = () => {
@@ -326,26 +318,25 @@ const MessagesList: React.FC<MessagesListProps> = ({
         renderItem={renderItem}
         keyExtractor={(item) => item.messageId || Math.random().toString()}
         estimatedItemSize={100}
-        onEndReached={fetchNextMessages}
+        onEndReached={fetchMoreMessages}
         onEndReachedThreshold={0.2}
         inverted
         contentContainerStyle={{
           paddingTop: bottomPadding,
           paddingHorizontal: wp(1),
         }}
-        onScroll={onScroll} // Attach onScroll handler
+        onScroll={onScroll}
       />
 
-      {/* Conditionally render the arrow icon */}
       {showScrollToBottom && (
         <TouchableOpacity
           style={{
             position: "absolute",
             right: wp(4),
-            bottom: hp(10), // Adjusted bottom margin for better positioning
-            backgroundColor: Colors.primary, // Using Colors.primary for background
+            bottom: hp(10),
+            backgroundColor: Colors.primary,
             borderRadius: 50,
-            padding: 8, // Reduced padding to make the icon smaller
+            padding: 8,
           }}
           onPress={scrollToBottom}
         >

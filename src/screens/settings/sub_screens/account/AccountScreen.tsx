@@ -6,9 +6,8 @@ import {
   renderAccountSettingItems,
   mainItems,
   subItems,
-} from "@/src/components/settings/AccountSettingItem";
+} from "./components/AccountSettingItem";
 import { AppStackParamList } from "@/src/types/navigation";
-import { useAuth } from "@/src/contexts/AuthContext";
 import { Colors } from "@/src/styles/colors";
 
 type AccountScreenProps = NativeStackScreenProps<AppStackParamList, "Account">;

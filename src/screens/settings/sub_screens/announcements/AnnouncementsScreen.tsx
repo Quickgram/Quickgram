@@ -4,8 +4,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { FlashList } from "@shopify/flash-list";
-import { apiServices } from "@/src/services/api/apiServices";
-import AnnouncementCard from "@/src/components/settings/AnnouncementCard";
+import AnnouncementCard from "./components/AnnouncementCard";
+import { announcementApi } from "@/src/services/api/announcementApi";
 import { AppStackParamList } from "@/src/types/navigation";
 import { AnnouncementResponse } from "@/src/types/AnnouncementTypes";
 
@@ -16,14 +16,11 @@ type AnnouncementsScreenProps = NativeStackScreenProps<
 
 const AnnouncementsScreen: React.FC<AnnouncementsScreenProps> = () => {
   const [announcementResponse, setAnnouncementResponse] =
-    useState<AnnouncementResponse>({
-      announcements: [],
-      totalAnnouncements: 0,
-    });
+    useState<Partial<AnnouncementResponse> | null>(null);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
-      const announcements = await apiServices.getAnnouncements();
+      const announcements = await announcementApi.fetchAnnouncements();
       setAnnouncementResponse(announcements);
     };
     fetchAnnouncements();
@@ -32,7 +29,7 @@ const AnnouncementsScreen: React.FC<AnnouncementsScreenProps> = () => {
   return (
     <View style={styles.container}>
       <FlashList
-        data={announcementResponse.announcements}
+        data={announcementResponse?.announcements}
         renderItem={({ item }) => <AnnouncementCard item={item} />}
         estimatedItemSize={200}
         contentContainerStyle={styles.listContent}

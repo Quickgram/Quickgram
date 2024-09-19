@@ -4,49 +4,48 @@ import User from "../../../models/User";
 import { FlashList } from "@shopify/flash-list";
 import Chat from "@/src/models/Chat";
 import { getChatId } from "@/src/utils/getChatId";
-import { useGlobalState } from "@/src/contexts/GlobalStateContext";
-import { apiServices } from "@/src/services/api/apiServices";
+import { chatApi } from "@/src/services/api/chatApi";
+import { userApi } from "@/src/services/api/userApi";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import {
+  setCurrentChatUser,
+  setCurrentChatId,
+  setChatsData,
+  setLastMessages,
+} from "@/src/redux/reducers/chatReducer";
 
-const ChatUsersList = ({
-  currentUser,
-  navigation,
-}: {
-  currentUser: User;
-  navigation: any;
-}) => {
-  const { setCurrentChatUser, setCurrentChatId, homeScreenSearchQuery } =
-    useGlobalState();
-  const [chattedUsers, setChattedUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+const ChatUsersList = ({ navigation }: { navigation: any }) => {
+  const dispatch = useAppDispatch();
+  const { currentUser } = useAppSelector((state) => state.user);
   const chattedUsersIds = currentUser?.chatted_users || [];
-  const [chatsData, setChatsData] = useState<Chat[]>([]);
-
-  const updateChatsData = (chatData: Chat) => {
-    setChatsData((prevChatsData) => {
-      const updatedChatsData = prevChatsData.map((chat) =>
-        chat.chatId === chatData.chatId ? chatData : chat
-      );
-      console.log("updatedChatsData", updatedChatsData);
-      return updatedChatsData;
-    });
-  };
+  const [chattedUsers, setChattedUsers] = useState<Partial<User>[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<Partial<User>[]>([]);
+  const { homeScreenSearchQuery } = useAppSelector((state) => state.global);
 
   useEffect(() => {
     const fetchChatsData = async () => {
-      const response = await apiServices.getChatsData(
-        currentUser.uid,
-        chattedUsersIds
-      );
+      const response = await chatApi.fetchChatsData(chattedUsersIds);
       if (response) {
-        setChatsData(response as Chat[]);
+        dispatch(setChatsData(response));
+        for (const chat of response) {
+          const lastMessage = await chatApi.fetchMessageById(
+            chat.lastMessageId!
+          );
+          if (lastMessage) {
+            dispatch(setLastMessages([lastMessage]));
+          }
+        }
       }
     };
 
     const fetchChattedUsers = async () => {
-      const chattedUsersData = await apiServices.getChattedUsers(
+      const chattedUsersData = await userApi.fetchChattedUsersDocumentsByIds(
         chattedUsersIds
       );
-      setChattedUsers(chattedUsersData as User[]);
+      if (chattedUsersData) {
+        setChattedUsers(chattedUsersData);
+      }
     };
 
     fetchChatsData();
@@ -55,7 +54,7 @@ const ChatUsersList = ({
 
   useEffect(() => {
     const filtered = chattedUsers.filter((user) =>
-      user.name.toLowerCase().startsWith(homeScreenSearchQuery.toLowerCase())
+      user.name?.toLowerCase().startsWith(homeScreenSearchQuery.toLowerCase())
     );
     setFilteredUsers(filtered);
   }, [homeScreenSearchQuery, chattedUsers]);
@@ -64,21 +63,17 @@ const ChatUsersList = ({
     <ChatUserBox
       user={item}
       chatId={getChatId(currentUser?.uid, item.uid)}
-      chatData={chatsData.find(
-        (chat) => chat.chatId === getChatId(currentUser?.uid, item.uid)
-      )}
       onPress={() => {
-        setCurrentChatUser(item);
-        setCurrentChatId(getChatId(currentUser?.uid, item.uid));
+        dispatch(setCurrentChatUser(item));
+        dispatch(setCurrentChatId(getChatId(currentUser?.uid, item.uid)));
         navigation.navigate("Chat");
       }}
-      updateChatsData={updateChatsData}
     />
   );
 
   return (
     <FlashList
-      data={filteredUsers}
+      data={filteredUsers as User[]}
       keyExtractor={(item) => item.uid}
       renderItem={renderItem}
       estimatedItemSize={100}

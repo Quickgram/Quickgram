@@ -8,18 +8,23 @@ import { Colors } from "../../styles/colors";
 import ProfileHeader from "./components/ProfileHeader";
 import { wp, hp } from "@/src/styles/responsive";
 import { pickImageForProfile } from "@/src/utils/filePicker";
-import { apiServices } from "../../services/api/apiServices";
 import {
   profile,
   subItems,
   mainItems,
   support,
   renderSettingItems,
-} from "../../components/settings/SettingItem";
-import { useGlobalState } from "../../contexts/GlobalStateContext";
-import ProfileEdit from "@/src/components/settings/ProfileEdit";
+} from "./components/SettingItem";
+import ProfileEdit from "@/src/screens/settings/components/ProfileEdit";
 import { ShowToast } from "@/src/components/common/ShowToast";
-import { useAppSelector } from "@/src/redux/hooks/useAppSelector";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { storageApi } from "@/src/services/api/storageApi";
+import { userApi } from "@/src/services/api/userApi";
+import {
+  setIsProfileEditing,
+  setIsProfileUpdating,
+} from "@/src/redux/reducers/globalReducer";
 
 type SettingsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Settings">,
@@ -27,19 +32,20 @@ type SettingsScreenProps = CompositeScreenProps<
 >;
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
-  const { isProfileEditing, setIsProfileEditing, setIsProfileUpdating } =
-    useGlobalState();
+  const dispatch = useAppDispatch();
+  const { isProfileEditing, isProfileUpdating, isiOS, hasInternetConnection } =
+    useAppSelector((state) => state.global);
   const { currentUser } = useAppSelector((state) => state.user);
 
   const handleChangePhoto = async () => {
     const localUri = await pickImageForProfile();
     if (localUri) {
       try {
-        const photoUrl = await apiServices.uploadProfilePicture(
+        const photoUrl = await storageApi.uploadProfilePicture(
           currentUser!.uid,
           localUri
         );
-        await apiServices.updateProfilePicture(currentUser!.uid, photoUrl);
+        await userApi.updateProfilePicture(photoUrl);
       } catch (error) {
         ShowToast(
           "error",
@@ -92,7 +98,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   };
 
   const handleEditPress = () => {
-    setIsProfileEditing(true);
+    dispatch(setIsProfileEditing(true));
   };
 
   const handleUpdatePress = async (updatedProfile: {
@@ -101,13 +107,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     about: string;
   }) => {
     try {
-      setIsProfileUpdating(true);
+      dispatch(setIsProfileUpdating(true));
       if (
         updatedProfile.name !== currentUser!.name &&
         updatedProfile.username !== currentUser!.username &&
         updatedProfile.about !== currentUser!.about
       ) {
-        const isUsernameAvailable = await apiServices.checkUsernameAvailability(
+        const isUsernameAvailable = await userApi.checkUsernameAvailability(
           updatedProfile.username
         );
         if (!isUsernameAvailable) {
@@ -118,16 +124,15 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           );
           return;
         }
-        await apiServices.updateNameAndUsernameAndAbout(
-          currentUser!.uid,
+        await userApi.updateNameAndUsernameAndAbout(
           updatedProfile.name,
           updatedProfile.username,
           updatedProfile.about
         );
       } else if (updatedProfile.name !== currentUser!.name) {
-        await apiServices.updateName(currentUser!.uid, updatedProfile.name);
+        await userApi.updateName(updatedProfile.name);
       } else if (updatedProfile.username !== currentUser!.username) {
-        const isUsernameAvailable = await apiServices.checkUsernameAvailability(
+        const isUsernameAvailable = await userApi.checkUsernameAvailability(
           updatedProfile.username
         );
         if (!isUsernameAvailable) {
@@ -138,16 +143,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           );
           return;
         }
-        await apiServices.updateUsername(
-          currentUser!.uid,
-          updatedProfile.username
-        );
+        await userApi.updateUsername(updatedProfile.username);
       } else if (updatedProfile.about !== currentUser!.about) {
-        await apiServices.updateAbout(currentUser!.uid, updatedProfile.about);
+        await userApi.updateAbout(updatedProfile.about);
       }
-      setIsProfileUpdating(false);
+      dispatch(setIsProfileUpdating(false));
     } catch (error) {
-      setIsProfileUpdating(false);
+      dispatch(setIsProfileUpdating(false));
       ShowToast(
         "error",
         "Profile Update Failed",
@@ -172,7 +174,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           onChangePhoto={handleChangePhoto}
           onGridPress={handleGridPress}
           onEditPress={handleEditPress}
-          onCancelPress={() => setIsProfileEditing(false)}
+          onCancelPress={() => dispatch(setIsProfileEditing(false))}
         />
 
         {isProfileEditing ? (

@@ -10,17 +10,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Colors } from "../../../styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
-import User from "@/src/models/User";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 interface ChatUserProfileHeaderProps {
   navigation: any;
-  currentChatUser: User;
 }
 
 const ChatUserProfileHeader: React.FC<ChatUserProfileHeaderProps> = ({
   navigation,
-  currentChatUser,
 }) => {
+  const { currentChatUser } = useAppSelector((state) => state.chat);
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => navigation.goBack()}>

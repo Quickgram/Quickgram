@@ -16,7 +16,7 @@ import MyProfileScreen from "../screens/settings/sub_screens/profile/MyProfileSc
 import AccountScreen from "../screens/settings/sub_screens/account/AccountScreen";
 import AnnouncementsScreen from "../screens/settings/sub_screens/announcements/AnnouncementsScreen";
 import DevicesScreen from "../screens/settings/sub_screens/devices/DevicesScreen";
-import SetEmailAndPasswordScreen from "../screens/settings/sub_screens/account/screens/SetEmailAndPasswordScreen";
+import SetEmailAndPasswordScreen from "../screens/settings/sub_screens/account/sub_screens/SetEmailAndPasswordScreen";
 import ChatScreen from "../screens/chats/sub_screens/ChatScreen";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";

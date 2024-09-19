@@ -11,8 +11,9 @@ import { Colors } from "@/src/styles/colors";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { wp, hp } from "@/src/styles/responsive";
 import { AppStackParamList } from "../../types/navigation";
-import { apiServices } from "@/src/services/api/apiServices";
-import { localdbServices } from "@/src/services/db/localdbServices";
+import { resetLocalDb } from "@/src/services/db/resetLocalDb";
+import { secureStorageService } from "@/src/services/storage/secureStore";
+import { authApi } from "@/src/services/api/authApi";
 
 type WelcomeScreenProps = NativeStackScreenProps<AppStackParamList, "Welcome">;
 
@@ -29,10 +30,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
 
   const handleAgreeAndContinue = useCallback(async () => {
     try {
-      await localdbServices.resetLocalDatabase();
-      await apiServices.setSignedStatus("false");
-      await apiServices.setDataToSecureStore("currentUserId", "");
-      await apiServices.terminateCurrentSession();
+      await resetLocalDb.resetLocalDatabase();
+      await secureStorageService.saveSignedStatus("false");
+      await secureStorageService.saveCurrentUserId("");
+      await authApi.terminateCurrentSession();
     } catch (error) {
       //Database is not there yet which is fine
       //There is no session to terminate which is fine

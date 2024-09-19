@@ -10,8 +10,7 @@ import {
 import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { ShowToast } from "../common/ShowToast";
-import { useGlobalState } from "@/src/contexts/GlobalStateContext";
+import { ShowToast } from "@/src/components/common/ShowToast";
 
 interface ProfileEditProps {
   name: string;

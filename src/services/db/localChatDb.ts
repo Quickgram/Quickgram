@@ -38,7 +38,15 @@ export const localChatDb = {
       const messages = await messagesCollection
         .query(Q.where("chatId", chatId))
         .fetch();
-      return messages;
+
+      if (messages.length === 0) {
+        return [];
+      }
+
+      const filteredMessages = messages.map((message) =>
+        filterMessageData(message)
+      );
+      return filteredMessages as Partial<Message>[];
     } catch (error) {
       return [];
     }

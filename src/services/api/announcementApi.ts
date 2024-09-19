@@ -1,6 +1,5 @@
 import * as Appwrite from "../../config/appwrite";
 import { filterAnnouncementInfo } from "../../utils/dataFilters";
-import { Models } from "../../config/appwrite";
 import { AnnouncementResponse } from "@/src/types/AnnouncementTypes";
 
 export const announcementApi = {
@@ -12,7 +11,9 @@ export const announcementApi = {
       );
 
       if (response.documents.length > 0) {
-        return filterAnnouncementInfo(response.documents);
+        return filterAnnouncementInfo(
+          response.documents
+        ) as Partial<AnnouncementResponse>;
       }
       return null;
     },

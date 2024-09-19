@@ -27,12 +27,12 @@ export const checkAuthStatus = () => async (dispatch: AppDispatch) => {
 
       const localdbUserData = await localUserDb.getCurrentUserData();
       if (localdbUserData) {
-        dispatch(setCurrentUser(localdbUserData as User));
+        dispatch(setCurrentUser(localdbUserData));
         dispatch(setAuthenticated(true));
       } else {
         const apiUserData = await userApi.fetchCurrentUserDocument();
         if (apiUserData) {
-          dispatch(setCurrentUser(apiUserData as User));
+          dispatch(setCurrentUser(apiUserData));
           dispatch(setAuthenticated(true));
           await localUserDb.upsertUserData(apiUserData);
         }
@@ -82,7 +82,7 @@ export const verifyOtp =
       const userData = await userApi.fetchUserDocumentById(userId);
       if (userData) {
         dispatch(setIsNewUser(false));
-        dispatch(setCurrentUser(userData as User));
+        dispatch(setCurrentUser(userData));
         await secureStorageService.saveSignedStatus("true");
         await secureStorageService.saveCurrentUserId(userId);
         await userApi.updateUserActiveStatus(true);
@@ -124,7 +124,7 @@ export const createAccount =
       }
       const newUser = await userApi.createNewUser(userId, userData);
       if (newUser) {
-        dispatch(setCurrentUser(newUser as User));
+        dispatch(setCurrentUser(newUser));
         await userApi.updateName(newUser.name!);
         await secureStorageService.saveCurrentUserId(userId);
         await userApi.updateUserActiveStatus(true);
@@ -169,14 +169,14 @@ export const initiateEmailLogin =
       );
       const userData = await userApi.fetchUserDocumentById(response.userId);
       if (userData) {
-        dispatch(setCurrentUser(userData as User));
+        dispatch(setCurrentUser(userData));
         await secureStorageService.saveSignedStatus("true");
         await secureStorageService.saveCurrentUserId(userData.uid as string);
         await userApi.updateUserActiveStatus(true);
         const sessionsResponse = await authApi.getAllActiveSessions();
         dispatch(setActiveSessionsData(sessionsResponse));
         dispatch(setAuthenticated(true));
-        await localUserDb.upsertUserData(userData as User);
+        await localUserDb.upsertUserData(userData);
       }
     } catch (error: unknown) {
       console.log(error);

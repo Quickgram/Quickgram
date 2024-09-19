@@ -2,11 +2,14 @@ import { Colors } from "@/src/styles/colors";
 import React from "react";
 import { Animated, TextInput, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useGlobalState } from "@/src/contexts/GlobalStateContext";
 import { wp, hp } from "@/src/styles/responsive";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { setHomeScreenSearchQuery } from "@/src/redux/reducers/globalReducer";
 
 const SearchBox = () => {
-  const { homeScreenSearchQuery, setHomeScreenSearchQuery } = useGlobalState();
+  const dispatch = useAppDispatch();
+  const { homeScreenSearchQuery } = useAppSelector((state) => state.global);
 
   return (
     <Animated.View style={[styles.container]}>
@@ -17,7 +20,7 @@ const SearchBox = () => {
           placeholder="Search"
           placeholderTextColor={Colors.gray}
           value={homeScreenSearchQuery}
-          onChangeText={setHomeScreenSearchQuery}
+          onChangeText={(text) => dispatch(setHomeScreenSearchQuery(text))}
           numberOfLines={1}
           multiline={false}
           keyboardType="default"

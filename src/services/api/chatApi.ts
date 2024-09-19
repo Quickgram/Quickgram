@@ -47,6 +47,20 @@ export const chatApi = {
     await chatApi.upsertChatDocument(messageData.chatId!, messageData);
   },
 
+  fetchMessageById: async (
+    messageId: string
+  ): Promise<Partial<Message> | null> => {
+    const response = await Appwrite.databases.getDocument(
+      process.env.EXPO_PUBLIC_DATABASE_ID!,
+      process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
+      messageId
+    );
+    if (response) {
+      return filterMessageData(response) as Partial<Message>;
+    }
+    return null;
+  },
+
   fetchInitialMessages: async (chatId: string): Promise<Partial<Message>[]> => {
     const response = await Appwrite.databases.listDocuments(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -118,10 +132,10 @@ export const chatApi = {
         getChatId(currentUserId!, userId)
       )) as Models.Document;
       if (chat) {
-        chatsData.push(filterChatData(chat));
+        chatsData.push(filterChatData(chat) as Partial<Chat>);
       }
     }
-    return chatsData;
+    return chatsData as Partial<Chat>[];
   },
 
   fetchChatDataById: async (chatId: string): Promise<Partial<Chat> | null> => {
@@ -131,7 +145,7 @@ export const chatApi = {
       chatId
     )) as Models.Document;
     if (chatData) {
-      return filterChatData(chatData);
+      return filterChatData(chatData) as Partial<Chat>;
     } else {
       return null;
     }

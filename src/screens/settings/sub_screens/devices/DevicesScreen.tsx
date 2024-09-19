@@ -11,13 +11,14 @@ import { AppStackParamList } from "@/src/types/navigation";
 import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
-import RenderDeviceBox from "@/src/components/settings/RenderDeviceBox";
-import { apiServices } from "@/src/services/api/apiServices";
 import { ShowToast } from "@/src/components/common/ShowToast";
-import { useAppSelector } from "@/src/redux/hooks/useAppSelector";
 import { SessionInfo } from "@/src/types/SessionTypes";
-import { useAppDispatch } from "@/src/redux/hooks/useAppDispatch";
 import { setActiveSessionsData } from "@/src/redux/reducers/sessionReducer";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { authApi } from "@/src/services/api/authApi";
+import RenderDeviceBox from "./components/RenderDeviceBox";
+
 type DevicesScreenProps = NativeStackScreenProps<AppStackParamList, "Devices">;
 
 const DevicesScreen: React.FC<DevicesScreenProps> = () => {
@@ -38,11 +39,11 @@ const DevicesScreen: React.FC<DevicesScreenProps> = () => {
       await Promise.all(
         otherDevices.map((session: SessionInfo) => {
           if (session.sessionId !== currentSessionId) {
-            return apiServices.terminateSession(session.sessionId);
+            return authApi.terminateSession(session.sessionId);
           }
         })
       );
-      const newSessionsResponse = await apiServices.getAllActiveSessions();
+      const newSessionsResponse = await authApi.getAllActiveSessions();
       dispatch(setActiveSessionsData(newSessionsResponse));
       ShowToast(
         "success",

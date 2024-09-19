@@ -5,7 +5,7 @@ import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Image } from "expo-image";
 import { AppStackParamList } from "@/src/types/navigation";
-import { useAppSelector } from "@/src/redux/hooks/useAppSelector";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 type MyProfileScreenProps = NativeStackScreenProps<
   AppStackParamList,

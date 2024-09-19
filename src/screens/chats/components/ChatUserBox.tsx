@@ -5,33 +5,44 @@ import User from "../../../models/User";
 import { Image } from "expo-image";
 import { wp, hp } from "@/src/styles/responsive";
 import Chat from "@/src/models/Chat";
-import { apiServices } from "@/src/services/api/apiServices";
+import { chatApi } from "@/src/services/api/chatApi";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { setChatsData } from "@/src/redux/reducers/chatReducer";
+
 import Message from "@/src/models/Message";
+import { formatTimeForLastMessage } from "@/src/utils/timeConverter";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const ChatUserBox = ({
   user,
   chatId,
-  chatData,
   onPress,
-  updateChatsData,
 }: {
-  user: User;
+  user: Partial<User>;
   chatId: string;
-  chatData?: Chat;
   onPress: () => void;
-  updateChatsData: (chatData: Chat) => void;
 }) => {
-  const [lastMessage, setLastMessage] = useState<Message | null>(null);
+  const dispatch = useAppDispatch();
+  const { currentChatId, chatsData, lastMessages } = useAppSelector(
+    (state) => state.chat
+  );
+  const updateChatsData = (chatData: Chat) => {
+    const updatedChatsData = chatsData.map((chat: Chat) =>
+      chat.chatId === chatData.chatId ? chatData : chat
+    );
+    dispatch(setChatsData(updatedChatsData));
+  };
 
   useEffect(() => {
-    const unsubscribe = apiServices.subscribeToChatDataChanges(
-      chatId,
+    const unsubscribe = chatApi.subscribeToChatDataChanges(
+      currentChatId,
       (updatedChatData) => {
-        updateChatsData(updatedChatData as Chat);
+        updateChatsData(updatedChatData);
       }
     );
     return () => unsubscribe();
-  }, [chatId, updateChatsData]);
+  }, [currentChatId, updateChatsData]);
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -46,11 +57,46 @@ const ChatUserBox = ({
         />
         <View style={styles.textContainer}>
           <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.lastMessage}>
-            {chatData?.lastMessageId || ""}
-          </Text>
+
+          {lastMessages.map((lastMessage: Message) =>
+            lastMessage.chatId === chatId ? (
+              <View
+                key={lastMessage.chatId}
+                style={styles.lastMessageContainer}
+              >
+                <Text style={styles.lastMessage}>{lastMessage.text}</Text>
+
+                {lastMessage.is_seen ? (
+                  <Ionicons
+                    name="checkmark-done-outline"
+                    size={13}
+                    color={Colors.primary}
+                  />
+                ) : (
+                  <Ionicons
+                    name="checkmark-outline"
+                    size={13}
+                    color={Colors.black}
+                  />
+                )}
+              </View>
+            ) : (
+              <View
+                key={`empty-${lastMessage.chatId}`}
+                style={styles.lastMessageContainer}
+              >
+                <Text style={styles.lastMessage}> </Text>
+              </View>
+            )
+          )}
         </View>
-        <Text style={styles.dateText}>{lastMessage?.sentTime || ""}</Text>
+        <Text style={styles.dateText}>
+          {lastMessages.map((lastMessage: Message) =>
+            lastMessage.chatId === chatId
+              ? formatTimeForLastMessage(lastMessage.sentTime)
+              : ""
+          )}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -69,6 +115,11 @@ const styles = StyleSheet.create({
     width: wp(13.5),
     height: wp(13.5),
     borderRadius: wp(6.75),
+  },
+  lastMessageContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: wp(2),
   },
   textContainer: {
     flex: 1,
