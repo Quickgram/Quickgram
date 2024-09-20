@@ -7,4 +7,5 @@ export interface ChatState {
   currentChatId: string | null;
   chatsData: Partial<Chat>[];
   lastMessages: Partial<Message>[];
+  chattedUsers: Partial<User>[];
 }

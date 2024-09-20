@@ -54,11 +54,15 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                 (message.is_seen ? (
                   <Ionicons
                     name="checkmark-done-outline"
-                    size={13}
-                    color="black"
+                    size={wp(3)}
+                    color={Colors.primary}
                   />
                 ) : (
-                  <Ionicons name="checkmark-outline" size={13} color="black" />
+                  <Ionicons
+                    name="checkmark-outline"
+                    size={wp(3)}
+                    color={Colors.black}
+                  />
                 ))}
             </View>
           </View>

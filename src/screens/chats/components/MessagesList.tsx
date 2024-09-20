@@ -191,6 +191,7 @@ const MessagesList: React.FC<MessagesListProps> = ({
   const prevInternetConnection = useRef<boolean | null>(null);
   const flashListRef = useRef<FlashList<any>>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+
   const shortingMessagesByTime = (messages: Partial<Message>[]) => {
     const messageMap = new Map<string, Partial<Message>>();
     messages.forEach((msg) => messageMap.set(msg.messageId!, msg));

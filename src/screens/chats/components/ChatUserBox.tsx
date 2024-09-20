@@ -8,11 +8,22 @@ import Chat from "@/src/models/Chat";
 import { chatApi } from "@/src/services/api/chatApi";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
-import { setChatsData } from "@/src/redux/reducers/chatReducer";
-
+import { setChattedUsers } from "@/src/redux/reducers/chatReducer";
+import {
+  setChatsData,
+  setLastMessages,
+} from "@/src/redux/reducers/chatReducer";
 import Message from "@/src/models/Message";
 import { formatTimeForLastMessage } from "@/src/utils/timeConverter";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+  filterChatData,
+  filterMessageData,
+  filterUserData,
+} from "@/src/utils/dataFilters";
+import { localChatDb } from "@/src/services/db/localChatDb";
+import { userApi } from "@/src/services/api/userApi";
+import { localUserDb } from "@/src/services/db/localUserDb";
 
 const ChatUserBox = ({
   user,
@@ -24,49 +35,115 @@ const ChatUserBox = ({
   onPress: () => void;
 }) => {
   const dispatch = useAppDispatch();
-  const { currentChatId, chatsData, lastMessages } = useAppSelector(
+  const { currentUser } = useAppSelector((state) => state.user);
+  const { chatsData, lastMessages, chattedUsers } = useAppSelector(
     (state) => state.chat
   );
-  const updateChatsData = (chatData: Chat) => {
-    const updatedChatsData = chatsData.map((chat: Chat) =>
-      chat.chatId === chatData.chatId ? chatData : chat
+  const { hasInternetConnection } = useAppSelector((state) => state.global);
+  const [lastMessage, setLastMessage] = useState<Partial<Message> | null>(null);
+
+  useEffect(() => {
+    const lastMessage = lastMessages.find(
+      (message: Partial<Message>) => message.chatId === chatId
     );
-    dispatch(setChatsData(updatedChatsData));
+    if (lastMessage) {
+      setLastMessage(lastMessage);
+    }
+  }, [chatId, lastMessages]);
+
+  const updateChatData = async (updatedChatData: Partial<Chat>) => {
+    dispatch(
+      setChatsData(
+        chatsData.map((chat: Partial<Chat>) =>
+          chat.chatId === updatedChatData.chatId
+            ? filterChatData(updatedChatData)
+            : chat
+        )
+      )
+    );
+
+    const updatedLastMessage = await chatApi.fetchMessageById(
+      updatedChatData.lastMessageId!
+    );
+    if (updatedLastMessage) {
+      dispatch(
+        setLastMessages(
+          lastMessages.map((lastMessage: Partial<Message>) =>
+            lastMessage.chatId === updatedLastMessage.chatId
+              ? filterMessageData(updatedLastMessage)
+              : lastMessage
+          )
+        )
+      );
+      await localChatDb.upsertMessages([updatedLastMessage]);
+    }
+    await localChatDb.upsertChatsData([updatedChatData]);
   };
 
   useEffect(() => {
-    const unsubscribe = chatApi.subscribeToChatDataChanges(
-      currentChatId,
-      (updatedChatData) => {
-        updateChatsData(updatedChatData);
+    if (hasInternetConnection) {
+      const unsubscribe = chatApi.subscribeToChatDataChanges(
+        chatId,
+        (updatedChatData) => {
+          updateChatData(updatedChatData);
+        }
+      );
+      return () => unsubscribe();
+    }
+  }, [chatId, updateChatData]);
+
+  useEffect(() => {
+    let unsubscribe: (() => void) | null = null;
+
+    if (user?.uid) {
+      unsubscribe = userApi.subscribeToUserDataChanges(
+        user.uid,
+        async (updatedChatUser) => {
+          dispatch(
+            setChattedUsers(
+              chattedUsers.map((chatUser: Partial<User>) =>
+                chatUser.uid === updatedChatUser.uid
+                  ? filterUserData(updatedChatUser)
+                  : chatUser
+              )
+            )
+          );
+          await localUserDb.upsertUserData(updatedChatUser);
+        }
+      );
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
-    );
-    return () => unsubscribe();
-  }, [currentChatId, updateChatsData]);
+    };
+  }, [user?.uid]);
+
+  const onLongPress = () => {};
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
       <View style={styles.container}>
-        <Image
-          source={{
-            uri: user.profile_picture_url,
-          }}
-          style={styles.profileImage}
-          placeholderContentFit="contain"
-          cachePolicy="memory-disk"
-        />
+        <TouchableOpacity>
+          <Image
+            source={{
+              uri: user.profile_picture_url,
+            }}
+            style={styles.profileImage}
+            placeholderContentFit="contain"
+            cachePolicy="memory-disk"
+          />
+        </TouchableOpacity>
         <View style={styles.textContainer}>
           <Text style={styles.userName}>{user.name}</Text>
 
-          {lastMessages.map((lastMessage: Message) =>
-            lastMessage.chatId === chatId ? (
-              <View
-                key={lastMessage.chatId}
-                style={styles.lastMessageContainer}
-              >
-                <Text style={styles.lastMessage}>{lastMessage.text}</Text>
+          {lastMessage ? (
+            <View style={styles.lastMessageContainer}>
+              <Text style={styles.lastMessage}>{lastMessage.text}</Text>
 
-                {lastMessage.is_seen ? (
+              {lastMessage.senderId === currentUser?.uid &&
+                (lastMessage.is_seen ? (
                   <Ionicons
                     name="checkmark-done-outline"
                     size={13}
@@ -78,25 +155,22 @@ const ChatUserBox = ({
                     size={13}
                     color={Colors.black}
                   />
-                )}
-              </View>
-            ) : (
-              <View
-                key={`empty-${lastMessage.chatId}`}
-                style={styles.lastMessageContainer}
-              >
-                <Text style={styles.lastMessage}> </Text>
-              </View>
-            )
+                ))}
+            </View>
+          ) : (
+            <View style={styles.lastMessageContainer}>
+              <Text style={styles.lastMessage}> </Text>
+            </View>
           )}
         </View>
-        <Text style={styles.dateText}>
-          {lastMessages.map((lastMessage: Message) =>
-            lastMessage.chatId === chatId
-              ? formatTimeForLastMessage(lastMessage.sentTime)
-              : ""
-          )}
-        </Text>
+
+        {lastMessage ? (
+          <Text style={styles.dateText}>
+            {formatTimeForLastMessage(lastMessage.sentTime!)}
+          </Text>
+        ) : (
+          <Text style={styles.dateText}></Text>
+        )}
       </View>
     </TouchableOpacity>
   );

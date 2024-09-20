@@ -57,4 +57,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchBox;
+export default React.memo(SearchBox);

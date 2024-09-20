@@ -11,6 +11,7 @@ import { wp, hp } from "@/src/styles/responsive";
 import { Colors } from "@/src/styles/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { ShowToast } from "@/src/components/common/ShowToast";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 interface ProfileEditProps {
   name: string;
@@ -32,7 +33,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
   const [editedName, setEditedName] = useState(name);
   const [editedUsername, setEditedUsername] = useState(username);
   const [editedAbout, setEditedAbout] = useState(about);
-  const { isProfileUpdating } = useGlobalState();
+  const { isProfileUpdating } = useAppSelector((state) => state.global);
 
   const isButtonEnabled = useMemo(
     () =>

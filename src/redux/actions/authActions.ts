@@ -17,13 +17,20 @@ import { setActiveSessionsData } from "../reducers/sessionReducer";
 import { ShowToast } from "../../components/common/ShowToast";
 import User from "@/src/models/User";
 import * as Appwrite from "../../config/appwrite";
+import NetInfo from "@react-native-community/netinfo";
 
 export const checkAuthStatus = () => async (dispatch: AppDispatch) => {
+  const netInfo = await NetInfo.fetch();
+  const hasInternetConnection =
+    netInfo?.isConnected && netInfo?.isInternetReachable;
+
   const isSigned = await secureStorageService.getSignedStatus();
   if (isSigned === "true") {
     try {
-      const sessionsResponse = await authApi.getAllActiveSessions();
-      dispatch(setActiveSessionsData(sessionsResponse));
+      if (hasInternetConnection) {
+        const sessionsResponse = await authApi.getAllActiveSessions();
+        dispatch(setActiveSessionsData(sessionsResponse));
+      }
 
       const localdbUserData = await localUserDb.getCurrentUserData();
       if (localdbUserData) {
@@ -39,9 +46,6 @@ export const checkAuthStatus = () => async (dispatch: AppDispatch) => {
       }
     } catch (error) {
       dispatch(setAuthenticated(false));
-      await resetLocalDb.resetLocalDatabase();
-      await secureStorageService.saveSignedStatus("false");
-      await secureStorageService.saveCurrentUserId("");
     }
   }
 };

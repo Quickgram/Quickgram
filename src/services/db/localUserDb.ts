@@ -11,14 +11,38 @@ export const localUserDb = {
     await database.write(async () => {
       try {
         const existingUser = await usersCollection.find(filteredUserData.uid!);
-        await existingUser.update((user) => {
-          Object.assign(user, filteredUserData);
-        });
+        if (existingUser) {
+          await existingUser.update((user) => {
+            Object.assign(user, filteredUserData);
+          });
+        }
       } catch (error) {
         await usersCollection.create((user) => {
           user._raw.id = filteredUserData.uid!;
           Object.assign(user, filteredUserData);
         });
+      }
+    });
+  },
+
+  upsertUsersData: async (usersData: Partial<User>[]): Promise<void> => {
+    await database.write(async () => {
+      try {
+        for (const userData of usersData) {
+          const existingUser = await usersCollection.find(userData.uid!);
+          if (existingUser) {
+            await existingUser.update((user) => {
+              Object.assign(user, userData);
+            });
+          }
+        }
+      } catch (error) {
+        for (const userData of usersData) {
+          await usersCollection.create((user) => {
+            user._raw.id = userData.uid!;
+            Object.assign(user, userData);
+          });
+        }
       }
     });
   },

@@ -23,25 +23,26 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { currentUser } = useAppSelector((state) => state.user);
   const { hasInternetConnection } = useAppSelector((state) => state.global);
-
   useEffect(() => {
-    let unsubscribe: (() => void) | null = null;
+    if (hasInternetConnection) {
+      let unsubscribe: (() => void) | null = null;
 
-    if (currentUser?.uid) {
-      unsubscribe = userApi.subscribeToUserDataChanges(
-        currentUser.uid,
-        async (updatedUser) => {
-          dispatch(setCurrentUser(updatedUser));
-          await localUserDb.upsertUserData(updatedUser);
-        }
-      );
-    }
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
+      if (currentUser?.uid) {
+        unsubscribe = userApi.subscribeToUserDataChanges(
+          currentUser.uid,
+          async (updatedUser) => {
+            dispatch(setCurrentUser(updatedUser));
+            await localUserDb.upsertUserData(updatedUser);
+          }
+        );
       }
-    };
+
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
   }, [currentUser?.uid, setCurrentUser]);
 
   return (

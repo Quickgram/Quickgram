@@ -1,16 +1,37 @@
 import React from "react";
-import { View, Text, StyleSheet, Platform } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../../styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
+import { Alert } from "react-native";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 const HomeScreenHeader: React.FC = () => {
+  const { chatsData } = useAppSelector((state) => state.chat);
   return (
     <View style={styles.header}>
       <Text style={styles.headerTitle}>Chats</Text>
       <View style={styles.headerIcons}>
-        <Ionicons name="camera-outline" size={24} style={styles.icon} />
-        <Ionicons name="add-circle-outline" size={24} style={styles.icon} />
+        <TouchableOpacity
+          onPress={() => {
+            console.log(chatsData);
+          }}
+        >
+          <Ionicons name="camera-outline" size={wp(7)} style={styles.icon} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {}}>
+          <Ionicons
+            name="add-circle-outline"
+            size={wp(7)}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -38,4 +59,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreenHeader;
+export default React.memo(HomeScreenHeader);

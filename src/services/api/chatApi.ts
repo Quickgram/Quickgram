@@ -61,6 +61,74 @@ export const chatApi = {
     return null;
   },
 
+  fetchLastMessageById: async (
+    messageId?: string,
+    chatId?: string
+  ): Promise<Partial<Message> | null> => {
+    const currentUserId = await secureStorageService.getCurrentUserId();
+
+    if (!messageId || !chatId || !currentUserId) {
+      return null;
+    }
+
+    const fetchMessageById = async (id: string) => {
+      const response = await Appwrite.databases.listDocuments(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
+        [
+          Appwrite.Query.equal("messageId", id),
+          Appwrite.Query.equal("chatId", chatId),
+          Appwrite.Query.limit(1),
+        ]
+      );
+      if (response.documents.length === 0) {
+        return null;
+      }
+      return response.documents[0];
+    };
+
+    const fetchPreviousMessage = async (lastFetchedMessageId: string) => {
+      const response = await Appwrite.databases.listDocuments(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
+        [
+          Appwrite.Query.equal("chatId", chatId),
+          Appwrite.Query.orderAsc("sentTime"),
+          Appwrite.Query.cursorBefore(lastFetchedMessageId),
+          Appwrite.Query.limit(1),
+        ]
+      );
+      if (response.documents.length === 0) {
+        return null;
+      }
+      return response.documents[0];
+    };
+
+    let messageData = await fetchMessageById(messageId);
+
+    if (messageData && !messageData.deleteMessageFor.includes(currentUserId)) {
+      return filterMessageData(messageData) as Partial<Message>;
+    }
+
+    while (
+      messageData &&
+      messageData.deleteMessageFor.includes(currentUserId)
+    ) {
+      const lastFetchedMessageId = messageData.messageId;
+      messageData = await fetchPreviousMessage(lastFetchedMessageId);
+    }
+
+    if (!messageData) {
+      return null;
+    }
+
+    const filteredLastMessageData = filterMessageData(
+      messageData
+    ) as Partial<Message>;
+
+    return filteredLastMessageData;
+  },
+
   fetchInitialMessages: async (chatId: string): Promise<Partial<Message>[]> => {
     const response = await Appwrite.databases.listDocuments(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -138,7 +206,9 @@ export const chatApi = {
     return chatsData as Partial<Chat>[];
   },
 
-  fetchChatDataById: async (chatId: string): Promise<Partial<Chat> | null> => {
+  fetchChatDataByChatId: async (
+    chatId: string
+  ): Promise<Partial<Chat> | null> => {
     const chatData = (await Appwrite.databases.getDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID!,

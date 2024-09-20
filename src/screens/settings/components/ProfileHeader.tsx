@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/src/styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
 import { Image } from "expo-image";
+import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 interface ProfileHeaderProps {
   name: string;
@@ -26,7 +27,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onEditPress,
   onCancelPress,
 }) => {
-  const { isProfileEditing } = useGlobalState();
+  const { isProfileEditing } = useAppSelector((state) => state.global);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerButton}>

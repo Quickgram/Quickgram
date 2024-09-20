@@ -24,10 +24,11 @@ type DevicesScreenProps = NativeStackScreenProps<AppStackParamList, "Devices">;
 const DevicesScreen: React.FC<DevicesScreenProps> = () => {
   const { activeSessionsData } = useAppSelector((state) => state.session);
   const dispatch = useAppDispatch();
-  const currentDevice = activeSessionsData!.sessions.find(
+  const currentDevice = activeSessionsData.sessions.find(
     (session: SessionInfo) => session.isCurrent
   );
-  const otherDevices = activeSessionsData!.sessions.filter(
+
+  const otherDevices = activeSessionsData.sessions.filter(
     (session: SessionInfo) => !session.isCurrent
   );
 

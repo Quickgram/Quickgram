@@ -9,6 +9,7 @@ const initialState: ChatState = {
   currentChatId: null,
   chatsData: [],
   lastMessages: [],
+  chattedUsers: [],
 };
 
 const chatSlice = createSlice({
@@ -30,6 +31,9 @@ const chatSlice = createSlice({
     setLastMessages: (state, action: PayloadAction<Partial<Message>[]>) => {
       state.lastMessages = action.payload;
     },
+    setChattedUsers: (state, action: PayloadAction<Partial<User>[]>) => {
+      state.chattedUsers = action.payload;
+    },
   },
 });
 
@@ -38,5 +42,6 @@ export const {
   setCurrentChatId,
   setChatsData,
   setLastMessages,
+  setChattedUsers,
 } = chatSlice.actions;
 export default chatSlice.reducer;

@@ -8,7 +8,7 @@ import EmailAndPasswordScreen from "../screens/authentication/EmailAndPasswordSc
 import MainTabs from "./MainTabs";
 import { AppStackParamList } from "../types/navigation";
 import SplashScreen from "../screens/welcome/SplashScreen";
-import { TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { Colors } from "../styles/colors";
 import { wp } from "@/src/styles/responsive";
@@ -74,7 +74,26 @@ const AppNavigator = () => {
                 </TouchableOpacity>
               ),
               headerRight: () => (
-                <TouchableOpacity onPress={() => dispatch(initiateLogout())}>
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert(
+                      "Logout?",
+                      "Are you sure you want to logout?",
+                      [
+                        {
+                          text: "Cancel",
+                          style: "cancel",
+                        },
+                        {
+                          text: "OK",
+                          onPress: () => dispatch(initiateLogout()),
+                          style: "destructive",
+                        },
+                      ],
+                      { cancelable: true }
+                    );
+                  }}
+                >
                   <Feather name="log-out" size={wp(7)} color={Colors.red} />
                 </TouchableOpacity>
               ),
