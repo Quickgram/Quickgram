@@ -202,12 +202,12 @@ export const userApi = {
     }
   },
 
-  subscribeToUserDataChanges: (
-    userId: string,
+  subscribeToMyUserDocumentChanges: (
+    currentUserId: string,
     callback: (user: User) => void
   ) => {
     const unsubscribe = Appwrite.client.subscribe(
-      `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_USERS_COLLECTION_ID}.documents.${userId}`,
+      `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_USERS_COLLECTION_ID}.documents.${currentUserId}`,
       (response) => {
         if (
           response.events.includes(

@@ -44,9 +44,8 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
             bottomPadding={bottomFieldHeight}
           />
         </View>
-
         <BottomChatField
-          chatId={currentChatroomId!}
+          chatroomId={currentChatroomId!}
           onHeightChange={handleBottomFieldHeightChange}
         />
       </SafeAreaView>

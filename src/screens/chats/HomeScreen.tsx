@@ -29,7 +29,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       let unsubscribe: (() => void) | null = null;
 
       if (currentUser?.userId) {
-        unsubscribe = userApi.subscribeToUserDataChanges(
+        unsubscribe = userApi.subscribeToMyUserDocumentChanges(
           currentUser.userId,
           async (updatedUser) => {
             dispatch(setCurrentUser(updatedUser));

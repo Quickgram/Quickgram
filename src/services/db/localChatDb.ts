@@ -4,7 +4,6 @@ import {
   filterMyChatroomsData,
   filterMessageData,
 } from "../../utils/dataFilters";
-import { getChatId } from "../../utils/getChatId";
 import { secureStorageService } from "../storage/secureStore";
 import Message from "@/src/models/Message";
 import ChatRooms from "@/src/models/ChatRooms";
@@ -74,95 +73,6 @@ export const localChatDb = {
       return null;
     }
   },
-
-  // getLastMessageById: async (
-  //   messageId: string,
-  //   chatId: string
-  // ): Promise<Partial<Message> | null> => {
-  //   const currentUserId = await secureStorageService.getCurrentUserId();
-
-  //   if (!currentUserId) {
-  //     return null;
-  //   }
-
-  //   const fetchMessageById = async (
-  //     id: string
-  //   ): Promise<Partial<Message> | null> => {
-  //     try {
-  //       const message = await messagesCollection
-  //         .query(Q.where("messageId", id), Q.where("chatId", chatId))
-  //         .fetch();
-
-  //       return message.length > 0
-  //         ? (filterMessageData(message[0]) as Partial<Message>)
-  //         : null;
-  //     } catch (error) {
-  //       return null;
-  //     }
-  //   };
-
-  //   const fetchPreviousMessage = async (
-  //     sentTime: string
-  //   ): Promise<Partial<Message> | null> => {
-  //     try {
-  //       const previousMessages = await messagesCollection
-  //         .query(
-  //           Q.where("chatId", chatId),
-  //           Q.where("sentTime", Q.lt(sentTime)),
-  //           Q.sortBy("sentTime", Q.desc),
-  //           Q.take(1)
-  //         )
-  //         .fetch();
-
-  //       const filteredPreviousMessage =
-  //         previousMessages.length > 0
-  //           ? (filterMessageData(previousMessages[0]) as Partial<Message>)
-  //           : null;
-
-  //       console.log(
-  //         "lastMessage in function inside of pre sub function:",
-  //         filteredPreviousMessage?.text
-  //       );
-
-  //       return filteredPreviousMessage;
-  //     } catch (error) {
-  //       console.error("Error fetching previous message:", error);
-  //       return null;
-  //     }
-  //   };
-
-  //   let messageData = await fetchMessageById(messageId);
-  //   const deleteMessageFor = messageData?.deleteMessageFor || [];
-
-  //   if (messageData && !deleteMessageFor.includes(currentUserId)) {
-  //     return filterMessageData(messageData);
-  //   }
-
-  //   while (messageData && deleteMessageFor.includes(currentUserId)) {
-  //     const sentTime = messageData.sentTime;
-
-  //     if (sentTime) {
-  //       const previousMessage = await fetchPreviousMessage(sentTime);
-  //       console.log("lastMessage in function:", previousMessage?.text);
-
-  //       if (previousMessage) {
-  //         messageData = previousMessage;
-  //       } else {
-  //         console.log("No more previous messages found.");
-  //         break;
-  //       }
-  //     } else {
-  //       console.log("Sent time is not available.");
-  //       break;
-  //     }
-  //   }
-
-  //   if (!messageData) {
-  //     return null;
-  //   }
-
-  //   return filterMessageData(messageData);
-  // },
 
   upsertChatroomsData: async (
     chatroomsData: Partial<ChatRooms>

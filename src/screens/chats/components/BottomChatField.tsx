@@ -9,7 +9,6 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/src/styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
-import User from "@/src/models/User";
 import Message from "@/src/models/Message";
 import MessageEnum from "@/src/utils/messageEnum";
 import * as Appwrite from "../../../config/appwrite";
@@ -17,12 +16,12 @@ import { chatApi } from "@/src/services/api/chatApi";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 interface BottomChatFieldProps {
-  chatId: string;
+  chatroomId: string;
   onHeightChange: (height: number) => void;
 }
 
 const BottomChatField: React.FC<BottomChatFieldProps> = ({
-  chatId,
+  chatroomId,
   onHeightChange,
 }) => {
   const { isiOS } = useAppSelector((state) => state.global);
@@ -52,7 +51,7 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
       seenAt: null,
       sentAt: Date.now().toString(),
       fileUrl: null,
-      chatroomId: chatId,
+      chatroomId: chatroomId,
       deleteMessageFor: [],
       isSeen: false,
       isEdited: false,

@@ -11,11 +11,11 @@ import ChattedUser from "@/src/models/ChattedUser";
 
 const ChatUserBox = ({
   chattedUser,
-  chatId,
+  chatroomId,
   onPress,
 }: {
   chattedUser: Partial<ChattedUser>;
-  chatId: string;
+  chatroomId: string;
   onPress: () => void;
 }) => {
   const dispatch = useAppDispatch();

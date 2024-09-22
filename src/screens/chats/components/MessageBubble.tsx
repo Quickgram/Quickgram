@@ -47,11 +47,11 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             ]}
           >
             <Text style={styles.timestamp}>
-              {formatTimeForMessages(message.sentTime!)}
+              {formatTimeForMessages(message.sentAt!)}
             </Text>
             <View style={styles.seenContainer}>
               {isOwnMessage &&
-                (message.is_seen ? (
+                (message.isSeen ? (
                   <Ionicons
                     name="checkmark-done-outline"
                     size={wp(3)}

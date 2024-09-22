@@ -7,7 +7,6 @@ import {
 import { secureStorageService } from "../storage/secureStore";
 import Message from "@/src/models/Message";
 import ChatRooms from "@/src/models/ChatRooms";
-import { getChatId } from "@/src/utils/getChatId";
 
 export const chatApi = {
   sendTextMessage: async (messageData: Partial<Message>) => {
@@ -33,74 +32,6 @@ export const chatApi = {
     }
     return null;
   },
-
-  // fetchLastMessageById: async (
-  //   messageId?: string,
-  //   chatroomId?: string
-  // ): Promise<Partial<Message> | null> => {
-  //   const currentUserId = await secureStorageService.getCurrentUserId();
-
-  //   if (!messageId || !chatroomId || !currentUserId) {
-  //     return null;
-  //   }
-
-  //   const fetchMessageById = async (id: string) => {
-  //     const response = await Appwrite.databases.listDocuments(
-  //       process.env.EXPO_PUBLIC_DATABASE_ID!,
-  //       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
-  //       [
-  //         Appwrite.Query.equal("messageId", id),
-  //         Appwrite.Query.equal("chatroomId", chatroomId),
-  //         Appwrite.Query.limit(1),
-  //       ]
-  //     );
-  //     if (response.documents.length === 0) {
-  //       return null;
-  //     }
-  //     return response.documents[0];
-  //   };
-
-  //   const fetchPreviousMessage = async (lastFetchedMessageId: string) => {
-  //     const response = await Appwrite.databases.listDocuments(
-  //       process.env.EXPO_PUBLIC_DATABASE_ID!,
-  //       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
-  //       [
-  //         Appwrite.Query.equal("chatId", chatId),
-  //         Appwrite.Query.orderAsc("sentTime"),
-  //         Appwrite.Query.cursorBefore(lastFetchedMessageId),
-  //         Appwrite.Query.limit(1),
-  //       ]
-  //     );
-  //     if (response.documents.length === 0) {
-  //       return null;
-  //     }
-  //     return response.documents[0];
-  //   };
-
-  //   let messageData = await fetchMessageById(messageId);
-
-  //   if (messageData && !messageData.deleteMessageFor.includes(currentUserId)) {
-  //     return filterMessageData(messageData) as Partial<Message>;
-  //   }
-
-  //   while (
-  //     messageData &&
-  //     messageData.deleteMessageFor.includes(currentUserId)
-  //   ) {
-  //     const lastFetchedMessageId = messageData.messageId;
-  //     messageData = await fetchPreviousMessage(lastFetchedMessageId);
-  //   }
-
-  //   if (!messageData) {
-  //     return null;
-  //   }
-
-  //   const filteredLastMessageData = filterMessageData(
-  //     messageData
-  //   ) as Partial<Message>;
-
-  //   return filteredLastMessageData;
-  // },
 
   fetchInitialMessages: async (
     chatroomId: string
@@ -163,25 +94,25 @@ export const chatApi = {
     return messages.map((message) => filterMessageData(message));
   },
 
-  // subscribeToChatDataChanges: (
-  //   chatId: string,
-  //   callback: (chat: Chat) => void
-  // ) => {
-  //   const unsubscribe = Appwrite.client.subscribe(
-  //     `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID}.documents.${chatId}`,
-  //     (response) => {
-  //       if (
-  //         response.events.includes(
-  //           "databases.*.collections.*.documents.*.update"
-  //         )
-  //       ) {
-  //         callback(response.payload as unknown as Chat);
-  //       }
-  //     }
-  //   );
+  subscribeToMyChatroomsDocumentChanges: (
+    currentUserId: string,
+    callback: (chatrooms: ChatRooms) => void
+  ) => {
+    const unsubscribe = Appwrite.client.subscribe(
+      `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID}.documents.${currentUserId}`,
+      (response) => {
+        if (
+          response.events.includes(
+            "databases.*.collections.*.documents.*.update"
+          )
+        ) {
+          callback(response.payload as unknown as ChatRooms);
+        }
+      }
+    );
 
-  //   return unsubscribe;
-  // },
+    return unsubscribe;
+  },
 
   upsertChatRoomDocument: async (messageData: Partial<Message>) => {
     if (

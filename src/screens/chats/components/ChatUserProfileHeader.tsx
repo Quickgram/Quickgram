@@ -38,7 +38,7 @@ const ChatUserProfileHeader: React.FC<ChatUserProfileHeaderProps> = ({
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{currentChatroomUser.name}</Text>
         <Text style={styles.userStatus}>
-          {currentChatroomUser.is_online ? "Online" : "Offline"}
+          {currentChatroomUser.isOnline ? "Online" : "Offline"}
         </Text>
       </View>
     </View>

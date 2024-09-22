@@ -41,11 +41,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     const localUri = await pickImageForProfile();
     if (localUri) {
       try {
-        const photoUrl = await storageApi.uploadProfilePicture(
-          currentUser!.uid,
+        const photoUrl = await storageApi.uploadProfileAvatar(
+          currentUser!.userId,
           localUri
         );
-        await userApi.updateProfilePicture(photoUrl);
+        await userApi.updateProfileAvatar(photoUrl);
       } catch (error) {
         ShowToast(
           "error",

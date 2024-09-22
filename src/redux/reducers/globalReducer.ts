@@ -1,12 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import User from "../../models/User";
 import { Platform } from "react-native";
 import { GlobalState } from "@/src/types/GlobalState";
-import ChatRoom from "@/src/models/ChatRoom";
-import Message from "@/src/models/Message";
 
 const initialState: GlobalState = {
-  isIos: Platform.OS === "ios",
+  isiOS: Platform.OS === "ios",
   isProfileEditing: false,
   isProfileUpdating: false,
   homeScreenSearchQuery: "",
