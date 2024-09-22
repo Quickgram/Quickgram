@@ -4,20 +4,21 @@ import { secureStorageService } from "../../services/storage/secureStore";
 import { userApi } from "../../services/api/userApi";
 import { localUserDb } from "../../services/db/localUserDb";
 import { resetLocalDb } from "@/src/services/db/resetLocalDb";
-
 import {
-  setAuthenticated,
+  setIsAuthenticated,
   setUserId,
   setPhoneNumber,
   setIsNewUser,
   resetAuth,
 } from "../reducers/authReducer";
-import { setCurrentUser } from "../reducers/userReducer";
+import { resetUser, setCurrentUser } from "../reducers/userReducer";
 import { setActiveSessionsData } from "../reducers/sessionReducer";
 import { ShowToast } from "../../components/common/ShowToast";
 import User from "@/src/models/User";
 import * as Appwrite from "../../config/appwrite";
 import NetInfo from "@react-native-community/netinfo";
+import { resetChatroom } from "../reducers/chatroomReducer";
+import { resetGlobal } from "../reducers/globalReducer";
 
 export const checkAuthStatus = () => async (dispatch: AppDispatch) => {
   const netInfo = await NetInfo.fetch();
@@ -35,17 +36,17 @@ export const checkAuthStatus = () => async (dispatch: AppDispatch) => {
       const localdbUserData = await localUserDb.getCurrentUserData();
       if (localdbUserData) {
         dispatch(setCurrentUser(localdbUserData));
-        dispatch(setAuthenticated(true));
+        dispatch(setIsAuthenticated(true));
       } else {
         const apiUserData = await userApi.fetchCurrentUserDocument();
         if (apiUserData) {
           dispatch(setCurrentUser(apiUserData));
-          dispatch(setAuthenticated(true));
+          dispatch(setIsAuthenticated(true));
           await localUserDb.upsertUserData(apiUserData);
         }
       }
     } catch (error) {
-      dispatch(setAuthenticated(false));
+      dispatch(setIsAuthenticated(false));
     }
   }
 };
@@ -92,8 +93,11 @@ export const verifyOtp =
         await userApi.updateUserActiveStatus(true);
         const sessionsResponse = await authApi.getAllActiveSessions();
         dispatch(setActiveSessionsData(sessionsResponse));
-        dispatch(setAuthenticated(true));
-        await localUserDb.upsertUserData(userData as User);
+        dispatch(setIsAuthenticated(true));
+        await localUserDb.upsertUserData(userData);
+      } else {
+        dispatch(setIsNewUser(true));
+        dispatch(setIsAuthenticated(false));
       }
     } catch (error: unknown) {
       if (
@@ -134,7 +138,7 @@ export const createAccount =
         await userApi.updateUserActiveStatus(true);
         const sessionsResponse = await authApi.getAllActiveSessions();
         dispatch(setActiveSessionsData(sessionsResponse));
-        dispatch(setAuthenticated(true));
+        dispatch(setIsAuthenticated(true));
         await localUserDb.upsertUserData(newUser);
       }
     } catch (error) {
@@ -148,17 +152,16 @@ export const createAccount =
 
 export const initiateLogout =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const { currentUser } = getState().user;
     try {
-      if (currentUser?.uid) {
-        await userApi.updateUserActiveStatus(false);
-      }
+      await userApi.updateUserActiveStatus(false);
       await secureStorageService.saveSignedStatus("false");
       await secureStorageService.saveCurrentUserId("");
       await resetLocalDb.resetLocalDatabase();
       await authApi.terminateCurrentSession();
       dispatch(resetAuth());
-      dispatch(setCurrentUser(null));
+      dispatch(resetUser());
+      dispatch(resetChatroom());
+      dispatch(resetGlobal());
     } catch (error) {
       ShowToast("error", "Logout Failed", "Please try again.");
     }
@@ -171,19 +174,20 @@ export const initiateEmailLogin =
         email,
         password
       );
+
       const userData = await userApi.fetchUserDocumentById(response.userId);
       if (userData) {
         dispatch(setCurrentUser(userData));
         await secureStorageService.saveSignedStatus("true");
-        await secureStorageService.saveCurrentUserId(userData.uid as string);
+        await secureStorageService.saveCurrentUserId(response.userId);
         await userApi.updateUserActiveStatus(true);
         const sessionsResponse = await authApi.getAllActiveSessions();
         dispatch(setActiveSessionsData(sessionsResponse));
-        dispatch(setAuthenticated(true));
+        dispatch(setIsAuthenticated(true));
         await localUserDb.upsertUserData(userData);
       }
     } catch (error: unknown) {
-      console.log(error);
+      console.log("error", error);
       if (
         error instanceof Error &&
         error.message.includes(

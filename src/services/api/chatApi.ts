@@ -1,42 +1,15 @@
 import * as Appwrite from "../../config/appwrite";
 import { Models } from "../../config/appwrite";
-import { filterMessageData, filterChatData } from "../../utils/dataFilters";
+import {
+  filterMessageData,
+  filterMyChatroomsData,
+} from "../../utils/dataFilters";
 import { secureStorageService } from "../storage/secureStore";
 import Message from "@/src/models/Message";
-import Chat from "@/src/models/Chat";
+import ChatRooms from "@/src/models/ChatRooms";
 import { getChatId } from "@/src/utils/getChatId";
 
 export const chatApi = {
-  upsertChatDocument: async (chatId: string, messageData: Partial<Message>) => {
-    try {
-      const chatDoc = await Appwrite.databases.getDocument(
-        process.env.EXPO_PUBLIC_DATABASE_ID!,
-        process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID!,
-        chatId
-      );
-      if (chatDoc) {
-        await Appwrite.databases.updateDocument(
-          process.env.EXPO_PUBLIC_DATABASE_ID!,
-          process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID!,
-          chatId,
-          {
-            lastMessageId: messageData.messageId,
-          }
-        );
-      }
-    } catch (error) {
-      await Appwrite.databases.createDocument(
-        process.env.EXPO_PUBLIC_DATABASE_ID!,
-        process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID!,
-        chatId,
-        {
-          chatId: chatId,
-          lastMessageId: messageData.messageId,
-        }
-      );
-    }
-  },
-
   sendTextMessage: async (messageData: Partial<Message>) => {
     await Appwrite.databases.createDocument(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -44,7 +17,7 @@ export const chatApi = {
       messageData.messageId!,
       messageData
     );
-    await chatApi.upsertChatDocument(messageData.chatId!, messageData);
+    await chatApi.upsertChatRoomDocument(messageData);
   },
 
   fetchMessageById: async (
@@ -61,81 +34,83 @@ export const chatApi = {
     return null;
   },
 
-  fetchLastMessageById: async (
-    messageId?: string,
-    chatId?: string
-  ): Promise<Partial<Message> | null> => {
-    const currentUserId = await secureStorageService.getCurrentUserId();
+  // fetchLastMessageById: async (
+  //   messageId?: string,
+  //   chatroomId?: string
+  // ): Promise<Partial<Message> | null> => {
+  //   const currentUserId = await secureStorageService.getCurrentUserId();
 
-    if (!messageId || !chatId || !currentUserId) {
-      return null;
-    }
+  //   if (!messageId || !chatroomId || !currentUserId) {
+  //     return null;
+  //   }
 
-    const fetchMessageById = async (id: string) => {
-      const response = await Appwrite.databases.listDocuments(
-        process.env.EXPO_PUBLIC_DATABASE_ID!,
-        process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
-        [
-          Appwrite.Query.equal("messageId", id),
-          Appwrite.Query.equal("chatId", chatId),
-          Appwrite.Query.limit(1),
-        ]
-      );
-      if (response.documents.length === 0) {
-        return null;
-      }
-      return response.documents[0];
-    };
+  //   const fetchMessageById = async (id: string) => {
+  //     const response = await Appwrite.databases.listDocuments(
+  //       process.env.EXPO_PUBLIC_DATABASE_ID!,
+  //       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
+  //       [
+  //         Appwrite.Query.equal("messageId", id),
+  //         Appwrite.Query.equal("chatroomId", chatroomId),
+  //         Appwrite.Query.limit(1),
+  //       ]
+  //     );
+  //     if (response.documents.length === 0) {
+  //       return null;
+  //     }
+  //     return response.documents[0];
+  //   };
 
-    const fetchPreviousMessage = async (lastFetchedMessageId: string) => {
-      const response = await Appwrite.databases.listDocuments(
-        process.env.EXPO_PUBLIC_DATABASE_ID!,
-        process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
-        [
-          Appwrite.Query.equal("chatId", chatId),
-          Appwrite.Query.orderAsc("sentTime"),
-          Appwrite.Query.cursorBefore(lastFetchedMessageId),
-          Appwrite.Query.limit(1),
-        ]
-      );
-      if (response.documents.length === 0) {
-        return null;
-      }
-      return response.documents[0];
-    };
+  //   const fetchPreviousMessage = async (lastFetchedMessageId: string) => {
+  //     const response = await Appwrite.databases.listDocuments(
+  //       process.env.EXPO_PUBLIC_DATABASE_ID!,
+  //       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
+  //       [
+  //         Appwrite.Query.equal("chatId", chatId),
+  //         Appwrite.Query.orderAsc("sentTime"),
+  //         Appwrite.Query.cursorBefore(lastFetchedMessageId),
+  //         Appwrite.Query.limit(1),
+  //       ]
+  //     );
+  //     if (response.documents.length === 0) {
+  //       return null;
+  //     }
+  //     return response.documents[0];
+  //   };
 
-    let messageData = await fetchMessageById(messageId);
+  //   let messageData = await fetchMessageById(messageId);
 
-    if (messageData && !messageData.deleteMessageFor.includes(currentUserId)) {
-      return filterMessageData(messageData) as Partial<Message>;
-    }
+  //   if (messageData && !messageData.deleteMessageFor.includes(currentUserId)) {
+  //     return filterMessageData(messageData) as Partial<Message>;
+  //   }
 
-    while (
-      messageData &&
-      messageData.deleteMessageFor.includes(currentUserId)
-    ) {
-      const lastFetchedMessageId = messageData.messageId;
-      messageData = await fetchPreviousMessage(lastFetchedMessageId);
-    }
+  //   while (
+  //     messageData &&
+  //     messageData.deleteMessageFor.includes(currentUserId)
+  //   ) {
+  //     const lastFetchedMessageId = messageData.messageId;
+  //     messageData = await fetchPreviousMessage(lastFetchedMessageId);
+  //   }
 
-    if (!messageData) {
-      return null;
-    }
+  //   if (!messageData) {
+  //     return null;
+  //   }
 
-    const filteredLastMessageData = filterMessageData(
-      messageData
-    ) as Partial<Message>;
+  //   const filteredLastMessageData = filterMessageData(
+  //     messageData
+  //   ) as Partial<Message>;
 
-    return filteredLastMessageData;
-  },
+  //   return filteredLastMessageData;
+  // },
 
-  fetchInitialMessages: async (chatId: string): Promise<Partial<Message>[]> => {
+  fetchInitialMessages: async (
+    chatroomId: string
+  ): Promise<Partial<Message>[]> => {
     const response = await Appwrite.databases.listDocuments(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
       [
-        Appwrite.Query.equal("chatId", chatId),
-        Appwrite.Query.orderDesc("sentTime"),
+        Appwrite.Query.equal("chatroomId", chatroomId),
+        Appwrite.Query.orderDesc("sentAt"),
         Appwrite.Query.limit(25),
       ]
     );
@@ -147,15 +122,15 @@ export const chatApi = {
   },
 
   fetchMoreMessages: async (
-    chatId: string,
+    chatroomId: string,
     lastFetchedMessageId: string
   ): Promise<Partial<Message>[]> => {
     const response = await Appwrite.databases.listDocuments(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
       [
-        Appwrite.Query.equal("chatId", chatId),
-        Appwrite.Query.orderDesc("sentTime"),
+        Appwrite.Query.equal("chatroomId", chatroomId),
+        Appwrite.Query.orderDesc("sentAt"),
         Appwrite.Query.cursorAfter(lastFetchedMessageId),
         Appwrite.Query.limit(25),
       ]
@@ -168,15 +143,15 @@ export const chatApi = {
   },
 
   fetchMessagesAfterLastFetchedMessageId: async (
-    chatId: string,
+    chatroomId: string,
     lastFetchedMessageId: string
   ): Promise<Partial<Message>[]> => {
     const response = await Appwrite.databases.listDocuments(
       process.env.EXPO_PUBLIC_DATABASE_ID!,
       process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID!,
       [
-        Appwrite.Query.equal("chatId", chatId),
-        Appwrite.Query.orderAsc("sentTime"),
+        Appwrite.Query.equal("chatroomId", chatroomId),
+        Appwrite.Query.orderAsc("sentAt"),
         Appwrite.Query.cursorAfter(lastFetchedMessageId),
         Appwrite.Query.limit(25),
       ]
@@ -188,56 +163,128 @@ export const chatApi = {
     return messages.map((message) => filterMessageData(message));
   },
 
-  fetchChatsData: async (
-    chattedUsersIds: string[]
-  ): Promise<Partial<Chat>[]> => {
-    const currentUserId = await secureStorageService.getCurrentUserId();
-    const chatsData = [];
-    for (const userId of chattedUsersIds) {
-      const chat = (await Appwrite.databases.getDocument(
-        process.env.EXPO_PUBLIC_DATABASE_ID!,
-        process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID!,
-        getChatId(currentUserId!, userId)
-      )) as Models.Document;
-      if (chat) {
-        chatsData.push(filterChatData(chat) as Partial<Chat>);
+  // subscribeToChatDataChanges: (
+  //   chatId: string,
+  //   callback: (chat: Chat) => void
+  // ) => {
+  //   const unsubscribe = Appwrite.client.subscribe(
+  //     `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID}.documents.${chatId}`,
+  //     (response) => {
+  //       if (
+  //         response.events.includes(
+  //           "databases.*.collections.*.documents.*.update"
+  //         )
+  //       ) {
+  //         callback(response.payload as unknown as Chat);
+  //       }
+  //     }
+  //   );
+
+  //   return unsubscribe;
+  // },
+
+  upsertChatRoomDocument: async (messageData: Partial<Message>) => {
+    if (
+      messageData.chatroomId &&
+      messageData.senderId &&
+      messageData.receiverId
+    ) {
+      try {
+        await Appwrite.databases.updateDocument(
+          process.env.EXPO_PUBLIC_DATABASE_ID!,
+          process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+          messageData.senderId,
+          {
+            userId: messageData.senderId,
+            chattedUsers: [
+              [
+                messageData.receiverId,
+                messageData.text,
+                messageData.sentAt,
+                messageData.messageId,
+                messageData.senderId,
+                messageData.isSeen,
+              ].join("|_+_|"),
+            ],
+          }
+        );
+      } catch (error) {
+        await Appwrite.databases.createDocument(
+          process.env.EXPO_PUBLIC_DATABASE_ID!,
+          process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+          messageData.senderId,
+          {
+            userId: messageData.senderId,
+            chattedUsers: [
+              [
+                messageData.receiverId,
+                messageData.text,
+                messageData.sentAt,
+                messageData.messageId,
+                messageData.senderId,
+                messageData.isSeen,
+              ].join("|_+_|"),
+            ],
+          }
+        );
+      }
+
+      try {
+        await Appwrite.databases.updateDocument(
+          process.env.EXPO_PUBLIC_DATABASE_ID!,
+          process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+          messageData.receiverId,
+          {
+            userId: messageData.receiverId,
+            chattedUsers: [
+              [
+                messageData.receiverId,
+                messageData.text,
+                messageData.sentAt,
+                messageData.messageId,
+                messageData.senderId,
+                messageData.isSeen,
+              ].join("|_+_|"),
+            ],
+          }
+        );
+      } catch (error) {
+        await Appwrite.databases.createDocument(
+          process.env.EXPO_PUBLIC_DATABASE_ID!,
+          process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+          messageData.receiverId,
+          {
+            userId: messageData.receiverId,
+            chattedUsers: [
+              [
+                messageData.receiverId,
+                messageData.text,
+                messageData.sentAt,
+                messageData.messageId,
+                messageData.senderId,
+                messageData.isSeen,
+              ].join("|_+_|"),
+            ],
+          }
+        );
       }
     }
-    return chatsData as Partial<Chat>[];
   },
 
-  fetchChatDataByChatId: async (
-    chatId: string
-  ): Promise<Partial<Chat> | null> => {
-    const chatData = (await Appwrite.databases.getDocument(
-      process.env.EXPO_PUBLIC_DATABASE_ID!,
-      process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID!,
-      chatId
-    )) as Models.Document;
-    if (chatData) {
-      return filterChatData(chatData) as Partial<Chat>;
-    } else {
+  fetchMyChatRoomsDocument: async (): Promise<Partial<ChatRooms> | null> => {
+    const currentUserId = await secureStorageService.getCurrentUserId();
+    if (!currentUserId) {
       return null;
     }
-  },
-
-  subscribeToChatDataChanges: (
-    chatId: string,
-    callback: (chat: Chat) => void
-  ) => {
-    const unsubscribe = Appwrite.client.subscribe(
-      `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_CHATS_COLLECTION_ID}.documents.${chatId}`,
-      (response) => {
-        if (
-          response.events.includes(
-            "databases.*.collections.*.documents.*.update"
-          )
-        ) {
-          callback(response.payload as unknown as Chat);
-        }
-      }
-    );
-
-    return unsubscribe;
+    try {
+      const response = await Appwrite.databases.getDocument(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+        currentUserId
+      );
+      return filterMyChatroomsData(response) as Partial<ChatRooms>;
+    } catch (error) {
+      return null;
+    }
   },
 };

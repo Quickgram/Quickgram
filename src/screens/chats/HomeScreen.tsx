@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, SafeAreaView } from "react-native";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -23,13 +23,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { currentUser } = useAppSelector((state) => state.user);
   const { hasInternetConnection } = useAppSelector((state) => state.global);
+
   useEffect(() => {
     if (hasInternetConnection) {
       let unsubscribe: (() => void) | null = null;
 
-      if (currentUser?.uid) {
+      if (currentUser?.userId) {
         unsubscribe = userApi.subscribeToUserDataChanges(
-          currentUser.uid,
+          currentUser.userId,
           async (updatedUser) => {
             dispatch(setCurrentUser(updatedUser));
             await localUserDb.upsertUserData(updatedUser);
@@ -43,7 +44,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         }
       };
     }
-  }, [currentUser?.uid, setCurrentUser]);
+  }, [currentUser?.userId, setCurrentUser]);
 
   return (
     <SafeAreaView style={styles.container}>

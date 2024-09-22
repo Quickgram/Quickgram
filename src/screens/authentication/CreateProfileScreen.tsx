@@ -38,23 +38,20 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
   const [username, setUsername] = useState("");
-  const [profilePictureUrl, setProfilePictureUrl] = useState("");
-  const [localProfilePictureUri, setLocalProfilePictureUri] = useState("");
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState("");
+  const [localProfileAvatarUri, setLocalProfileAvatarUri] = useState("");
   const [loading, setLoading] = useState(false);
-  const defaultProfilePicture =
-    "https://firebasestorage.googleapis.com/v0/b/quickgram-gbt-in.appspot.com/o/profile_pictures%2Fdefualt_user_image.png?alt=media&token=d6692ce7-ec63-4ff5-ae0e-ac403105a05d";
 
   const handlePickImage = async () => {
     const localUri = await pickImageForProfile();
     if (localUri) {
-      setLocalProfilePictureUri(localUri);
-
+      setLocalProfileAvatarUri(localUri);
       try {
-        const photoUrl = await storageApi.uploadProfilePicture(
+        const avatarUrl = await storageApi.uploadProfileAvatar(
           userId!,
           localUri
         );
-        setProfilePictureUrl(photoUrl);
+        setProfileAvatarUrl(avatarUrl);
       } catch (error) {
         ShowToast("error", "Profile Picture Upload Failed", "Please try again");
       }
@@ -89,9 +86,10 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
       return;
     }
 
-    if (localProfilePictureUri !== "" && profilePictureUrl === "") {
+    if (localProfileAvatarUri !== "" && profileAvatarUrl === "") {
       ShowToast(
         "info",
+
         "Profile Picture Uploading",
         "Please wait. Your profile picture is being uploaded"
       );
@@ -102,18 +100,18 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
       setLoading(true);
 
       const newUser: Partial<User> = {
-        uid: userId!,
+        userId: userId!,
         name: name,
         about:
           about ||
           "Simplify your chats with Quickgram - The easiest way to connect and chat with friends.",
-        phone_number: phoneNumber!,
+        phoneNumber: phoneNumber!,
         createdAt: Date.now().toString(),
-        is_online: true,
-        is_verified: false,
         lastSeenAt: Date.now().toString(),
         username: username,
-        profile_picture_url: profilePictureUrl || defaultProfilePicture,
+        profileAvatarUrl: profileAvatarUrl || profileAvatarUrl,
+        isOnline: true,
+        isVerified: false,
       };
 
       await dispatch(createAccount(newUser));
@@ -141,18 +139,19 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <View style={styles.profileImageContainer}>
+        <View style={styles.profileAvatarContainer}>
           <Image
             source={
-              localProfilePictureUri
-                ? { uri: localProfilePictureUri }
+              localProfileAvatarUri
+                ? { uri: localProfileAvatarUri }
                 : defaultProfileImage
             }
-            style={styles.profilePic}
+            style={styles.profileAvatar}
             resizeMode="contain"
           />
+
           <TouchableOpacity
-            style={styles.addImageButton}
+            style={styles.addAvatarButton}
             onPress={handlePickImage}
           >
             <Ionicons name="add-circle" size={wp(7.5)} color={Colors.primary} />
@@ -262,17 +261,17 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingVertical: 0,
   },
-  profileImageContainer: {
+  profileAvatarContainer: {
     position: "relative",
     marginTop: hp(2),
     marginBottom: hp(2),
   },
-  profilePic: {
+  profileAvatar: {
     width: wp(35),
     height: wp(35),
     borderRadius: wp(17.5),
   },
-  addImageButton: {
+  addAvatarButton: {
     position: "absolute",
     bottom: 0,
     right: 0,

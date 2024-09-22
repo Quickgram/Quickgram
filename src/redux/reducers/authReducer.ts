@@ -5,14 +5,14 @@ const initialState: AuthState = {
   isAuthenticated: false,
   userId: null,
   phoneNumber: null,
-  isNewUser: true,
+  isNewUser: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+    setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
     setUserId: (state, action: PayloadAction<string | null>) => {
@@ -31,7 +31,7 @@ const authSlice = createSlice({
 });
 
 export const {
-  setAuthenticated,
+  setIsAuthenticated,
   setUserId,
   setPhoneNumber,
   setIsNewUser,

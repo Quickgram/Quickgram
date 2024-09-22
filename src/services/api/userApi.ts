@@ -77,7 +77,7 @@ export const userApi = {
     }
   },
 
-  updateProfilePicture: async (url: string) => {
+  updateProfileAvatar: async (url: string) => {
     const currentUserId = await secureStorageService.getCurrentUserId();
     if (currentUserId) {
       await Appwrite.databases.updateDocument(
@@ -85,7 +85,7 @@ export const userApi = {
         process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
         currentUserId,
         {
-          profile_picture_url: url,
+          profileAvatarUrl: url,
         }
       );
     }
@@ -182,7 +182,7 @@ export const userApi = {
         process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
         currentUserId,
         {
-          is_online: isOnline,
+          isOnline: isOnline,
           lastSeenAt: Date.now().toString(),
         }
       );
@@ -200,19 +200,6 @@ export const userApi = {
     } catch (error) {
       return false;
     }
-  },
-
-  fetchChattedUsersDocumentsByIds: async (
-    chattedUsersIds: string[]
-  ): Promise<Partial<User>[]> => {
-    const users = [];
-    for (const userId of chattedUsersIds) {
-      const user = await userApi.fetchUserDocumentById(userId);
-      if (user) {
-        users.push(user as Partial<User>);
-      }
-    }
-    return users as Partial<User>[];
   },
 
   subscribeToUserDataChanges: (

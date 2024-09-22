@@ -168,9 +168,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       >
         <ProfileHeader
           name={currentUser!.name}
-          phone={currentUser!.phone_number}
+          phone={currentUser!.phoneNumber}
           username={currentUser!.username}
-          profile_picture_url={currentUser!.profile_picture_url}
+          profile_picture_url={currentUser!.profileAvatarUrl}
           onChangePhoto={handleChangePhoto}
           onGridPress={handleGridPress}
           onEditPress={handleEditPress}

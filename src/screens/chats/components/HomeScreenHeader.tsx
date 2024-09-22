@@ -9,20 +9,14 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../../styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
-import { Alert } from "react-native";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 const HomeScreenHeader: React.FC = () => {
-  const { chatsData } = useAppSelector((state) => state.chat);
   return (
     <View style={styles.header}>
       <Text style={styles.headerTitle}>Chats</Text>
       <View style={styles.headerIcons}>
-        <TouchableOpacity
-          onPress={() => {
-            console.log(chatsData);
-          }}
-        >
+        <TouchableOpacity>
           <Ionicons name="camera-outline" size={wp(7)} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {}}>

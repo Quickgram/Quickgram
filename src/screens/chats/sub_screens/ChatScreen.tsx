@@ -20,8 +20,8 @@ type ChatScreenProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { isiOS } = useAppSelector((state) => state.global);
-  const { currentChatId, currentChatUser } = useAppSelector(
-    (state) => state.chat
+  const { currentChatroomId, currentChatroomUser } = useAppSelector(
+    (state) => state.chatroom
   );
   const [bottomFieldHeight, setBottomFieldHeight] = useState(0);
   const Wallpaper = require("../../../../assets/images/wallpaper.jpg");
@@ -40,13 +40,13 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
         <ChatUserProfileHeader navigation={navigation} />
         <View style={styles.MessagesListContainer}>
           <MessagesList
-            chatId={currentChatId}
+            chatroomId={currentChatroomId}
             bottomPadding={bottomFieldHeight}
           />
         </View>
 
         <BottomChatField
-          chatId={currentChatId!}
+          chatId={currentChatroomId!}
           onHeightChange={handleBottomFieldHeightChange}
         />
       </SafeAreaView>

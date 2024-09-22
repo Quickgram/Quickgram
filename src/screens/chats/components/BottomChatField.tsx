@@ -26,7 +26,9 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
   onHeightChange,
 }) => {
   const { isiOS } = useAppSelector((state) => state.global);
-  const { currentChatUser } = useAppSelector((state) => state.chat);
+  const { currentChatroomId, currentChatroomUser } = useAppSelector(
+    (state) => state.chatroom
+  );
   const { currentUser } = useAppSelector((state) => state.user);
   const [isTyping, setIsTyping] = useState(false);
   const [textMessage, setTextMessage] = useState("");
@@ -39,8 +41,8 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
 
   const sendTextMessage = async () => {
     const newMessage: Partial<Message> = {
-      senderId: currentUser.uid,
-      receiverId: currentChatUser.uid,
+      senderId: currentUser.userId,
+      receiverId: currentChatroomUser.userId,
       type: MessageEnum.TEXT,
       messageId: Appwrite.ID.unique(),
       text: textMessage,
@@ -48,12 +50,12 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
       repliedMessageId: null,
       repliedTo: null,
       seenAt: null,
-      is_seen: false,
-      is_edited: false,
-      sentTime: Date.now().toString(),
-      file_url: null,
-      chatId: chatId,
+      sentAt: Date.now().toString(),
+      fileUrl: null,
+      chatroomId: chatId,
       deleteMessageFor: [],
+      isSeen: false,
+      isEdited: false,
     };
 
     setTextMessage("");

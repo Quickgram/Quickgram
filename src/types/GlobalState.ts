@@ -1,5 +1,5 @@
 export interface GlobalState {
-  isiOS: boolean;
+  isIos: boolean;
   isProfileEditing: boolean;
   isProfileUpdating: boolean;
   homeScreenSearchQuery: string;

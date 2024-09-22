@@ -150,5 +150,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# expo-env.d.ts
 expo-env.d.ts
+
 # @end expo-cli
+
+# my notes
+src/.notes/

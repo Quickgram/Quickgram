@@ -24,4 +24,8 @@ export const secureStorageService = {
   getItemData: async (key: string) => {
     return await SecureStore.getItemAsync(key);
   },
+
+  deleteItemData: async (key: string) => {
+    await SecureStore.deleteItemAsync(key);
+  },
 };

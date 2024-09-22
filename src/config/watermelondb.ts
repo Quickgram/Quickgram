@@ -4,7 +4,8 @@ import schema from "../models/schema";
 import migrations from "../models/migrations";
 import User from "../models/User";
 import Message from "../models/Message";
-import Chat from "../models/Chat";
+import ChatRooms from "../models/ChatRooms";
+import ChattedUser from "../models/ChattedUser";
 
 const adapter = new SQLiteAdapter({
   schema,
@@ -17,7 +18,7 @@ const adapter = new SQLiteAdapter({
 
 const database = new Database({
   adapter,
-  modelClasses: [User, Message, Chat],
+  modelClasses: [User, Message, ChatRooms, ChattedUser],
 });
 
 export default database;

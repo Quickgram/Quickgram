@@ -31,9 +31,6 @@ type VerifyOtpScreenProps = NativeStackScreenProps<
   "VerifyOtp"
 >;
 
-const CELL_COUNT = 6;
-const RESEND_COOLDOWN = 30;
-
 const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const otpImage = require("../../../assets/images/otp.png");
   const [code, setCode] = useState("");
@@ -44,6 +41,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
   const [loading, setLoading] = useState(false);
+  const CELL_COUNT = 6;
+  const RESEND_COOLDOWN = 30;
 
   const handleVerify = async () => {
     try {

@@ -1,38 +1,8 @@
-import {
-  AnnouncementInfo,
-  AnnouncementResponse,
-} from "../types/AnnouncementTypes";
 import { SessionInfo, SessionResponse } from "../types/SessionTypes";
 import User from "../models/User";
-import { convertTimestampToReadableFormatForAnnouncements } from "./timeConverter";
 import Message from "../models/Message";
-import Chat from "../models/Chat";
-
-export function filterAnnouncementInfo(response: any[]): AnnouncementResponse {
-  const announcements: AnnouncementInfo[] = response.map(
-    (announcement: any) => ({
-      id: announcement.id,
-      title: announcement.title,
-      description: announcement.description,
-      createdAt: convertTimestampToReadableFormatForAnnouncements(
-        announcement.createdAt
-      ),
-      expiryDate: convertTimestampToReadableFormatForAnnouncements(
-        announcement.expiryDate
-      ),
-      priority: announcement.priority,
-      imageUrl: announcement.imageUrl,
-      category: announcement.category,
-      link: announcement.link,
-      tags: announcement.tags,
-    })
-  );
-
-  return {
-    announcements,
-    totalAnnouncements: announcements.length,
-  };
-}
+import ChatRooms from "../models/ChatRooms";
+import ChattedUser from "../models/ChattedUser";
 
 export function filterSessionInfo(response: any[]): SessionResponse {
   const sessions: SessionInfo[] = response.map((session: any) => ({
@@ -57,18 +27,17 @@ export function filterSessionInfo(response: any[]): SessionResponse {
 
 export function filterUserData(userData: any): Partial<User> {
   return {
-    uid: userData.$id || userData.uid,
+    userId: userData.$id || userData.userId,
     name: userData.name,
     about: userData.about,
-    phone_number: userData.phone_number,
+    phoneNumber: userData.phoneNumber,
     createdAt: userData.createdAt,
-    is_online: userData.is_online,
-    is_verified: userData.is_verified,
     lastSeenAt: userData.lastSeenAt,
     email: userData.email || null,
     username: userData.username,
-    profile_picture_url: userData.profile_picture_url,
-    chatted_users: userData.chatted_users || [],
+    profileAvatarUrl: userData.profileAvatarUrl,
+    isOnline: userData.isOnline,
+    isVerified: userData.isVerified,
   };
 }
 
@@ -83,18 +52,41 @@ export function filterMessageData(messageData: any): Partial<Message> {
     repliedMessageId: messageData.repliedMessageId || null,
     repliedTo: messageData.repliedTo || null,
     seenAt: messageData.seenAt || null,
-    is_seen: messageData.is_seen,
-    is_edited: messageData.is_edited,
-    sentTime: messageData.sentTime,
-    file_url: messageData.file_url || null,
-    chatId: messageData.chatId,
+    sentAt: messageData.sentAt,
+    fileUrl: messageData.fileUrl || null,
+    chatroomId: messageData.chatroomId,
     deleteMessageFor: messageData.deleteMessageFor || [],
+    isSeen: messageData.isSeen,
+    isEdited: messageData.isEdited,
   };
 }
 
-export function filterChatData(chatData: any): Partial<Chat> {
+export function filterMyChatroomsData(
+  myChatRoomsData: any
+): Partial<ChatRooms> {
   return {
-    chatId: chatData.chatId,
-    lastMessageId: chatData.lastMessageId,
+    userId: myChatRoomsData.userId || myChatRoomsData.$id,
+    chattedUsers: myChatRoomsData.chattedUsers || [],
+  };
+}
+
+export function filterChattedUserData(
+  chattedUserData: any
+): Partial<ChattedUser> {
+  return {
+    userId: chattedUserData.userId || chattedUserData.$id,
+    lastMessage: chattedUserData.lastMessage,
+    lastMessageSentAt: chattedUserData.lastMessageSentAt,
+    lastMessageId: chattedUserData.lastMessageId,
+    name: chattedUserData.name,
+    about: chattedUserData.about,
+    phoneNumber: chattedUserData.phoneNumber,
+    createdAt: chattedUserData.createdAt,
+    lastSeenAt: chattedUserData.lastSeenAt,
+    email: chattedUserData.email || null,
+    username: chattedUserData.username,
+    profileAvatarUrl: chattedUserData.profileAvatarUrl,
+    isOnline: chattedUserData.isOnline,
+    isVerified: chattedUserData.isVerified,
   };
 }

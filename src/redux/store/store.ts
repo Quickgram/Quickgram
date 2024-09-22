@@ -3,7 +3,7 @@ import authReducer from "../reducers/authReducer";
 import userReducer from "../reducers/userReducer";
 import sessionReducer from "../reducers/sessionReducer";
 import globalReducer from "../reducers/globalReducer";
-import chatReducer from "../reducers/chatReducer";
+import chatroomReducer from "../reducers/chatroomReducer";
 
 const store = configureStore({
   reducer: {
@@ -11,7 +11,7 @@ const store = configureStore({
     user: userReducer,
     session: sessionReducer,
     global: globalReducer,
-    chat: chatReducer,
+    chatroom: chatroomReducer,
   },
 });
 

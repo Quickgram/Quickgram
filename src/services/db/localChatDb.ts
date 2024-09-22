@@ -1,12 +1,16 @@
 import { Q } from "@nozbe/watermelondb";
 import database from "../../config/watermelondb";
-import { filterChatData, filterMessageData } from "../../utils/dataFilters";
+import {
+  filterMyChatroomsData,
+  filterMessageData,
+} from "../../utils/dataFilters";
 import { getChatId } from "../../utils/getChatId";
 import { secureStorageService } from "../storage/secureStore";
 import Message from "@/src/models/Message";
-import Chat from "@/src/models/Chat";
+import ChatRooms from "@/src/models/ChatRooms";
 const messagesCollection = database.get<Message>("messages");
-const chatsCollection = database.get<Chat>("chats");
+const chatRoomsCollection = database.get<ChatRooms>("chatrooms");
+
 export const localChatDb = {
   upsertMessages: async (messages: Partial<Message>[]): Promise<void> => {
     await database.write(async () => {
@@ -35,10 +39,12 @@ export const localChatDb = {
     });
   },
 
-  getMessagesByChatId: async (chatId: string): Promise<Partial<Message>[]> => {
+  getMessagesByChatroomId: async (
+    chatroomId: string
+  ): Promise<Partial<Message>[]> => {
     try {
       const messages = await messagesCollection
-        .query(Q.where("chatId", chatId))
+        .query(Q.where("chatroomId", chatroomId))
         .fetch();
 
       if (messages.length === 0) {
@@ -69,115 +75,118 @@ export const localChatDb = {
     }
   },
 
-  getLastMessageById: async (
-    messageId: string,
-    chatId: string
-  ): Promise<Partial<Message> | null> => {
-    const currentUserId = await secureStorageService.getCurrentUserId();
+  // getLastMessageById: async (
+  //   messageId: string,
+  //   chatId: string
+  // ): Promise<Partial<Message> | null> => {
+  //   const currentUserId = await secureStorageService.getCurrentUserId();
 
-    if (!currentUserId) {
-      return null;
-    }
+  //   if (!currentUserId) {
+  //     return null;
+  //   }
 
-    const fetchMessageById = async (
-      id: string
-    ): Promise<Partial<Message> | null> => {
-      try {
-        const message = await messagesCollection
-          .query(Q.where("messageId", id), Q.where("chatId", chatId))
-          .fetch();
+  //   const fetchMessageById = async (
+  //     id: string
+  //   ): Promise<Partial<Message> | null> => {
+  //     try {
+  //       const message = await messagesCollection
+  //         .query(Q.where("messageId", id), Q.where("chatId", chatId))
+  //         .fetch();
 
-        return message.length > 0
-          ? (filterMessageData(message[0]) as Partial<Message>)
-          : null;
-      } catch (error) {
-        return null;
-      }
-    };
+  //       return message.length > 0
+  //         ? (filterMessageData(message[0]) as Partial<Message>)
+  //         : null;
+  //     } catch (error) {
+  //       return null;
+  //     }
+  //   };
 
-    const fetchPreviousMessage = async (
-      sentTime: string
-    ): Promise<Partial<Message> | null> => {
-      try {
-        const previousMessages = await messagesCollection
-          .query(
-            Q.where("chatId", chatId),
-            Q.where("sentTime", Q.lt(sentTime)),
-            Q.sortBy("sentTime", Q.desc),
-            Q.take(1)
-          )
-          .fetch();
+  //   const fetchPreviousMessage = async (
+  //     sentTime: string
+  //   ): Promise<Partial<Message> | null> => {
+  //     try {
+  //       const previousMessages = await messagesCollection
+  //         .query(
+  //           Q.where("chatId", chatId),
+  //           Q.where("sentTime", Q.lt(sentTime)),
+  //           Q.sortBy("sentTime", Q.desc),
+  //           Q.take(1)
+  //         )
+  //         .fetch();
 
-        const filteredPreviousMessage =
-          previousMessages.length > 0
-            ? (filterMessageData(previousMessages[0]) as Partial<Message>)
-            : null;
+  //       const filteredPreviousMessage =
+  //         previousMessages.length > 0
+  //           ? (filterMessageData(previousMessages[0]) as Partial<Message>)
+  //           : null;
 
-        console.log(
-          "lastMessage in function inside of pre sub function:",
-          filteredPreviousMessage?.text
-        );
+  //       console.log(
+  //         "lastMessage in function inside of pre sub function:",
+  //         filteredPreviousMessage?.text
+  //       );
 
-        return filteredPreviousMessage;
-      } catch (error) {
-        console.error("Error fetching previous message:", error);
-        return null;
-      }
-    };
+  //       return filteredPreviousMessage;
+  //     } catch (error) {
+  //       console.error("Error fetching previous message:", error);
+  //       return null;
+  //     }
+  //   };
 
-    let messageData = await fetchMessageById(messageId);
-    const deleteMessageFor = messageData?.deleteMessageFor || [];
+  //   let messageData = await fetchMessageById(messageId);
+  //   const deleteMessageFor = messageData?.deleteMessageFor || [];
 
-    if (messageData && !deleteMessageFor.includes(currentUserId)) {
-      return filterMessageData(messageData);
-    }
+  //   if (messageData && !deleteMessageFor.includes(currentUserId)) {
+  //     return filterMessageData(messageData);
+  //   }
 
-    while (messageData && deleteMessageFor.includes(currentUserId)) {
-      const sentTime = messageData.sentTime;
+  //   while (messageData && deleteMessageFor.includes(currentUserId)) {
+  //     const sentTime = messageData.sentTime;
 
-      if (sentTime) {
-        const previousMessage = await fetchPreviousMessage(sentTime);
-        console.log("lastMessage in function:", previousMessage?.text);
+  //     if (sentTime) {
+  //       const previousMessage = await fetchPreviousMessage(sentTime);
+  //       console.log("lastMessage in function:", previousMessage?.text);
 
-        if (previousMessage) {
-          messageData = previousMessage;
-        } else {
-          console.log("No more previous messages found.");
-          break;
-        }
-      } else {
-        console.log("Sent time is not available.");
-        break;
-      }
-    }
+  //       if (previousMessage) {
+  //         messageData = previousMessage;
+  //       } else {
+  //         console.log("No more previous messages found.");
+  //         break;
+  //       }
+  //     } else {
+  //       console.log("Sent time is not available.");
+  //       break;
+  //     }
+  //   }
 
-    if (!messageData) {
-      return null;
-    }
+  //   if (!messageData) {
+  //     return null;
+  //   }
 
-    return filterMessageData(messageData);
-  },
+  //   return filterMessageData(messageData);
+  // },
 
-  upsertChatsData: async (chatsData: Partial<Chat>[]): Promise<void> => {
+  upsertChatroomsData: async (
+    chatroomsData: Partial<ChatRooms>
+  ): Promise<void> => {
     await database.write(async () => {
+      const filteredChatroomsData = filterMyChatroomsData(chatroomsData);
+      if (!filteredChatroomsData.userId) {
+        return;
+      }
       try {
-        for (const chat of chatsData) {
-          const filteredChatData = filterChatData(chat);
-          try {
-            const existingChat = await chatsCollection.find(
-              filteredChatData.chatId!
-            );
-            if (existingChat !== filteredChatData) {
-              await existingChat.update((chat) => {
-                Object.assign(chat, filteredChatData);
-              });
-            }
-          } catch (error) {
-            await chatsCollection.create((chat) => {
-              chat._raw.id = filteredChatData.chatId!;
-              Object.assign(chat, filteredChatData);
+        try {
+          const existingChatrooms = await chatRoomsCollection.find(
+            filteredChatroomsData.userId
+          );
+          if (existingChatrooms !== filteredChatroomsData) {
+            await existingChatrooms.update((chatrooms) => {
+              Object.assign(chatrooms, filteredChatroomsData);
             });
           }
+        } catch (error) {
+          await chatRoomsCollection.create((chatrooms) => {
+            chatrooms._raw.id = filteredChatroomsData.userId!;
+            Object.assign(chatrooms, filteredChatroomsData);
+          });
         }
       } catch (error) {
         return;
@@ -185,21 +194,16 @@ export const localChatDb = {
     });
   },
 
-  getChatsData: async (userIds: string[]): Promise<Partial<Chat>[]> => {
+  getMyChatroomsData: async (): Promise<Partial<ChatRooms> | null> => {
     const currentUserId = await secureStorageService.getCurrentUserId();
+    if (!currentUserId) {
+      return null;
+    }
     try {
-      const chatsData: Partial<Chat>[] = [];
-      for (const userId of userIds) {
-        const chat = await chatsCollection.find(
-          getChatId(currentUserId!, userId)
-        );
-        if (chat) {
-          chatsData.push(filterChatData(chat) as Partial<Chat>);
-        }
-      }
-      return chatsData as Partial<Chat>[];
+      const chatRooms = await chatRoomsCollection.find(currentUserId);
+      return filterMyChatroomsData(chatRooms) as Partial<ChatRooms>;
     } catch (error) {
-      return [];
+      return null;
     }
   },
 };

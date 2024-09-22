@@ -26,19 +26,19 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = () => {
         <Image
           style={styles.profilePicture}
           source={{
-            uri: currentUser?.profile_picture_url,
+            uri: currentUser?.profileAvatarUrl,
           }}
           placeholderContentFit="contain"
           cachePolicy="memory-disk"
         />
         <Text style={styles.name}>{currentUser?.name}</Text>
         <Text style={styles.activeStatus}>
-          {currentUser?.is_online ? "online" : "offline"}
+          {currentUser?.isOnline ? "online" : "offline"}
         </Text>
 
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>Mobile</Text>
-          <Text style={styles.infoValue}>{currentUser?.phone_number}</Text>
+          <Text style={styles.infoValue}>{currentUser?.phoneNumber}</Text>
           <View style={styles.separator} />
           {currentUser?.email && (
             <>

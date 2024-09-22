@@ -175,12 +175,12 @@ import { chatApi } from "@/src/services/api/chatApi";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 
 interface MessagesListProps {
-  chatId: string;
+  chatroomId: string;
   bottomPadding: number;
 }
 
 const MessagesList: React.FC<MessagesListProps> = ({
-  chatId,
+  chatroomId,
   bottomPadding,
 }) => {
   const [messages, setMessages] = useState<Partial<Message>[]>([]);
@@ -196,15 +196,15 @@ const MessagesList: React.FC<MessagesListProps> = ({
     const messageMap = new Map<string, Partial<Message>>();
     messages.forEach((msg) => messageMap.set(msg.messageId!, msg));
     return Array.from(messageMap.values()).sort((a, b) =>
-      b.sentTime! > a.sentTime! ? 1 : -1
+      b.sentAt! > a.sentAt! ? 1 : -1
     );
   };
 
   const fetchInitialMessages = async () => {
-    const localMessages = await localChatDb.getMessagesByChatId(chatId);
+    const localMessages = await localChatDb.getMessagesByChatroomId(chatroomId);
     const shortedLocalMessages = shortingMessagesByTime(localMessages);
     setMessages(shortedLocalMessages);
-    const apiMessages = await chatApi.fetchInitialMessages(chatId);
+    const apiMessages = await chatApi.fetchInitialMessages(chatroomId);
     const mergedMessages = mergeMessages(localMessages, apiMessages);
     setMessages(mergedMessages);
     await localChatDb.upsertMessages(apiMessages);
@@ -215,7 +215,7 @@ const MessagesList: React.FC<MessagesListProps> = ({
   const fetchMoreMessages = async () => {
     if (!lastFetchedMessageId.current) return;
     const nextMessages = await chatApi.fetchMoreMessages(
-      chatId,
+      chatroomId,
       lastFetchedMessageId.current
     );
     setMessages((prevMessages) => mergeMessages(prevMessages, nextMessages));
@@ -228,7 +228,7 @@ const MessagesList: React.FC<MessagesListProps> = ({
     if (lastFetchedMessageId.current) {
       const missedMessages =
         await chatApi.fetchMessagesAfterLastFetchedMessageId(
-          chatId,
+          chatroomId,
           lastFetchedMessageId.current
         );
       setMessages((prevMessages) =>
@@ -250,14 +250,14 @@ const MessagesList: React.FC<MessagesListProps> = ({
     localMessages.forEach((msg) => messageMap.set(msg.messageId!, msg));
     apiMessages.forEach((msg) => messageMap.set(msg.messageId!, msg));
     return Array.from(messageMap.values()).sort((a, b) =>
-      b.sentTime! > a.sentTime! ? 1 : -1
+      b.sentAt! > a.sentAt! ? 1 : -1
     );
   };
 
   const handleRealTimeUpdate = useCallback(
     async (event: any) => {
       const updatedMessage = event.payload;
-      if (updatedMessage.chatId === chatId) {
+      if (updatedMessage.chatId === chatroomId) {
         setMessages((prevMessages) => {
           const messageIndex = prevMessages.findIndex(
             (msg) => msg.messageId === updatedMessage.messageId
@@ -273,7 +273,7 @@ const MessagesList: React.FC<MessagesListProps> = ({
         await localChatDb.upsertMessages([updatedMessage]);
       }
     },
-    [chatId]
+    [chatroomId]
   );
 
   useEffect(() => {
@@ -289,7 +289,7 @@ const MessagesList: React.FC<MessagesListProps> = ({
         subscription.current();
       }
     };
-  }, [chatId, handleRealTimeUpdate]);
+  }, [chatroomId, handleRealTimeUpdate]);
 
   useEffect(() => {
     if (prevInternetConnection.current === false && hasInternetConnection) {

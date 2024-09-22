@@ -2,7 +2,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firebaseStorage } from "../../config/firebase";
 
 export const storageApi = {
-  uploadProfilePicture: async (userId: string, localUri: string) => {
+  uploadProfileAvatar: async (userId: string, localUri: string) => {
     const response = await fetch(localUri);
     const blob = await response.blob();
 

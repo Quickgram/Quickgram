@@ -35,6 +35,11 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
     Linking.openURL("https://quickgram.in");
   }, []);
 
+  const isButtonEnabled = useMemo(
+    () => phoneNumber.length === 10,
+    [phoneNumber]
+  );
+
   const handlePhoneNumberChange = useCallback(
     (masked: string, unmasked: string) => {
       setPhoneNumber(masked);
@@ -49,6 +54,7 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
     if (phoneNumber.length !== 10 || loading) return;
 
     setLoading(true);
+
     try {
       await dispatch(initiatePhoneLogin(phoneNumber));
       setLoading(false);
@@ -61,11 +67,6 @@ const VerifyPhoneScreen: React.FC<VerifyPhoneScreenProps> = ({
   const handleEmailNext = () => {
     navigation.navigate("EmailAndPassword");
   };
-
-  const isButtonEnabled = useMemo(
-    () => phoneNumber.length === 10,
-    [phoneNumber]
-  );
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import User from "../../models/User";
 import { Platform } from "react-native";
 import { GlobalState } from "@/src/types/GlobalState";
-import Chat from "@/src/models/Chat";
+import ChatRoom from "@/src/models/ChatRoom";
 import Message from "@/src/models/Message";
 
 const initialState: GlobalState = {
-  isiOS: Platform.OS === "ios",
+  isIos: Platform.OS === "ios",
   isProfileEditing: false,
   isProfileUpdating: false,
   homeScreenSearchQuery: "",
@@ -29,6 +29,9 @@ const globalSlice = createSlice({
     setHasInternetConnection: (state, action: PayloadAction<boolean>) => {
       state.hasInternetConnection = action.payload;
     },
+    resetGlobal: (state) => {
+      return initialState;
+    },
   },
 });
 
@@ -37,6 +40,7 @@ export const {
   setIsProfileUpdating,
   setHomeScreenSearchQuery,
   setHasInternetConnection,
+  resetGlobal,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

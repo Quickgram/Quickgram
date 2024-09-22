@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
-import ChatUserBox from "./ChatUserBox";
-import User from "../../../models/User";
-import { FlashList } from "@shopify/flash-list";
 import { getChatId } from "@/src/utils/getChatId";
 import { chatApi } from "@/src/services/api/chatApi";
-import { userApi } from "@/src/services/api/userApi";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { View, Button } from "react-native";
+import ChattedUser from "@/src/models/ChattedUser";
+import ChatUserBox from "./ChatUserBox";
+import { FlashList } from "@shopify/flash-list";
+import { userApi } from "@/src/services/api/userApi";
 import { localUserDb } from "@/src/services/db/localUserDb";
 import { localChatDb } from "@/src/services/db/localChatDb";
 import {
-  setCurrentChatUser,
-  setCurrentChatId,
-  setChatsData,
-  setLastMessages,
+  setMyChatrooms,
   setChattedUsers,
-} from "@/src/redux/reducers/chatReducer";
-import Message from "@/src/models/Message";
+  setCurrentChatroomId,
+  setCurrentChatroomUser,
+} from "@/src/redux/reducers/chatroomReducer";
 
 const ChatUsersList = ({ navigation }: { navigation: any }) => {
   const dispatch = useAppDispatch();
@@ -24,115 +23,176 @@ const ChatUsersList = ({ navigation }: { navigation: any }) => {
   const { homeScreenSearchQuery, hasInternetConnection } = useAppSelector(
     (state) => state.global
   );
-  const { lastMessages, chattedUsers } = useAppSelector((state) => state.chat);
-  const chattedUsersIds = currentUser?.chatted_users || [];
-  const [filteredUsers, setFilteredUsers] = useState<Partial<User>[]>([]);
+  const { myChatrooms, chattedUsers } = useAppSelector(
+    (state) => state.chatroom
+  );
+  const [sortedChattedUsers, setSortedChattedUsers] = useState<
+    Partial<ChattedUser>[]
+  >([]);
 
   useEffect(() => {
-    const fetchChatsData = async () => {
-      const chatsDataLocal = await localChatDb.getChatsData(chattedUsersIds);
-      if (chatsDataLocal) {
-        const lastMessagesLocal = [];
-        for (const chat of chatsDataLocal) {
-          const lastMessageLocal = await localChatDb.getLastMessageById(
-            chat.lastMessageId!,
-            chat.chatId!
-          );
-          if (lastMessageLocal) {
-            console.log("lastmessage:", lastMessageLocal.text);
-            lastMessagesLocal.push(lastMessageLocal);
-          }
-        }
-        dispatch(setLastMessages(lastMessagesLocal));
-        dispatch(setChatsData(chatsDataLocal));
-      }
+    const fetchChattedUsers = async (rawChattedUsers: string[]) => {
+      if (!hasInternetConnection) {
+        const ChattedUsersDataLocal = [];
+        for (const rawChattedUser of rawChattedUsers) {
+          const [
+            userId,
+            lastMessage,
+            lastMessageSentAt,
+            lastMessageId,
+            lastMessageSenderId,
+            isSeen,
+          ] = rawChattedUser.split("|_+_|");
 
-      if (hasInternetConnection) {
-        const chatsDataApi = await chatApi.fetchChatsData(chattedUsersIds);
-        if (chatsDataApi) {
-          const lastMessagesApi = [];
-          for (const chat of chatsDataApi) {
-            const lastMessageApi = await chatApi.fetchLastMessageById(
-              chat?.lastMessageId,
-              chat?.chatId
+          try {
+            const ChattedUserLocal = await localUserDb.getChattedUserDataById(
+              userId
             );
-            if (lastMessageApi) {
-              lastMessagesApi.push(lastMessageApi);
-              await localChatDb.upsertMessages([lastMessageApi]);
+
+            if (ChattedUserLocal) {
+              const ChattedUserData = {
+                userId: userId || "",
+                lastMessage: lastMessage || "",
+                lastMessageSentAt: lastMessageSentAt || "",
+                lastMessageId: lastMessageId || "",
+                lastMessageSenderId: lastMessageSenderId || "",
+                lastMessageIsSeen: isSeen === "true" ? true : false,
+                name: ChattedUserLocal?.name || "",
+                about: ChattedUserLocal?.about || "",
+                phoneNumber: ChattedUserLocal?.phoneNumber || "",
+                createdAt: ChattedUserLocal?.createdAt || "",
+                lastSeenAt: ChattedUserLocal?.lastSeenAt || "",
+                email: ChattedUserLocal?.email || "",
+                username: ChattedUserLocal?.username || "",
+                profileAvatarUrl: ChattedUserLocal?.profileAvatarUrl || "",
+                isOnline: ChattedUserLocal?.isOnline || false,
+                isVerified: ChattedUserLocal?.isVerified || false,
+              };
+              ChattedUsersDataLocal.push(ChattedUserData);
             }
+          } catch (error) {
+            return {};
           }
-          dispatch(setLastMessages(lastMessagesApi));
-          dispatch(setChatsData(chatsDataApi));
-          await localChatDb.upsertChatsData(chatsDataApi);
         }
+        dispatch(setChattedUsers(ChattedUsersDataLocal));
+      }
+
+      if (hasInternetConnection) {
+        const ChattedUsersDataApi = [];
+        for (const rawChattedUser of rawChattedUsers) {
+          const [
+            userId,
+            lastMessage,
+            lastMessageSentAt,
+            lastMessageId,
+            lastMessageSenderId,
+            isSeen,
+          ] = rawChattedUser.split("|_+_|");
+
+          try {
+            const ChattedUserApi = await userApi.fetchUserDocumentById(userId);
+
+            if (ChattedUserApi) {
+              const ChattedUserData = {
+                userId: userId || "",
+                lastMessage: lastMessage || "",
+                lastMessageSentAt: lastMessageSentAt || "",
+                lastMessageId: lastMessageId || "",
+                lastMessageSenderId: lastMessageSenderId || "",
+                lastMessageIsSeen: isSeen === "true" ? true : false,
+                name: ChattedUserApi?.name || "",
+                about: ChattedUserApi?.about || "",
+                phoneNumber: ChattedUserApi?.phoneNumber || "",
+                createdAt: ChattedUserApi?.createdAt || "",
+                lastSeenAt: ChattedUserApi?.lastSeenAt || "",
+                email: ChattedUserApi?.email || "",
+                username: ChattedUserApi?.username || "",
+                profileAvatarUrl: ChattedUserApi?.profileAvatarUrl || "",
+                isOnline: ChattedUserApi?.isOnline || false,
+                isVerified: ChattedUserApi?.isVerified || false,
+              };
+              ChattedUsersDataApi.push(ChattedUserData);
+            }
+          } catch (error) {
+            return {};
+          }
+        }
+        dispatch(setChattedUsers(ChattedUsersDataApi));
+        await localUserDb.upsertChattedUsersData(ChattedUsersDataApi);
       }
     };
 
-    const fetchChattedUsers = async () => {
-      const chattedUsersDataLocal = await localUserDb.getUserDataByIds(
-        chattedUsersIds
-      );
+    const fetchMyChatrooms = async () => {
+      const myChatroomsLocal = await localChatDb.getMyChatroomsData();
 
-      if (chattedUsersDataLocal) {
-        dispatch(setChattedUsers(chattedUsersDataLocal));
+      if (myChatroomsLocal) {
+        dispatch(setMyChatrooms(myChatroomsLocal));
+        fetchChattedUsers(myChatroomsLocal.chattedUsers || []);
       }
       if (hasInternetConnection) {
-        const chattedUsersDataApi =
-          await userApi.fetchChattedUsersDocumentsByIds(chattedUsersIds);
-        if (chattedUsersDataApi) {
-          dispatch(setChattedUsers(chattedUsersDataApi));
-          await localUserDb.upsertUsersData(chattedUsersDataApi);
+        const myChatroomsApi = await chatApi.fetchMyChatRoomsDocument();
+        if (myChatroomsApi) {
+          dispatch(setMyChatrooms(myChatroomsApi));
+          await localChatDb.upsertChatroomsData(myChatroomsApi);
+          fetchChattedUsers(myChatroomsApi.chattedUsers || []);
         }
       }
     };
 
-    fetchChatsData();
-    fetchChattedUsers();
-  }, [chattedUsersIds]);
+    fetchMyChatrooms();
+  }, [currentUser]);
 
   useEffect(() => {
-    const filtered = chattedUsers
-      .map((user: Partial<User>) => {
-        const chatId = getChatId(currentUser?.uid, user.uid!);
-        const lastMessage = lastMessages.find(
-          (message: Partial<Message>) => message.chatId === chatId
-        );
-        return { user, lastMessage };
+    const sortedChattedUsers = chattedUsers
+      .map((chattedUser: Partial<ChattedUser>) => {
+        const chatId = getChatId(currentUser?.userId, chattedUser.userId!);
+        return { chattedUser };
       })
-      .filter(({ user }: { user: Partial<User> }) =>
-        user.name?.toLowerCase().startsWith(homeScreenSearchQuery.toLowerCase())
+      .filter(({ chattedUser }: { chattedUser: Partial<ChattedUser> }) =>
+        chattedUser.name
+          ?.toLowerCase()
+          .startsWith(homeScreenSearchQuery.toLowerCase())
       )
       .sort(
         (
-          a: { lastMessage: Partial<Message> },
-          b: { lastMessage: Partial<Message> }
+          a: { chattedUser: Partial<ChattedUser> },
+          b: { chattedUser: Partial<ChattedUser> }
         ) => {
-          const timeA = Number(a.lastMessage?.sentTime) || 0;
-          const timeB = Number(b.lastMessage?.sentTime) || 0;
+          const timeA = Number(a.chattedUser.lastMessageSentAt) || 0;
+          const timeB = Number(b.chattedUser.lastMessageSentAt) || 0;
           return timeB - timeA;
         }
       )
-      .map(({ user }: { user: Partial<User> }) => user);
+      .map(
+        ({ chattedUser }: { chattedUser: Partial<ChattedUser> }) => chattedUser
+      );
 
-    setFilteredUsers(filtered);
-  }, [homeScreenSearchQuery, chattedUsers, lastMessages]);
+    setSortedChattedUsers(sortedChattedUsers);
+  }, [homeScreenSearchQuery, chattedUsers]);
 
-  const renderItem = ({ item }: { item: User }) => (
-    <ChatUserBox
-      user={item}
-      chatId={getChatId(currentUser?.uid, item.uid)}
-      onPress={() => {
-        dispatch(setCurrentChatUser(item));
-        dispatch(setCurrentChatId(getChatId(currentUser?.uid, item.uid)));
-        navigation.navigate("Chat");
-      }}
-    />
-  );
+  const renderItem = ({ item }: { item: Partial<ChattedUser> }) => {
+    if (!item) {
+      return null;
+    }
+    return (
+      <ChatUserBox
+        chattedUser={item}
+        chatId={getChatId(currentUser?.userId, item.userId!)}
+        onPress={() => {
+          dispatch(setCurrentChatroomUser(item));
+          dispatch(
+            setCurrentChatroomId(getChatId(currentUser?.userId, item.userId!))
+          );
+          navigation.navigate("Chat");
+        }}
+      />
+    );
+  };
 
   return (
     <FlashList
-      data={filteredUsers as User[]}
-      keyExtractor={(item) => item.uid}
+      data={sortedChattedUsers as Partial<ChattedUser>[]}
+      keyExtractor={(item) => item.userId!}
       renderItem={renderItem}
       estimatedItemSize={100}
     />

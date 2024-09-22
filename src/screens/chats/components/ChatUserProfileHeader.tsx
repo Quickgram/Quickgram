@@ -19,7 +19,9 @@ interface ChatUserProfileHeaderProps {
 const ChatUserProfileHeader: React.FC<ChatUserProfileHeaderProps> = ({
   navigation,
 }) => {
-  const { currentChatUser } = useAppSelector((state) => state.chat);
+  const { currentChatroomId, currentChatroomUser } = useAppSelector(
+    (state) => state.chatroom
+  );
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -27,16 +29,16 @@ const ChatUserProfileHeader: React.FC<ChatUserProfileHeaderProps> = ({
       </TouchableOpacity>
       <Image
         source={{
-          uri: currentChatUser.profile_picture_url,
+          uri: currentChatroomUser.profileAvatarUrl,
         }}
         placeholderContentFit="contain"
         cachePolicy="memory-disk"
         style={styles.profilePic}
       />
       <View style={styles.userInfo}>
-        <Text style={styles.userName}>{currentChatUser.name}</Text>
+        <Text style={styles.userName}>{currentChatroomUser.name}</Text>
         <Text style={styles.userStatus}>
-          {currentChatUser.is_online ? "Online" : "Offline"}
+          {currentChatroomUser.is_online ? "Online" : "Offline"}
         </Text>
       </View>
     </View>

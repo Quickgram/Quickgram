@@ -18,7 +18,7 @@ import { authApi } from "@/src/services/api/authApi";
 type WelcomeScreenProps = NativeStackScreenProps<AppStackParamList, "Welcome">;
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
-  const welcome_image = require("../../../assets/images/icon.png");
+  const welcomeImage = require("../../../assets/images/icon.png");
 
   const openPrivacyPolicy = useCallback(() => {
     Linking.openURL("https://quickgram.in");
@@ -44,7 +44,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image
-        source={welcome_image}
+        source={welcomeImage}
         style={styles.welcomeImage}
         resizeMode="contain"
       />
