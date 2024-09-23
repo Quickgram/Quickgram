@@ -14,6 +14,7 @@ import MessageEnum from "@/src/utils/messageEnum";
 import * as Appwrite from "../../../config/appwrite";
 import { chatApi } from "@/src/services/api/chatApi";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { localUserDb } from "@/src/services/db/localUserDb";
 
 interface BottomChatFieldProps {
   chatroomId: string;
@@ -70,7 +71,13 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
         ]}
       >
         {!isTyping && (
-          <TouchableOpacity style={styles.addButton} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={async () => {
+              const chattedUsers = await localUserDb.getAllChattedUsersData();
+              console.log("chattedUsers", chattedUsers);
+            }}
+          >
             <Ionicons name="add-outline" size={wp(8)} />
           </TouchableOpacity>
         )}

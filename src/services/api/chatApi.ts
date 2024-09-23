@@ -114,91 +114,166 @@ export const chatApi = {
     return unsubscribe;
   },
 
+  // upsertChatRoomDocument: async (messageData: Partial<Message>) => {
+  //   if (
+  //     messageData.chatroomId &&
+  //     messageData.senderId &&
+  //     messageData.receiverId
+  //   ) {
+  //     try {
+  //       const senderChatRoomDoc = await Appwrite.databases.getDocument(
+  //         process.env.EXPO_PUBLIC_DATABASE_ID!,
+  //         process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+  //         messageData.senderId
+  //       );
+
+  //       await Appwrite.databases.updateDocument(
+  //         process.env.EXPO_PUBLIC_DATABASE_ID!,
+  //         process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+  //         messageData.senderId,
+  //         {
+  //           userId: messageData.senderId,
+  //           chattedUsers: [
+  //             [
+  //               messageData.receiverId,
+  //               messageData.text,
+  //               messageData.sentAt,
+  //               messageData.messageId,
+  //               messageData.senderId,
+  //               messageData.isSeen,
+  //             ].join("|_+_|"),
+  //           ],
+  //         }
+  //       );
+  //     } catch (error) {
+  //       await Appwrite.databases.createDocument(
+  //         process.env.EXPO_PUBLIC_DATABASE_ID!,
+  //         process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+  //         messageData.senderId,
+  //         {
+  //           userId: messageData.senderId,
+  //           chattedUsers: [
+  //             [
+  //               messageData.receiverId,
+  //               messageData.text,
+  //               messageData.sentAt,
+  //               messageData.messageId,
+  //               messageData.senderId,
+  //               messageData.isSeen,
+  //             ].join("|_+_|"),
+  //           ],
+  //         }
+  //       );
+  //     }
+
+  //     try {
+  //       await Appwrite.databases.updateDocument(
+  //         process.env.EXPO_PUBLIC_DATABASE_ID!,
+  //         process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+  //         messageData.receiverId,
+  //         {
+  //           userId: messageData.receiverId,
+  //           chattedUsers: [
+  //             [
+  //               messageData.receiverId,
+  //               messageData.text,
+  //               messageData.sentAt,
+  //               messageData.messageId,
+  //               messageData.senderId,
+  //               messageData.isSeen,
+  //             ].join("|_+_|"),
+  //           ],
+  //         }
+  //       );
+  //     } catch (error) {
+  //       await Appwrite.databases.createDocument(
+  //         process.env.EXPO_PUBLIC_DATABASE_ID!,
+  //         process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+  //         messageData.receiverId,
+  //         {
+  //           userId: messageData.receiverId,
+  //           chattedUsers: [
+  //             [
+  //               messageData.receiverId,
+  //               messageData.text,
+  //               messageData.sentAt,
+  //               messageData.messageId,
+  //               messageData.senderId,
+  //               messageData.isSeen,
+  //             ].join("|_+_|"),
+  //           ],
+  //         }
+  //       );
+  //     }
+  //   }
+  // },
+
   upsertChatRoomDocument: async (messageData: Partial<Message>) => {
     if (
       messageData.chatroomId &&
       messageData.senderId &&
       messageData.receiverId
     ) {
-      try {
-        await Appwrite.databases.updateDocument(
-          process.env.EXPO_PUBLIC_DATABASE_ID!,
-          process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
-          messageData.senderId,
-          {
-            userId: messageData.senderId,
-            chattedUsers: [
-              [
-                messageData.receiverId,
-                messageData.text,
-                messageData.sentAt,
-                messageData.messageId,
-                messageData.senderId,
-                messageData.isSeen,
-              ].join("|_+_|"),
-            ],
-          }
-        );
-      } catch (error) {
-        await Appwrite.databases.createDocument(
-          process.env.EXPO_PUBLIC_DATABASE_ID!,
-          process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
-          messageData.senderId,
-          {
-            userId: messageData.senderId,
-            chattedUsers: [
-              [
-                messageData.receiverId,
-                messageData.text,
-                messageData.sentAt,
-                messageData.messageId,
-                messageData.senderId,
-                messageData.isSeen,
-              ].join("|_+_|"),
-            ],
-          }
-        );
-      }
+      const newEntry = [
+        messageData.receiverId,
+        messageData.text,
+        messageData.sentAt,
+        messageData.messageId,
+        messageData.senderId,
+        messageData.isSeen,
+      ].join("|_+_|");
 
-      try {
-        await Appwrite.databases.updateDocument(
-          process.env.EXPO_PUBLIC_DATABASE_ID!,
-          process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
-          messageData.receiverId,
-          {
-            userId: messageData.receiverId,
-            chattedUsers: [
-              [
-                messageData.receiverId,
-                messageData.text,
-                messageData.sentAt,
-                messageData.messageId,
-                messageData.senderId,
-                messageData.isSeen,
-              ].join("|_+_|"),
-            ],
+      // Function to update or add entry
+      const updateOrAddEntry = async (userId: string) => {
+        try {
+          const existingDoc = await Appwrite.databases.getDocument(
+            process.env.EXPO_PUBLIC_DATABASE_ID!,
+            process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+            userId
+          );
+
+          let chattedUsers = existingDoc.chattedUsers || [];
+          const existingIndex = chattedUsers.findIndex(
+            (entry: string) =>
+              entry.split("|_+_|")[0] === messageData.receiverId
+          );
+
+          if (existingIndex !== -1) {
+            // Update existing entry
+            chattedUsers[existingIndex] = newEntry;
+          } else {
+            // Add new entry
+            chattedUsers.push(newEntry);
           }
-        );
-      } catch (error) {
-        await Appwrite.databases.createDocument(
-          process.env.EXPO_PUBLIC_DATABASE_ID!,
-          process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
-          messageData.receiverId,
-          {
-            userId: messageData.receiverId,
-            chattedUsers: [
-              [
-                messageData.receiverId,
-                messageData.text,
-                messageData.sentAt,
-                messageData.messageId,
-                messageData.senderId,
-                messageData.isSeen,
-              ].join("|_+_|"),
-            ],
-          }
-        );
-      }
+
+          await Appwrite.databases.updateDocument(
+            process.env.EXPO_PUBLIC_DATABASE_ID!,
+            process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+            userId,
+            {
+              userId: userId,
+              chattedUsers: chattedUsers,
+            }
+          );
+        } catch (error) {
+          // If document doesn't exist, create a new one
+          await Appwrite.databases.createDocument(
+            process.env.EXPO_PUBLIC_DATABASE_ID!,
+            process.env.EXPO_PUBLIC_CHATROOMS_COLLECTION_ID!,
+            userId,
+            {
+              userId: userId,
+              chattedUsers: [newEntry],
+            }
+          );
+        }
+      };
+
+      // Update or add entry for sender
+      await updateOrAddEntry(messageData.senderId);
+
+      // Update or add entry for receiver
+      await updateOrAddEntry(messageData.receiverId);
     }
   },
 

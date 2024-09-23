@@ -25,6 +25,9 @@ import {
   setIsProfileEditing,
   setIsProfileUpdating,
 } from "@/src/redux/reducers/globalReducer";
+import { resetLocalDb } from "@/src/services/db/resetLocalDb";
+import { secureStorageService } from "@/src/services/storage/secureStore";
+import { authApi } from "@/src/services/api/authApi";
 
 type SettingsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, "Settings">,
@@ -56,8 +59,14 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handleGridPress = () => {
-    // Implement grid press logic
+  const handleGridPress = async () => {
+    // TODO: Implement grid press logic
+    //for now reset local database and clear secure storage and sign out user
+    await resetLocalDb.resetLocalDatabase();
+    await secureStorageService.saveSignedStatus("false");
+    await secureStorageService.saveCurrentUserId("");
+    await authApi.terminateCurrentSession();
+    console.log("Local database reset");
   };
 
   const handleItemPress = (item: any) => {
@@ -170,7 +179,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           name={currentUser!.name}
           phone={currentUser!.phoneNumber}
           username={currentUser!.username}
-          profile_picture_url={currentUser!.profileAvatarUrl}
+          profileAvatarUrl={currentUser!.profileAvatarUrl}
           onChangePhoto={handleChangePhoto}
           onGridPress={handleGridPress}
           onEditPress={handleEditPress}

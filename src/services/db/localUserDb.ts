@@ -29,28 +29,6 @@ export const localUserDb = {
     });
   },
 
-  upsertUsersData: async (usersData: Partial<User>[]): Promise<void> => {
-    await database.write(async () => {
-      try {
-        for (const userData of usersData) {
-          const existingUser = await usersCollection.find(userData.userId!);
-          if (existingUser) {
-            await existingUser.update((user) => {
-              Object.assign(user, userData);
-            });
-          }
-        }
-      } catch (error) {
-        for (const userData of usersData) {
-          await usersCollection.create((user) => {
-            user._raw.id = userData.userId!;
-            Object.assign(user, userData);
-          });
-        }
-      }
-    });
-  },
-
   getCurrentUserData: async (): Promise<Partial<User> | null> => {
     try {
       const currentUserId = await secureStorageService.getCurrentUserId();
@@ -128,27 +106,38 @@ export const localUserDb = {
   upsertChattedUsersData: async (
     chattedUsersData: Partial<ChattedUser>[]
   ): Promise<void> => {
-    await database.write(async () => {
-      try {
-        for (const chattedUserData of chattedUsersData) {
-          const existingChattedUser = await chattedUsersCollection.find(
-            chattedUserData.userId!
-          );
-          if (existingChattedUser) {
-            await existingChattedUser.update((chattedUser) => {
-              Object.assign(chattedUser, chattedUserData);
-            });
+    if (!chattedUsersData) {
+      return;
+    }
+    try {
+      await database.write(async () => {
+        try {
+          for (const chattedUserData of chattedUsersData) {
+            const filteredChattedUserData =
+              filterChattedUserData(chattedUserData);
+            try {
+              const existingChattedUser = await chattedUsersCollection.find(
+                filteredChattedUserData.userId!
+              );
+              if (existingChattedUser) {
+                await existingChattedUser.update((chattedUser) => {
+                  Object.assign(chattedUser, filteredChattedUserData);
+                });
+              }
+            } catch (error) {
+              await chattedUsersCollection.create((chattedUser) => {
+                chattedUser._raw.id = filteredChattedUserData.userId!;
+                Object.assign(chattedUser, filteredChattedUserData);
+              });
+            }
           }
+        } catch (error) {
+          return;
         }
-      } catch (error) {
-        for (const chattedUserData of chattedUsersData) {
-          await chattedUsersCollection.create((chattedUser) => {
-            chattedUser._raw.id = chattedUserData.userId!;
-            Object.assign(chattedUser, chattedUserData);
-          });
-        }
-      }
-    });
+      });
+    } catch (error) {
+      console.error("Error upserting chatted users data", error);
+    }
   },
 
   getChattedUserDataById: async (
@@ -162,6 +151,18 @@ export const localUserDb = {
       return filterChattedUserData(chattedUser) as Partial<ChattedUser>;
     } catch (error) {
       return null;
+    }
+  },
+
+  getAllChattedUsersData: async (): Promise<Partial<ChattedUser>[]> => {
+    try {
+      const chattedUsers = await chattedUsersCollection.query().fetch();
+      if (!chattedUsers) {
+        return [];
+      }
+      return chattedUsers as Partial<ChattedUser>[];
+    } catch (error) {
+      return [];
     }
   },
 };

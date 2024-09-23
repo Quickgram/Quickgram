@@ -1,17 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Platform,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../../styles/colors";
 import { wp, hp } from "@/src/styles/responsive";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
+import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import { userApi } from "@/src/services/api/userApi";
+import {
+  setCurrentChatroomId,
+  setCurrentChatroomUser,
+} from "@/src/redux/reducers/chatroomReducer";
+import { getChatroomId } from "@/src/utils/getChatId";
 
-const HomeScreenHeader: React.FC = () => {
+const HomeScreenHeader = ({ navigation }: { navigation: any }) => {
+  const dispatch = useAppDispatch();
+  const { currentUser } = useAppSelector((state) => state.user);
+
+  const handleAddUser = () => {
+    Alert.prompt(
+      "Enter Username",
+      "Please enter the username of the user you want to chat with",
+      async (username) => {
+        if (!username) {
+          Alert.alert("Username is required", "Please enter a username");
+          return;
+        }
+        if (username) {
+          const userData = await userApi.fetchUserDocumentByUsername(username);
+          if (userData) {
+            dispatch(setCurrentChatroomUser(userData));
+            dispatch(
+              setCurrentChatroomId(
+                getChatroomId(currentUser?.userId, userData.userId!)
+              )
+            );
+            navigation.navigate("Chat");
+          } else {
+            Alert.alert(
+              "User not found",
+              "The username you entered does not exist."
+            );
+          }
+        }
+      }
+    );
+  };
+
   return (
     <View style={styles.header}>
       <Text style={styles.headerTitle}>Chats</Text>
@@ -19,7 +60,7 @@ const HomeScreenHeader: React.FC = () => {
         <TouchableOpacity>
           <Ionicons name="camera-outline" size={wp(7)} style={styles.icon} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={handleAddUser}>
           <Ionicons
             name="add-circle-outline"
             size={wp(7)}

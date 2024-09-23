@@ -49,6 +49,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
       setLoading(true);
       await dispatch(verifyOtp(code));
       setLoading(false);
+      // TODO: if user is new and not authenticated, navigate to CreateProfile , incomplete process i have to fix it later
+      // High priority
       if (isNewUser && !isAuthenticated) {
         navigation.navigate("CreateProfile");
       }

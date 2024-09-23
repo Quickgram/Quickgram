@@ -10,7 +10,7 @@ interface ProfileHeaderProps {
   name: string;
   phone: string;
   username: string;
-  profile_picture_url: string;
+  profileAvatarUrl: string;
   onChangePhoto: () => void;
   onGridPress: () => void;
   onEditPress: () => void;
@@ -21,7 +21,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   name,
   phone,
   username,
-  profile_picture_url,
+  profileAvatarUrl,
   onChangePhoto,
   onGridPress,
   onEditPress,
@@ -54,7 +54,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       <Image
         style={styles.profilePicture}
         source={{
-          uri: profile_picture_url,
+          uri: profileAvatarUrl,
         }}
         placeholderContentFit="contain"
         cachePolicy="memory-disk"

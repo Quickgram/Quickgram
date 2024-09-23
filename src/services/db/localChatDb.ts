@@ -77,31 +77,35 @@ export const localChatDb = {
   upsertChatroomsData: async (
     chatroomsData: Partial<ChatRooms>
   ): Promise<void> => {
-    await database.write(async () => {
-      const filteredChatroomsData = filterMyChatroomsData(chatroomsData);
-      if (!filteredChatroomsData.userId) {
-        return;
-      }
-      try {
+    try {
+      await database.write(async () => {
+        const filteredChatroomsData = filterMyChatroomsData(chatroomsData);
+        if (!filteredChatroomsData.userId) {
+          return;
+        }
         try {
-          const existingChatrooms = await chatRoomsCollection.find(
-            filteredChatroomsData.userId
-          );
-          if (existingChatrooms !== filteredChatroomsData) {
-            await existingChatrooms.update((chatrooms) => {
+          try {
+            const existingChatrooms = await chatRoomsCollection.find(
+              filteredChatroomsData.userId
+            );
+            if (existingChatrooms !== filteredChatroomsData) {
+              await existingChatrooms.update((chatrooms) => {
+                Object.assign(chatrooms, filteredChatroomsData);
+              });
+            }
+          } catch (error) {
+            await chatRoomsCollection.create((chatrooms) => {
+              chatrooms._raw.id = filteredChatroomsData.userId!;
               Object.assign(chatrooms, filteredChatroomsData);
             });
           }
         } catch (error) {
-          await chatRoomsCollection.create((chatrooms) => {
-            chatrooms._raw.id = filteredChatroomsData.userId!;
-            Object.assign(chatrooms, filteredChatroomsData);
-          });
+          return;
         }
-      } catch (error) {
-        return;
-      }
-    });
+      });
+    } catch (error) {
+      console.error("Error upserting chatrooms data", error);
+    }
   },
 
   getMyChatroomsData: async (): Promise<Partial<ChatRooms> | null> => {

@@ -48,7 +48,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeScreenHeader />
+      <HomeScreenHeader navigation={navigation} />
       <SearchBox />
       <ChatUsersList navigation={navigation} />
     </SafeAreaView>

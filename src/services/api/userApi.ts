@@ -143,6 +143,25 @@ export const userApi = {
     }
   },
 
+  fetchUserDocumentByUsername: async (
+    username: string
+  ): Promise<Partial<User> | null> => {
+    try {
+      const response = await Appwrite.databases.listDocuments(
+        process.env.EXPO_PUBLIC_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_USERS_COLLECTION_ID!,
+        [Appwrite.Query.equal("username", username)]
+      );
+      if (response.documents.length > 0) {
+        const document = response.documents[0] as Models.Document;
+        return filterUserData(document) as Partial<User>;
+      }
+      return null;
+    } catch (error) {
+      return null;
+    }
+  },
+
   fetchCurrentUserDocument: async (): Promise<Partial<User> | null> => {
     const currentUserId = await secureStorageService.getCurrentUserId();
     if (currentUserId) {

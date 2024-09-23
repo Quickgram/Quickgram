@@ -23,9 +23,7 @@ const ChatUsersList = ({ navigation }: { navigation: any }) => {
   const { homeScreenSearchQuery, hasInternetConnection } = useAppSelector(
     (state) => state.global
   );
-  const { myChatrooms, chattedUsers } = useAppSelector(
-    (state) => state.chatroom
-  );
+  const { chattedUsers } = useAppSelector((state) => state.chatroom);
   const [sortedChattedUsers, setSortedChattedUsers] = useState<
     Partial<ChattedUser>[]
   >([]);
