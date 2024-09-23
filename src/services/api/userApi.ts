@@ -6,6 +6,9 @@ import { secureStorageService } from "../storage/secureStore";
 
 export const userApi = {
   updateName: async (name: string) => {
+    if (!name) {
+      return;
+    }
     const currentUserId = await secureStorageService.getCurrentUserId();
     if (currentUserId) {
       await Appwrite.account.updateName(name);
@@ -21,6 +24,9 @@ export const userApi = {
   },
 
   updateUsername: async (username: string) => {
+    if (!username) {
+      return;
+    }
     const currentUserId = await secureStorageService.getCurrentUserId();
     if (currentUserId) {
       await Appwrite.databases.updateDocument(
@@ -35,6 +41,9 @@ export const userApi = {
   },
 
   updateAbout: async (about: string) => {
+    if (!about) {
+      return;
+    }
     const currentUserId = await secureStorageService.getCurrentUserId();
     if (currentUserId) {
       await Appwrite.databases.updateDocument(
@@ -53,6 +62,9 @@ export const userApi = {
     username: string,
     about: string
   ) => {
+    if (!name || !username || !about) {
+      return;
+    }
     const currentUserId = await secureStorageService.getCurrentUserId();
     if (currentUserId) {
       await Appwrite.databases.updateDocument(
@@ -78,6 +90,9 @@ export const userApi = {
   },
 
   updateProfileAvatar: async (url: string) => {
+    if (!url) {
+      return;
+    }
     const currentUserId = await secureStorageService.getCurrentUserId();
     if (currentUserId) {
       await Appwrite.databases.updateDocument(
@@ -95,6 +110,9 @@ export const userApi = {
     userId: string,
     userData: Partial<User>
   ): Promise<Partial<User> | null> => {
+    if (!userId || !userData) {
+      return null;
+    }
     try {
       const document = (await Appwrite.databases.createDocument(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -111,6 +129,9 @@ export const userApi = {
   fetchUserDocumentById: async (
     userId: string
   ): Promise<Partial<User> | null> => {
+    if (!userId) {
+      return null;
+    }
     try {
       const response = (await Appwrite.databases.getDocument(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -127,6 +148,9 @@ export const userApi = {
   fetchUserDocumentByEmail: async (
     email: string
   ): Promise<Partial<User> | null> => {
+    if (!email) {
+      return null;
+    }
     try {
       const response = await Appwrite.databases.listDocuments(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -146,6 +170,9 @@ export const userApi = {
   fetchUserDocumentByUsername: async (
     username: string
   ): Promise<Partial<User> | null> => {
+    if (!username) {
+      return null;
+    }
     try {
       const response = await Appwrite.databases.listDocuments(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -181,6 +208,9 @@ export const userApi = {
   },
 
   checkIfUserExists: async (userId: string): Promise<boolean> => {
+    if (!userId) {
+      return false;
+    }
     try {
       const response = await Appwrite.databases.getDocument(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -209,6 +239,9 @@ export const userApi = {
   },
 
   checkUsernameAvailability: async (username: string) => {
+    if (!username) {
+      return false;
+    }
     try {
       const response = await Appwrite.databases.listDocuments(
         process.env.EXPO_PUBLIC_DATABASE_ID!,
@@ -223,7 +256,7 @@ export const userApi = {
 
   subscribeToMyUserDocumentChanges: (
     currentUserId: string,
-    callback: (user: User) => void
+    callback: (user: Partial<User>) => void
   ) => {
     const unsubscribe = Appwrite.client.subscribe(
       `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_USERS_COLLECTION_ID}.documents.${currentUserId}`,
@@ -233,7 +266,26 @@ export const userApi = {
             "databases.*.collections.*.documents.*.update"
           )
         ) {
-          callback(response.payload as unknown as User);
+          callback(response.payload as Partial<User>);
+        }
+      }
+    );
+
+    return unsubscribe;
+  },
+
+  subscribeToUsersDocumentChanges: (
+    callback: (user: Partial<User>) => void
+  ) => {
+    const unsubscribe = Appwrite.client.subscribe(
+      `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_USERS_COLLECTION_ID}.documents`,
+      (response) => {
+        if (
+          response.events.includes(
+            "databases.*.collections.*.documents.*.update"
+          )
+        ) {
+          callback(response.payload as Partial<User>);
         }
       }
     );

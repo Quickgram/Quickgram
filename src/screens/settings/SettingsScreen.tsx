@@ -60,12 +60,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   };
 
   const handleGridPress = async () => {
-    // TODO: Implement grid press logic
-    //for now reset local database and clear secure storage and sign out user
     await resetLocalDb.resetLocalDatabase();
-    await secureStorageService.saveSignedStatus("false");
-    await secureStorageService.saveCurrentUserId("");
-    await authApi.terminateCurrentSession();
     console.log("Local database reset");
   };
 

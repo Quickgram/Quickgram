@@ -44,7 +44,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         }
       };
     }
-  }, [currentUser?.userId, setCurrentUser]);
+  }, [currentUser?.userId, setCurrentUser, hasInternetConnection, dispatch]);
 
   return (
     <SafeAreaView style={styles.container}>

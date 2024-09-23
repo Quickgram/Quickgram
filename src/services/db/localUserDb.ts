@@ -9,6 +9,9 @@ const chattedUsersCollection = database.get<ChattedUser>("chattedUsers");
 
 export const localUserDb = {
   upsertUserData: async (userData: Partial<User>): Promise<void> => {
+    if (!userData) {
+      return;
+    }
     const filteredUserData = filterUserData(userData);
     await database.write(async () => {
       try {
@@ -46,6 +49,9 @@ export const localUserDb = {
   },
 
   getUserDataById: async (userId: string): Promise<Partial<User> | null> => {
+    if (!userId) {
+      return null;
+    }
     try {
       const user = await usersCollection.find(userId);
       if (!user) {
@@ -58,6 +64,9 @@ export const localUserDb = {
   },
 
   getUserDataByIds: async (userIds: string[]): Promise<Partial<User>[]> => {
+    if (!userIds) {
+      return [];
+    }
     try {
       const users = await usersCollection
         .query(Q.where("uid", Q.oneOf(userIds)))
@@ -72,6 +81,9 @@ export const localUserDb = {
   },
 
   checkUserExists: async (userId: string): Promise<boolean> => {
+    if (!userId) {
+      return false;
+    }
     try {
       const user = await usersCollection.find(userId);
       return user !== null;
@@ -81,6 +93,9 @@ export const localUserDb = {
   },
 
   deleteUserDataFromLocaldb: async (userId: string): Promise<void> => {
+    if (!userId) {
+      return;
+    }
     try {
       await database.write(async () => {
         const user = await usersCollection.find(userId);
@@ -109,40 +124,40 @@ export const localUserDb = {
     if (!chattedUsersData) {
       return;
     }
-    try {
-      await database.write(async () => {
-        try {
-          for (const chattedUserData of chattedUsersData) {
-            const filteredChattedUserData =
-              filterChattedUserData(chattedUserData);
-            try {
-              const existingChattedUser = await chattedUsersCollection.find(
-                filteredChattedUserData.userId!
-              );
-              if (existingChattedUser) {
-                await existingChattedUser.update((chattedUser) => {
-                  Object.assign(chattedUser, filteredChattedUserData);
-                });
-              }
-            } catch (error) {
-              await chattedUsersCollection.create((chattedUser) => {
-                chattedUser._raw.id = filteredChattedUserData.userId!;
+
+    await database.write(async () => {
+      try {
+        for (const chattedUserData of chattedUsersData) {
+          const filteredChattedUserData =
+            filterChattedUserData(chattedUserData);
+          try {
+            const existingChattedUser = await chattedUsersCollection.find(
+              filteredChattedUserData.userId!
+            );
+            if (existingChattedUser) {
+              await existingChattedUser.update((chattedUser) => {
                 Object.assign(chattedUser, filteredChattedUserData);
               });
             }
+          } catch (error) {
+            await chattedUsersCollection.create((chattedUser) => {
+              chattedUser._raw.id = filteredChattedUserData.userId!;
+              Object.assign(chattedUser, filteredChattedUserData);
+            });
           }
-        } catch (error) {
-          return;
         }
-      });
-    } catch (error) {
-      console.error("Error upserting chatted users data", error);
-    }
+      } catch (error) {
+        return;
+      }
+    });
   },
 
   getChattedUserDataById: async (
     userId: string
   ): Promise<Partial<ChattedUser> | null> => {
+    if (!userId) {
+      return null;
+    }
     try {
       const chattedUser = await chattedUsersCollection.find(userId);
       if (!chattedUser) {

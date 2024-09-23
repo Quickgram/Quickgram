@@ -3,7 +3,6 @@ import { getChatroomId } from "@/src/utils/getChatId";
 import { chatApi } from "@/src/services/api/chatApi";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
-import { View, Button } from "react-native";
 import ChattedUser from "@/src/models/ChattedUser";
 import ChatUserBox from "./ChatUserBox";
 import { FlashList } from "@shopify/flash-list";
@@ -23,7 +22,9 @@ const ChatUsersList = ({ navigation }: { navigation: any }) => {
   const { homeScreenSearchQuery, hasInternetConnection } = useAppSelector(
     (state) => state.global
   );
-  const { chattedUsers } = useAppSelector((state) => state.chatroom);
+  const { chattedUsers, currentChatroomUser } = useAppSelector(
+    (state) => state.chatroom
+  );
   const [sortedChattedUsers, setSortedChattedUsers] = useState<
     Partial<ChattedUser>[]
   >([]);
@@ -87,9 +88,10 @@ const ChatUsersList = ({ navigation }: { navigation: any }) => {
         ] = rawChattedUser.split("|_+_|");
 
         try {
-          const ChattedUserApi = await userApi.fetchUserDocumentById(userId);
+          const additionalChattedUserDataApi =
+            await userApi.fetchUserDocumentById(userId);
 
-          if (ChattedUserApi) {
+          if (additionalChattedUserDataApi) {
             const ChattedUserData = {
               userId: userId || "",
               lastMessage: lastMessage || "",
@@ -97,16 +99,17 @@ const ChatUsersList = ({ navigation }: { navigation: any }) => {
               lastMessageId: lastMessageId || "",
               lastMessageSenderId: lastMessageSenderId || "",
               lastMessageIsSeen: isSeen === "true" ? true : false,
-              name: ChattedUserApi?.name || "",
-              about: ChattedUserApi?.about || "",
-              phoneNumber: ChattedUserApi?.phoneNumber || "",
-              createdAt: ChattedUserApi?.createdAt || "",
-              lastSeenAt: ChattedUserApi?.lastSeenAt || "",
-              email: ChattedUserApi?.email || "",
-              username: ChattedUserApi?.username || "",
-              profileAvatarUrl: ChattedUserApi?.profileAvatarUrl || "",
-              isOnline: ChattedUserApi?.isOnline || false,
-              isVerified: ChattedUserApi?.isVerified || false,
+              name: additionalChattedUserDataApi?.name || "",
+              about: additionalChattedUserDataApi?.about || "",
+              phoneNumber: additionalChattedUserDataApi?.phoneNumber || "",
+              createdAt: additionalChattedUserDataApi?.createdAt || "",
+              lastSeenAt: additionalChattedUserDataApi?.lastSeenAt || "",
+              email: additionalChattedUserDataApi?.email || "",
+              username: additionalChattedUserDataApi?.username || "",
+              profileAvatarUrl:
+                additionalChattedUserDataApi?.profileAvatarUrl || "",
+              isOnline: additionalChattedUserDataApi?.isOnline || false,
+              isVerified: additionalChattedUserDataApi?.isVerified || false,
             };
             ChattedUsersDataApi.push(ChattedUserData);
           }
@@ -194,6 +197,88 @@ const ChatUsersList = ({ navigation }: { navigation: any }) => {
     }
   }, [currentUser?.userId, setMyChatrooms]);
 
+  useEffect(() => {
+    if (hasInternetConnection && chattedUsers.length > 0) {
+      const unsubscribe = userApi.subscribeToUsersDocumentChanges(
+        async (updatedUser) => {
+          if (!updatedUser || !updatedUser.userId) return;
+
+          let hasChanges = false;
+          const updatedChattedUsers = chattedUsers.map(
+            (chattedUser: Partial<ChattedUser>) => {
+              if (chattedUser.userId === updatedUser.userId) {
+                const updatedFields = {
+                  name: updatedUser.name ?? chattedUser.name,
+                  about: updatedUser.about ?? chattedUser.about,
+                  phoneNumber:
+                    updatedUser.phoneNumber ?? chattedUser.phoneNumber,
+                  createdAt: updatedUser.createdAt ?? chattedUser.createdAt,
+                  lastSeenAt: updatedUser.lastSeenAt ?? chattedUser.lastSeenAt,
+                  email: updatedUser.email ?? chattedUser.email,
+                  username: updatedUser.username ?? chattedUser.username,
+                  profileAvatarUrl:
+                    updatedUser.profileAvatarUrl ??
+                    chattedUser.profileAvatarUrl,
+                  isOnline: updatedUser.isOnline ?? chattedUser.isOnline,
+                  isVerified: updatedUser.isVerified ?? chattedUser.isVerified,
+                };
+
+                if (
+                  Object.keys(updatedFields).some(
+                    (key) =>
+                      updatedFields[key as keyof typeof updatedFields] !==
+                      chattedUser[key as keyof typeof chattedUser]
+                  )
+                ) {
+                  hasChanges = true;
+                  return { ...chattedUser, ...updatedFields };
+                }
+              }
+              return chattedUser;
+            }
+          );
+
+          if (hasChanges) {
+            dispatch(setChattedUsers(updatedChattedUsers));
+            await localUserDb.upsertChattedUsersData(updatedChattedUsers);
+
+            if (
+              currentChatroomUser &&
+              currentChatroomUser.userId === updatedUser.userId
+            ) {
+              const updatedCurrentChatroomUser = {
+                ...currentChatroomUser,
+                name: updatedUser.name ?? currentChatroomUser.name,
+                about: updatedUser.about ?? currentChatroomUser.about,
+                phoneNumber:
+                  updatedUser.phoneNumber ?? currentChatroomUser.phoneNumber,
+                createdAt:
+                  updatedUser.createdAt ?? currentChatroomUser.createdAt,
+                lastSeenAt:
+                  updatedUser.lastSeenAt ?? currentChatroomUser.lastSeenAt,
+                email: updatedUser.email ?? currentChatroomUser.email,
+                username: updatedUser.username ?? currentChatroomUser.username,
+                profileAvatarUrl:
+                  updatedUser.profileAvatarUrl ??
+                  currentChatroomUser.profileAvatarUrl,
+                isOnline: updatedUser.isOnline ?? currentChatroomUser.isOnline,
+                isVerified:
+                  updatedUser.isVerified ?? currentChatroomUser.isVerified,
+              };
+              dispatch(setCurrentChatroomUser(updatedCurrentChatroomUser));
+            }
+          }
+        }
+      );
+
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+  }, [hasInternetConnection, chattedUsers, dispatch, currentChatroomUser]);
+
   const renderItem = ({ item }: { item: Partial<ChattedUser> }) => {
     if (!item) {
       return null;
@@ -221,6 +306,7 @@ const ChatUsersList = ({ navigation }: { navigation: any }) => {
       keyExtractor={(item) => item.userId!}
       renderItem={renderItem}
       estimatedItemSize={100}
+      keyboardDismissMode="on-drag"
     />
   );
 };
