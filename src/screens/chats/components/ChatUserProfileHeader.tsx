@@ -19,41 +19,55 @@ interface ChatUserProfileHeaderProps {
 const ChatUserProfileHeader: React.FC<ChatUserProfileHeaderProps> = ({
   navigation,
 }) => {
-  const { currentChatroomId, currentChatroomUser } = useAppSelector(
-    (state) => state.chatroom
-  );
+  const { currentChatroomUser } = useAppSelector((state) => state.chatroom);
+  const { hasInternetConnection } = useAppSelector((state) => state.global);
+
   return (
-    <View style={styles.header}>
+    <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="chevron-back" size={wp(9)} color={Colors.primary} />
       </TouchableOpacity>
-      <Image
-        source={{
-          uri: currentChatroomUser.profileAvatarUrl,
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("ChatUserProfile");
         }}
-        placeholderContentFit="contain"
-        cachePolicy="memory-disk"
-        style={styles.profilePic}
-      />
-      <View style={styles.userInfo}>
-        <Text style={styles.userName}>{currentChatroomUser.name}</Text>
-        <Text style={styles.userStatus}>
-          {currentChatroomUser.isOnline ? "Online" : "Offline"}
-        </Text>
-      </View>
+      >
+        <View style={styles.userInfoContainer}>
+          <Image
+            source={{
+              uri: currentChatroomUser.profileAvatarUrl,
+            }}
+            placeholderContentFit="contain"
+            cachePolicy="memory-disk"
+            style={styles.profilePic}
+          />
+          <View style={styles.userInfo}>
+            <Text style={styles.userName}>{currentChatroomUser.name}</Text>
+            {hasInternetConnection && (
+              <Text style={styles.userStatus}>
+                {currentChatroomUser.isOnline ? "Online" : "Offline"}
+              </Text>
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
+  container: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: Colors.background,
     paddingHorizontal: wp(3),
     paddingVertical: hp(1),
-    paddingTop: Platform.OS === "ios" ? hp(1) : hp(5),
+    paddingTop: Platform.OS === "ios" ? hp(0) : hp(5),
+  },
+  userInfoContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
   profilePic: {
     width: wp(11),
@@ -62,7 +76,6 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(2),
   },
   userInfo: {
-    flex: 1,
     paddingHorizontal: wp(2),
   },
   userName: {
@@ -71,7 +84,7 @@ const styles = StyleSheet.create({
   },
   userStatus: {
     fontSize: wp(3.2),
-    color: Colors.gray,
+    color: Colors.grey,
   },
 });
 

@@ -60,7 +60,7 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
             <Ionicons
               name="mail-outline"
               size={wp(5)}
-              color={Colors.gray}
+              color={Colors.grey}
               style={styles.inputIcon}
             />
             <TextInputBox
@@ -76,7 +76,7 @@ const EmailAndPasswordScreen: React.FC<EmailAndPasswordProps> = ({
             <Ionicons
               name="lock-closed-outline"
               size={wp(5)}
-              color={Colors.gray}
+              color={Colors.grey}
               style={styles.inputIcon}
             />
             <TextInputBox
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.lightGrey,
     padding: wp(2.5),
     borderRadius: wp(2.5),
     marginTop: hp(3),
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   buttonText: {
-    color: Colors.gray,
+    color: Colors.grey,
     fontSize: wp(5.5),
     fontWeight: "500",
   },

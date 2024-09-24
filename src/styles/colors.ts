@@ -73,10 +73,10 @@ export const Colors = {
   darkMaroon: "#4B0000",
 
   // Gray Shades
-  gray: "#808080",
-  brightGray: "#D3D3D3",
-  lightGray: "#DCDCDC",
-  darkGray: "#505050",
+  grey: "#808080",
+  brightGrey: "#D3D3D3",
+  lightGrey: "#DCDCDC",
+  darkGrey: "#505050",
 
   // Black and White
   black: "#000000",

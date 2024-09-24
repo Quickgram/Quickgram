@@ -133,7 +133,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({ navigation }) => {
           </TouchableOpacity>
         ) : (
           <View style={styles.timerContainer}>
-            <Entypo name="stopwatch" size={wp(4)} color={Colors.darkGray} />
+            <Entypo name="stopwatch" size={wp(4)} color={Colors.darkGrey} />
             <Text style={styles.timerText}>Resend code in {resendTimer}s</Text>
           </View>
         )}
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   timerText: {
-    color: Colors.darkGray,
+    color: Colors.darkGrey,
     fontSize: wp(3),
     marginLeft: wp(1),
   },
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.lightGrey,
     padding: wp(2.5),
     borderRadius: wp(2.5),
   },
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   buttonText: {
-    color: Colors.gray,
+    color: Colors.grey,
     fontSize: wp(5.5),
     fontWeight: "500",
   },

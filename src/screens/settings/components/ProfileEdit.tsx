@@ -80,7 +80,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
         <Ionicons
           name="person-outline"
           size={wp(6)}
-          color={Colors.gray}
+          color={Colors.grey}
           style={styles.icon}
         />
         <TextInput
@@ -88,7 +88,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
           value={editedName}
           onChangeText={handleNameChange}
           placeholder="Name"
-          placeholderTextColor={Colors.lightGray}
+          placeholderTextColor={Colors.lightGrey}
         />
       </View>
 
@@ -96,7 +96,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
         <Ionicons
           name="at-outline"
           size={wp(6)}
-          color={Colors.gray}
+          color={Colors.grey}
           style={styles.icon}
         />
         <TextInput
@@ -104,7 +104,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
           value={editedUsername}
           onChangeText={handleUsernameChange}
           placeholder="Username"
-          placeholderTextColor={Colors.lightGray}
+          placeholderTextColor={Colors.lightGrey}
         />
       </View>
 
@@ -112,7 +112,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
         <Ionicons
           name="information-circle-outline"
           size={wp(6)}
-          color={Colors.gray}
+          color={Colors.grey}
           style={styles.icon}
         />
         <TextInput
@@ -120,7 +120,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
           value={editedAbout}
           onChangeText={setEditedAbout}
           placeholder="About"
-          placeholderTextColor={Colors.lightGray}
+          placeholderTextColor={Colors.lightGrey}
         />
       </View>
       <TouchableOpacity
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     marginBottom: hp(2),
     paddingHorizontal: wp(3),
     borderWidth: 1,
-    borderColor: Colors.lightGray,
+    borderColor: Colors.lightGrey,
   },
   icon: {
     marginRight: wp(2),
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   updateButton: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.lightGrey,
     padding: wp(2.5),
     borderRadius: wp(2.5),
   },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   updateButtonText: {
-    color: Colors.gray,
+    color: Colors.grey,
     fontSize: wp(5.5),
     fontWeight: "500",
   },

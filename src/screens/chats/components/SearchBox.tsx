@@ -18,7 +18,7 @@ const SearchBox = () => {
         <TextInput
           style={styles.input}
           placeholder="Search"
-          placeholderTextColor={Colors.gray}
+          placeholderTextColor={Colors.grey}
           value={homeScreenSearchQuery}
           onChangeText={(text) => dispatch(setHomeScreenSearchQuery(text))}
           numberOfLines={1}
@@ -33,7 +33,7 @@ const SearchBox = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.lightGrey,
     padding: wp(2),
     height: hp(5),
     marginHorizontal: wp(3),
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   icon: {
-    color: Colors.gray,
+    color: Colors.grey,
     marginRight: wp(2),
   },
 });

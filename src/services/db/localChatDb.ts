@@ -43,7 +43,7 @@ export const localChatDb = {
   ): Promise<Partial<Message>[]> => {
     try {
       const messages = await messagesCollection
-        .query(Q.where("chatroomId", chatroomId))
+        .query(Q.where("chatroom_id", chatroomId))
         .fetch();
 
       if (messages.length === 0) {
@@ -71,6 +71,22 @@ export const localChatDb = {
       return filterMessageData(message) as Partial<Message>;
     } catch (error) {
       return null;
+    }
+  },
+
+  getAllMessages: async (): Promise<Partial<Message>[]> => {
+    try {
+      const messages = await messagesCollection.query().fetch();
+
+      if (!messages) {
+        return [];
+      }
+      const filteredMessages = messages.map((message) =>
+        filterMessageData(message)
+      );
+      return filteredMessages;
+    } catch (error) {
+      return [];
     }
   },
 

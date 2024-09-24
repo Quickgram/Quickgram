@@ -11,7 +11,7 @@ interface ProfileHeaderProps {
   phone: string;
   username: string;
   profileAvatarUrl: string;
-  onChangePhoto: () => void;
+  onChangeAvatar: () => void;
   onGridPress: () => void;
   onEditPress: () => void;
   onCancelPress: () => void;
@@ -22,7 +22,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   phone,
   username,
   profileAvatarUrl,
-  onChangePhoto,
+  onChangeAvatar,
   onGridPress,
   onEditPress,
   onCancelPress,
@@ -63,10 +63,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       <Text style={styles.profileInfo}>{`${phone} • @${username}`}</Text>
       <TouchableOpacity
         style={styles.changePhotoButton}
-        onPress={onChangePhoto}
+        onPress={onChangeAvatar}
       >
         <Ionicons name="camera-outline" size={wp(5)} color={Colors.primary} />
-        <Text style={styles.changePhotoText}>Change Profile Photo</Text>
+        <Text style={styles.changePhotoText}>Change Profile Avatar</Text>
       </TouchableOpacity>
     </View>
   );
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     fontSize: wp(3.5),
-    color: Colors.gray,
+    color: Colors.grey,
     marginTop: hp(0.5),
   },
   changePhotoButton: {

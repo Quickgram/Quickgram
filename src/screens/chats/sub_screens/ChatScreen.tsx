@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -14,6 +14,8 @@ import BottomChatField from "../components/BottomChatField";
 import MessagesList from "../components/MessagesList";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
+import BottomAttachmentsSheet from "../components/BottomAttachmentsSheet";
+import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 type ChatScreenProps = NativeStackScreenProps<AppStackParamList, "Chat">;
 
@@ -24,12 +26,14 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
     (state) => state.chatroom
   );
   const [bottomFieldHeight, setBottomFieldHeight] = useState(0);
-  const Wallpaper = require("../../../../assets/images/wallpaper.jpg");
+
   const handleBottomFieldHeightChange = (height: number) => {
     if (height !== bottomFieldHeight) {
       setBottomFieldHeight(height);
     }
   };
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const { dismiss } = useBottomSheetModal();
 
   return (
     <KeyboardAvoidingView
@@ -37,6 +41,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
       style={styles.keyboardAvoidingView}
     >
       <SafeAreaView style={styles.container}>
+        <BottomAttachmentsSheet ref={bottomSheetRef} />
         <ChatUserProfileHeader navigation={navigation} />
         <View style={styles.MessagesListContainer}>
           <MessagesList
@@ -47,6 +52,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ navigation }) => {
         <BottomChatField
           chatroomId={currentChatroomId!}
           onHeightChange={handleBottomFieldHeightChange}
+          bottomSheetRef={bottomSheetRef}
         />
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -64,7 +70,7 @@ const styles = StyleSheet.create({
   },
   MessagesListContainer: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.lavender,
   },
   item: {
     backgroundColor: Colors.white,

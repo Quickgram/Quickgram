@@ -6,7 +6,7 @@ import { wp } from "@/src/styles/responsive";
 const TextInputBox: React.FC<TextInputProps> = ({ style, ...otherProps }) => {
   return (
     <TextInput
-      placeholderTextColor={Colors.darkGray}
+      placeholderTextColor={Colors.darkGrey}
       style={[
         {
           fontSize: wp(4),

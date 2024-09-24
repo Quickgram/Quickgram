@@ -163,7 +163,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             <Ionicons
               name="person-outline"
               size={wp(5)}
-              color={Colors.gray}
+              color={Colors.grey}
               style={styles.inputIcon}
             />
             <TextInputBox
@@ -178,7 +178,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             <Ionicons
               name="at-outline"
               size={wp(5)}
-              color={Colors.gray}
+              color={Colors.grey}
               style={styles.inputIcon}
             />
             <TextInputBox
@@ -193,7 +193,7 @@ const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             <Ionicons
               name="information-circle-outline"
               size={wp(5)}
-              color={Colors.gray}
+              color={Colors.grey}
               style={styles.inputIcon}
             />
             <TextInputBox
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.lightGrey,
     padding: wp(2.5),
     borderRadius: wp(2.5),
   },
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   buttonText: {
-    color: Colors.gray,
+    color: Colors.grey,
     fontSize: wp(5.5),
     fontWeight: "500",
   },

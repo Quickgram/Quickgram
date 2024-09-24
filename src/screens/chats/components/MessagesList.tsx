@@ -42,12 +42,14 @@ const MessagesList: React.FC<MessagesListProps> = ({
     const localMessages = await localChatDb.getMessagesByChatroomId(chatroomId);
     const shortedLocalMessages = shortingMessagesByTime(localMessages);
     setMessages(shortedLocalMessages);
-    const apiMessages = await chatApi.fetchInitialMessages(chatroomId);
-    const mergedMessages = mergeMessages(localMessages, apiMessages);
-    setMessages(mergedMessages);
-    await localChatDb.upsertMessages(apiMessages);
-    lastFetchedMessageId.current =
-      apiMessages[apiMessages.length - 1]?.messageId ?? null;
+    if (hasInternetConnection) {
+      const apiMessages = await chatApi.fetchInitialMessages(chatroomId);
+      const mergedMessages = mergeMessages(localMessages, apiMessages);
+      setMessages(mergedMessages);
+      await localChatDb.upsertMessages(apiMessages);
+      lastFetchedMessageId.current =
+        apiMessages[apiMessages.length - 1]?.messageId ?? null;
+    }
   };
 
   const fetchMoreMessages = async () => {
@@ -63,7 +65,7 @@ const MessagesList: React.FC<MessagesListProps> = ({
   };
 
   const fetchMissedMessages = async () => {
-    if (lastFetchedMessageId.current) {
+    if (lastFetchedMessageId.current && hasInternetConnection) {
       const missedMessages =
         await chatApi.fetchMessagesAfterLastFetchedMessageId(
           chatroomId,
@@ -117,16 +119,18 @@ const MessagesList: React.FC<MessagesListProps> = ({
   useEffect(() => {
     fetchInitialMessages();
 
-    subscription.current = Appwrite.client.subscribe(
-      `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID}.documents`,
-      (event) => handleRealTimeUpdate(event)
-    );
+    if (hasInternetConnection) {
+      subscription.current = Appwrite.client.subscribe(
+        `databases.${process.env.EXPO_PUBLIC_DATABASE_ID}.collections.${process.env.EXPO_PUBLIC_MESSAGES_COLLECTION_ID}.documents`,
+        (event) => handleRealTimeUpdate(event)
+      );
 
-    return () => {
-      if (subscription.current) {
-        subscription.current();
-      }
-    };
+      return () => {
+        if (subscription.current) {
+          subscription.current();
+        }
+      };
+    }
   }, [chatroomId, handleRealTimeUpdate]);
 
   useEffect(() => {

@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   activeStatus: {
     fontSize: wp(4),
-    color: Colors.darkGray,
+    color: Colors.darkGrey,
     marginBottom: hp(3),
     textAlign: "center",
   },
@@ -115,6 +115,6 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: Colors.gray,
+    backgroundColor: Colors.grey,
   },
 });

@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: wp(3.5),
     textAlign: "center",
     marginBottom: hp(10),
-    color: Colors.gray,
+    color: Colors.grey,
   },
   link: {
     color: Colors.primary,

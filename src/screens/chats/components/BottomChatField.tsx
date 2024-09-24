@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   TextInput,
@@ -14,17 +14,18 @@ import MessageEnum from "@/src/utils/messageEnum";
 import * as Appwrite from "../../../config/appwrite";
 import { chatApi } from "@/src/services/api/chatApi";
 import { useAppSelector } from "@/src/services/hooks/useAppSelector";
-import { localUserDb } from "@/src/services/db/localUserDb";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 interface BottomChatFieldProps {
   chatroomId: string;
   onHeightChange: (height: number) => void;
+  bottomSheetRef: React.RefObject<BottomSheetModal>;
 }
 
 const BottomChatField: React.FC<BottomChatFieldProps> = ({
   chatroomId,
   onHeightChange,
+  bottomSheetRef,
 }) => {
   const { isiOS } = useAppSelector((state) => state.global);
   const { currentChatroomId, currentChatroomUser } = useAppSelector(
@@ -72,7 +73,10 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
         ]}
       >
         {!isTyping && (
-          <TouchableOpacity style={styles.addButton} onPress={async () => {}}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => bottomSheetRef.current?.present()}
+          >
             <Ionicons name="add-outline" size={wp(8)} />
           </TouchableOpacity>
         )}
@@ -82,7 +86,7 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
             style={styles.inputContainer}
             multiline
             placeholder="Message"
-            placeholderTextColor={Colors.gray}
+            placeholderTextColor={Colors.grey}
             onChangeText={textChange}
             value={textMessage}
             onContentSizeChange={(event) => {
@@ -98,10 +102,10 @@ const BottomChatField: React.FC<BottomChatFieldProps> = ({
         {!isTyping ? (
           <>
             <TouchableOpacity style={styles.button}>
-              <Ionicons name="camera-outline" size={wp(8)} />
+              <Ionicons name="camera-outline" size={wp(7)} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Ionicons name="happy-outline" size={wp(7)} />
+            <TouchableOpacity style={styles.button} onPress={() => {}}>
+              <Ionicons name="happy-outline" size={wp(6)} />
             </TouchableOpacity>
           </>
         ) : (

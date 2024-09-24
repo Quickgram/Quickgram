@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.lightGrey,
     padding: wp(2.5),
     borderRadius: wp(2.5),
   },
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   buttonText: {
-    color: Colors.gray,
+    color: Colors.grey,
     fontSize: wp(5.5),
     fontWeight: "500",
   },
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   separator: {
     width: "100%",
     height: 1,
-    backgroundColor: Colors.gray,
+    backgroundColor: Colors.grey,
     opacity: 0.2,
   },
   emailButton: {

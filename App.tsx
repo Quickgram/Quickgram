@@ -6,6 +6,8 @@ import store from "./src/redux/store/store";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { toastConfig, toastOptions } from "./src/config/toast";
 import { useInternetConnection } from "./src/services/hooks/useInternetConnection";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const AppContent = () => {
   useInternetConnection();
@@ -13,12 +15,16 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <NavigationContainer>
-    <Provider store={store}>
-      <AppContent />
-      <Toast config={toastConfig} {...toastOptions} />
-    </Provider>
-  </NavigationContainer>
+  <GestureHandlerRootView style={{ flex: 1 }}>
+    <NavigationContainer>
+      <BottomSheetModalProvider>
+        <Provider store={store}>
+          <AppContent />
+          <Toast config={toastConfig} {...toastOptions} />
+        </Provider>
+      </BottomSheetModalProvider>
+    </NavigationContainer>
+  </GestureHandlerRootView>
 );
 
 export default App;

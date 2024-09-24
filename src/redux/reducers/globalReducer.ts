@@ -7,7 +7,7 @@ const initialState: GlobalState = {
   isProfileEditing: false,
   isProfileUpdating: false,
   homeScreenSearchQuery: "",
-  hasInternetConnection: true,
+  hasInternetConnection: false,
 };
 
 const globalSlice = createSlice({

@@ -22,6 +22,7 @@ import { useAppSelector } from "@/src/services/hooks/useAppSelector";
 import { useAppDispatch } from "@/src/services/hooks/useAppDispatch";
 import { checkAuthStatus } from "@/src/redux/actions/authActions";
 import { initiateLogout } from "@/src/redux/actions/authActions";
+import ChatUserProfile from "@/src/screens/chats/sub_screens/ChatUserProfileScreen";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -54,6 +55,7 @@ const AppNavigator = () => {
         <>
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="Chat" component={ChatScreen} />
+          <Stack.Screen name="ChatUserProfile" component={ChatUserProfile} />
           <Stack.Screen
             name="MyProfile"
             component={MyProfileScreen}

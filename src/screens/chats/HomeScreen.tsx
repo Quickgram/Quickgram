@@ -27,7 +27,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   useEffect(() => {
     if (hasInternetConnection) {
       let unsubscribe: (() => void) | null = null;
-
       if (currentUser?.userId) {
         unsubscribe = userApi.subscribeToMyUserDocumentChanges(
           currentUser.userId,

@@ -55,7 +55,7 @@
 //   announcementDescription: {
 //     fontSize: wp(3.5),
 //     marginBottom: hp(1),
-//     color: Colors.darkGray,
+//     color: Colors.darkGrey,
 //   },
 //   announcementItem: {
 //     backgroundColor: Colors.white,
@@ -74,7 +74,7 @@
 //   },
 //   announcementDateAndExpiry: {
 //     fontSize: wp(3),
-//     color: Colors.gray,
+//     color: Colors.grey,
 //     marginBottom: hp(1),
 //   },
 //   tagsContainer: {

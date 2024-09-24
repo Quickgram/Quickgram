@@ -22,7 +22,7 @@ const SettingItem: React.FC<SettingItemProps> = ({
     <TouchableOpacity style={styles.item} onPress={() => onPress(name)}>
       <BoxedIcon name={icon} backgroundColor={backgroundColor} />
       <Text style={styles.itemText}>{name}</Text>
-      <Ionicons name="chevron-forward" size={wp(5)} color={Colors.gray} />
+      <Ionicons name="chevron-forward" size={wp(5)} color={Colors.grey} />
     </TouchableOpacity>
   );
 };
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.lightGrey,
     marginLeft: wp(12.5),
   },
 });

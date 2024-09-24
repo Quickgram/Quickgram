@@ -57,7 +57,7 @@ const HomeScreenHeader = ({ navigation }: { navigation: any }) => {
     <View style={styles.header}>
       <Text style={styles.headerTitle}>Chats</Text>
       <View style={styles.headerIcons}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={async () => {}}>
           <Ionicons name="camera-outline" size={wp(7)} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleAddUser}>

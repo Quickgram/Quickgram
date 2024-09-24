@@ -63,10 +63,10 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
             testID={options.tabBarTestID}
             onPress={onPress}
           >
-            {renderIcon(route.name, isFocused ? Colors.primary : Colors.gray)}
+            {renderIcon(route.name, isFocused ? Colors.primary : Colors.grey)}
             <Text
               style={{
-                color: isFocused ? Colors.primary : Colors.gray,
+                color: isFocused ? Colors.primary : Colors.grey,
                 fontSize: wp(2.75),
               }}
             >

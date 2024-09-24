@@ -69,7 +69,7 @@ export const localUserDb = {
     }
     try {
       const users = await usersCollection
-        .query(Q.where("uid", Q.oneOf(userIds)))
+        .query(Q.where("user_id", Q.oneOf(userIds)))
         .fetch();
       if (!users) {
         return [];

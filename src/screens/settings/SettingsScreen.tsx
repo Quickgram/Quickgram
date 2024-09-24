@@ -40,7 +40,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     useAppSelector((state) => state.global);
   const { currentUser } = useAppSelector((state) => state.user);
 
-  const handleChangePhoto = async () => {
+  const handleChangeAvatar = async () => {
     const localUri = await pickImageForProfile();
     if (localUri) {
       try {
@@ -175,7 +175,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           phone={currentUser!.phoneNumber}
           username={currentUser!.username}
           profileAvatarUrl={currentUser!.profileAvatarUrl}
-          onChangePhoto={handleChangePhoto}
+          onChangeAvatar={handleChangeAvatar}
           onGridPress={handleGridPress}
           onEditPress={handleEditPress}
           onCancelPress={() => dispatch(setIsProfileEditing(false))}

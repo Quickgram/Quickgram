@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
   },
   lastMessage: {
     fontSize: wp(4),
-    color: Colors.gray,
+    color: Colors.grey,
   },
   dateText: {
-    color: Colors.gray,
+    color: Colors.grey,
     paddingRight: wp(5),
     alignSelf: "flex-start",
   },
